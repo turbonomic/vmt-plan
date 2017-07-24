@@ -1,0 +1,7 @@
+vmtplan
+=======
+
+.. toctree::
+   :maxdepth: 4
+
+   vmtplanner

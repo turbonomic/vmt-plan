@@ -1,0 +1,131 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Entity Specification &#8212; vmt-plan 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="entity-specification">
+<h1>Entity Specification<a class="headerlink" href="#entity-specification" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>The entity specification is a <code class="xref py py-class docutils literal"><span class="pre">list</span></code> of <a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a> entries. Each</dt>
+<dd>entry in the list represents one entity to be added, removed, or modified
+in the plan. The format structure is as follows:</dd>
+</dl>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">uuid</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="n">PlanSetting</span><span class="o">.&lt;</span><span class="n">add</span><span class="o">|</span><span class="n">delete</span><span class="o">|</span><span class="n">replace</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="s1">&#39;template&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">uuid</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">int</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">&lt;</span><span class="nb">int</span><span class="p">,</span> <span class="o">...&gt;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Examples:</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">entities</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="c1"># add 5 copies immediately, and every month for 2 months</span>
+  <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;1341c28a-c9b7-46a5-ab25-321260482a91&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="n">PlanSetting</span><span class="o">.</span><span class="n">ADD</span><span class="p">,</span>
+   <span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+   <span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">]</span>
+  <span class="p">},</span>
+  <span class="c1"># replace VM with template in a month</span>
+  <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;1341c28a-c9b7-46a5-ab25-321260482a91&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="n">PlanSetting</span><span class="o">.</span><span class="n">REPLACE</span><span class="p">,</span>
+   <span class="s1">&#39;template&#39;</span><span class="p">:</span> <span class="s1">&#39;63513223-d9a7-46b5-df98-324351482a91&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+   <span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">]</span>
+  <span class="p">},</span>
+  <span class="c1"># remove VM immediately</span>
+  <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;1341c28a-c9b7-46a5-ab25-321260482a91&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="n">PlanSetting</span><span class="o">.</span><span class="n">DELETE</span><span class="p">,</span>
+   <span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+   <span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vmtplanner.html"><code class="docutils literal"><span class="pre">vmtplanner</span></code> — Developer Interfaces</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, R.A. Stern.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/entity_spec.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
