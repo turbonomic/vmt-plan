@@ -319,9 +319,11 @@ class Plan(object):
             if e['action'] == PlanSetting.DELETE:
                 conf.append(self.__conf_del_entity(e['id'], e['type']))
             elif e['action'] == PlanSetting.ADD:
-                conf.append(self.__conf_add_entity(e['id'], e['type'], e['count'], e['projection']))
+                conf.append(self.__conf_add_entity(e['id'], e['type'],
+                                                   e['count'], e['projection']))
             elif e['action'] == PlanSetting.REPLACE:
-                conf.append(self.__conf_replace_entity(e['id'], e['template'], e['type']))
+                conf.append(self.__conf_replace_entity(e['id'], e['template'],
+                                                       e['type']))
 
         return conf
 
@@ -552,12 +554,6 @@ class PlanSpec(object):
         self.entities = entities
         self.scope = scope
 
-        # [{'id': <uuid>, 'action': PlanSetting.add, 'count': <int>, 'projection': <int>}]
-        #self.entities = self.entities + kwargs['templates'] if 'templates' in kwargs and isinstance(kwargs['templates'], list) else []
-
-        # [{'id': <uuid>, 'action': <add|delete|replace>, 'template': <uuid>, 'count': <int>, 'projection': [<int>]}]
-        #self.entities = self.entities + kwargs['entities'] if 'entities' in kwargs and isinstance(kwargs['entities'], list) else []
-
     def __parse_options(self, fields, args):
         return {f: args[f] for f in fields if f in args}
 
@@ -584,7 +580,10 @@ class PlanSpec(object):
         Notes:
             See plan periods.
         """
-        self.entities.append({'id': id, 'action': PlanSetting.ADD, 'count': count, 'projection': periods})
+        self.entities.append({'id': id,
+                              'action': PlanSetting.ADD,
+                              'count': count,
+                              'projection': periods})
 
     def replace_entity(self, id, replacement_id, count=1, periods=[0]):
         """Replace an entity with a template.
@@ -598,7 +597,11 @@ class PlanSpec(object):
         Notes:
             See plan periods.
         """
-        self.entities.append({'id': id, 'template': replacement_id, 'action': PlanSetting.REPLACE, 'count': count, 'projection': periods})
+        self.entities.append({'id': id,
+                              'template': replacement_id,
+                              'action': PlanSetting.REPLACE,
+                              'count': count,
+                              'projection': periods})
 
     def delete_entity(self, id, periods=[0]):
         """Remove an entity.
@@ -610,4 +613,6 @@ class PlanSpec(object):
         Notes:
             See plan periods.
         """
-        self.entities.append({'id': id, 'action': PlanSetting.DELETE, 'projection': periods})
+        self.entities.append({'id': id,
+                              'action': PlanSetting.DELETE,
+                              'projection': periods})

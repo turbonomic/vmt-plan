@@ -20,7 +20,7 @@ locally, or it can be placed in a folder included in the ``PYTHONPATH``.
 Requirements
 -------------
 
-In order to use vmt-connect you will need to be running a supported version of
+In order to use vmt-plan you will need to be running a supported version of
 Python, and install the Requests_ module.
 
 * Python -- one of the following:
@@ -33,7 +33,7 @@ Python, and install the Requests_ module.
   - enum34_ >= 1.1.6
   - aenum_ >= 2.0.6
 
-* vmt-connect_ >= 1.0.0
+* vmt-connect_ >= 1.1.0
 
 
 Importing

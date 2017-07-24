@@ -23,20 +23,20 @@ Examples:
   entities = [
     # add 5 copies immediately, and every month for 2 months
     {'id': '1341c28a-c9b7-46a5-ab25-321260482a91',
-     'action': PlanSetting.add,
+     'action': PlanSetting.ADD,
      'count': 5,
      'projection': [0, 30, 60]
     },
     # replace VM with template in a month
     {'id': '1341c28a-c9b7-46a5-ab25-321260482a91',
-     'action': PlanSetting.replace,
+     'action': PlanSetting.REPLACE,
      'template': '63513223-d9a7-46b5-df98-324351482a91',
      'count': 1,
      'projection': [30]
     },
     # remove VM immediately
     {'id': '1341c28a-c9b7-46a5-ab25-321260482a91',
-     'action': PlanSetting.remove,
+     'action': PlanSetting.DELETE,
      'count': 1,
      'projection': [0]
     }
