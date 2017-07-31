@@ -16,6 +16,9 @@ Enumerations
 .. autoclass:: PlanSetting
    :members:
 
+.. autoclass:: PlanType
+   :members:
+
 .. autoclass:: ServerResponse
    :members:
 
