@@ -29,7 +29,7 @@ scenario. Here will will do a simple projection plan using two groups of VMs.
    # scoping to two groups by UUID
    scope = ['430e28cbaabf35522a180859d4160562d123ac78',
             'e48fd3270917221d3e6290e1affead34b872e95b']
-   scenario = vp.PlanSpec('custom scenario', scope)
+   scenario = vp.PlanSpec('custom scenario', vp.PlanType.CUSTOM, scope)
 
    # add 5 copies of a VM immediately
    scenario.add_entity('1341c28a-c9b7-46a5-ab25-321260482a91', count=5, periods=[0])

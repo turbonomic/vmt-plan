@@ -5,7 +5,13 @@ from __future__ import print_function
 import datetime
 import time
 import math
+import json
 import vmtconnect
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 try:
     from enum import Enum
@@ -16,7 +22,7 @@ except ImportError:
         print('Critical failure: no enum module found')
 
 
-__version__ = '1.0.0.dev'
+__version__ = '1.1.0.dev'
 __all__ = [
     'MarketError',
     'InvalidMarketError',
@@ -105,6 +111,24 @@ class MarketState(Enum):
     STOPPED = 'stop'
 
 
+class PlanType(Enum):
+    """Plan scenario types."""
+    #:
+    ADD_WORKLOAD = 'ADD_WORKLOAD'
+    #:
+    CLOUD_MIGRATION = 'CLOUD_MIGRATION'
+    #:
+    CUSTOM = 'CUSTOM'
+    #:
+    DECOMMISSION_HOST = 'DECOMMISSION_HOST'
+    #:
+    PROJECTION = 'PROJECTION'
+    #:
+    RECONFIGURE_HARDWARE = 'RECONFIGURE_HARDWARE'
+    #:
+    WORKLOAD_MIGRATION = 'WORKLOAD_MIGRATION'
+
+
 class PlanSetting(Enum):
     """Plan settings."""
     #:
@@ -154,6 +178,10 @@ class Plan(object):
     Attributes:
         duration (int): Plan duration in seconds, or None if unavailable.
         initialized (bool): Returns ``True`` if the market is initialized and usable.
+        market_id (str): Market UUID, read-only attribute.
+        market_name (str): Market name, read-only attribute.
+        scenario_id (str): Scenario UUID, read-only attribute.
+        scenario_name (str): Scenario name, read-only attribute.
         state (:class:`MarketState`): Current state of the market.
         start (:class:`~datetime.datetime`): Datetime object representing the
             start time, or None if no plan has been run.
@@ -192,6 +220,22 @@ class Plan(object):
     @property
     def duration(self):
         return self.__plan_duration
+
+    @property
+    def scenario_id(self):
+        return self.__scenario_id
+
+    @property
+    def scenario_name(self):
+        return self.__scenario_name
+
+    @property
+    def market_id(self):
+        return self.__market_id
+
+    @property
+    def market_name(self):
+        return self.__market_name
 
     def __gen_scenario_name(self):
         return 'CUSTOM_' + datetime.datetime.today().strftime('%Y%m%d_%H%M%S')
@@ -328,10 +372,15 @@ class Plan(object):
         return conf
 
     def __init_scenario(self):
-        dto = {'changes': []}
-        dto['changes'].append(self.__build_scope(self.__plan))
-        dto['changes'].append(self.__build_projection(self.__plan))
-        dto['changes'] += self.__build_entities(self.__plan)
+        changes = []
+        dto = {}
+
+        changes.append(self.__build_scope(self.__plan))
+        changes.append(self.__build_projection(self.__plan))
+        changes += self.__build_entities(self.__plan)
+
+        dto['type'] = self.__plan.type.value
+        dto['changes'] = changes
         dto_string = json.dumps(dto, sort_keys=False)
 
         response = self.__vmt.request('scenarios/' + self.__scenario_name, method='POST', dto=dto_string)
@@ -547,12 +596,13 @@ class PlanSpec(object):
                           'time']
     __market_options = ['ignore_constraints', 'plan_market_name']
 
-    def __init__(self, name, scope=[], entities=[], **kwargs):
+    def __init__(self, name, type=PlanType.CUSTOM, scope=[], entities=[], **kwargs):
         self.plan_name = name
         self.market_settings = self.__parse_options(self.__market_options, kwargs)
         self.scenario_settings = self.__parse_options(self.__scenario_options, kwargs)
         self.entities = entities
         self.scope = scope
+        self.type = type
 
     def __parse_options(self, fields, args):
         return {f: args[f] for f in fields if f in args}
