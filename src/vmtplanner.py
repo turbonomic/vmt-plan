@@ -14,8 +14,22 @@ except ImportError:
         print('Critical failure: no enum module found')
 
 
-__version__ = '0.0.0.dev'
-
+__version__ = '1.0.0'
+__all__ = [
+    'MarketError',
+    'InvalidMarketError',
+    'PlanError',
+    'PlanRunning',
+    'PlanRunFailure',
+    'PlanDeprovisionError',
+    'PlanExecutionExceeded',
+    'MarketState',
+    'ProfileType',
+    'PlanSetting',
+    'ServerResponse',
+    'Plan',
+    'PlanSpec'
+]
 
 
 ## ----------------------------------------------------
