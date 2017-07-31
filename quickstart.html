@@ -58,7 +58,7 @@ scenario. Here will will do a simple projection plan using two groups of VMs.</p
 <div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1"># scoping to two groups by UUID</span>
 <span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;430e28cbaabf35522a180859d4160562d123ac78&#39;</span><span class="p">,</span>
          <span class="s1">&#39;e48fd3270917221d3e6290e1affead34b872e95b&#39;</span><span class="p">]</span>
-<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;custom scenario&#39;</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;custom scenario&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">CUSTOM</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
 
 <span class="c1"># add 5 copies of a VM immediately</span>
 <span class="n">scenario</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span><span class="s1">&#39;1341c28a-c9b7-46a5-ab25-321260482a91&#39;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>

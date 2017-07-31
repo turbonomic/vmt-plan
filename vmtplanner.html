@@ -198,6 +198,30 @@ as defined by the settings in a <a class="reference internal" href="#vmtplanner.
 </dd></dl>
 
 <dl class="attribute">
+<dt id="vmtplanner.Plan.market_id">
+<code class="descname">market_id</code><a class="headerlink" href="#vmtplanner.Plan.market_id" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>str</em> – Market UUID, read-only attribute.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.Plan.market_name">
+<code class="descname">market_name</code><a class="headerlink" href="#vmtplanner.Plan.market_name" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>str</em> – Market name, read-only attribute.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.Plan.scenario_id">
+<code class="descname">scenario_id</code><a class="headerlink" href="#vmtplanner.Plan.scenario_id" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>str</em> – Scenario UUID, read-only attribute.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.Plan.scenario_name">
+<code class="descname">scenario_name</code><a class="headerlink" href="#vmtplanner.Plan.scenario_name" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>str</em> – Scenario name, read-only attribute.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="vmtplanner.Plan.state">
 <code class="descname">state</code><a class="headerlink" href="#vmtplanner.Plan.state" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#vmtplanner.MarketState" title="vmtplanner.MarketState"><code class="xref py py-class docutils literal"><span class="pre">MarketState</span></code></a> – Current state of the market.</p>
@@ -369,7 +393,7 @@ will be ignored. The <a class="reference internal" href="#vmtplanner.Plan.durati
 
 <dl class="class">
 <dt id="vmtplanner.PlanSpec">
-<em class="property">class </em><code class="descclassname">vmtplanner.</code><code class="descname">PlanSpec</code><span class="sig-paren">(</span><em>name</em>, <em>scope=[]</em>, <em>entities=[]</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vmtplanner.PlanSpec" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">vmtplanner.</code><code class="descname">PlanSpec</code><span class="sig-paren">(</span><em>name</em>, <em>type=&lt;PlanType.CUSTOM: 'CUSTOM'&gt;</em>, <em>scope=[]</em>, <em>entities=[]</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vmtplanner.PlanSpec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plan specification.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
