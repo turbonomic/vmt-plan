@@ -139,6 +139,47 @@ as defined by the settings in a <a class="reference internal" href="#vmtplanner.
 </dd></dl>
 
 <dl class="class">
+<dt id="vmtplanner.PlanType">
+<em class="property">class </em><code class="descclassname">vmtplanner.</code><code class="descname">PlanType</code><a class="headerlink" href="#vmtplanner.PlanType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plan scenario types.</p>
+<dl class="attribute">
+<dt id="vmtplanner.PlanType.ADD_WORKLOAD">
+<code class="descname">ADD_WORKLOAD</code><em class="property"> = 'ADD_WORKLOAD'</em><a class="headerlink" href="#vmtplanner.PlanType.ADD_WORKLOAD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.PlanType.CLOUD_MIGRATION">
+<code class="descname">CLOUD_MIGRATION</code><em class="property"> = 'CLOUD_MIGRATION'</em><a class="headerlink" href="#vmtplanner.PlanType.CLOUD_MIGRATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.PlanType.CUSTOM">
+<code class="descname">CUSTOM</code><em class="property"> = 'CUSTOM'</em><a class="headerlink" href="#vmtplanner.PlanType.CUSTOM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.PlanType.DECOMMISSION_HOST">
+<code class="descname">DECOMMISSION_HOST</code><em class="property"> = 'DECOMMISSION_HOST'</em><a class="headerlink" href="#vmtplanner.PlanType.DECOMMISSION_HOST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.PlanType.PROJECTION">
+<code class="descname">PROJECTION</code><em class="property"> = 'PROJECTION'</em><a class="headerlink" href="#vmtplanner.PlanType.PROJECTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.PlanType.RECONFIGURE_HARDWARE">
+<code class="descname">RECONFIGURE_HARDWARE</code><em class="property"> = 'RECONFIGURE_HARDWARE'</em><a class="headerlink" href="#vmtplanner.PlanType.RECONFIGURE_HARDWARE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.PlanType.WORKLOAD_MIGRATION">
+<code class="descname">WORKLOAD_MIGRATION</code><em class="property"> = 'WORKLOAD_MIGRATION'</em><a class="headerlink" href="#vmtplanner.PlanType.WORKLOAD_MIGRATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="vmtplanner.ServerResponse">
 <em class="property">class </em><code class="descclassname">vmtplanner.</code><code class="descname">ServerResponse</code><a class="headerlink" href="#vmtplanner.ServerResponse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Turbonomic service responses.</p>
@@ -401,6 +442,7 @@ will be ignored. The <a class="reference internal" href="#vmtplanner.Plan.durati
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Name of the plan scenario.</li>
+<li><strong>type</strong> (<a class="reference internal" href="#vmtplanner.PlanType" title="vmtplanner.PlanType"><code class="xref py py-class docutils literal"><span class="pre">PlanType</span></code></a>) – Type of plan to be run.</li>
 <li><strong>scope</strong> (<em>list</em><em>, </em><em>optional</em>) – Scope of the plan market.</li>
 <li><strong>entities</strong> (<em>list</em><em>, </em><em>optional</em>) – List of <cite>entity definitions</cite> to alter plan with. See <a class="reference internal" href="#entity-spec">entity spec</a>.</li>
 <li><strong>**kwargs</strong> – Additional <a class="reference internal" href="#scenario-param"><span class="std std-ref">Scenario Parameters</span></a> and, or <a class="reference internal" href="#market-param"><span class="std std-ref">Market Parameters</span></a>.</li>
