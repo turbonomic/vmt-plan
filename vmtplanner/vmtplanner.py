@@ -33,6 +33,7 @@ __all__ = [
     'PlanExecutionExceeded',
     'MarketState',
     'PlanSetting',
+    'PlanType',
     'ServerResponse',
     'Plan',
     'PlanSpec'
@@ -566,6 +567,7 @@ class PlanSpec(object):
 
     Args:
         name (str): Name of the plan scenario.
+        type (:class:`PlanType`): Type of plan to be run.
         scope (list, optional): Scope of the plan market.
         entities (list, optional): List of `entity definitions` to alter plan with. See `entity spec`_.
         **kwargs: Additional :ref:`scenario_param` and, or :ref:`market_param`.
