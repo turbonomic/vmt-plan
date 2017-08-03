@@ -22,7 +22,7 @@ except ImportError:
         print('Critical failure: no enum module found')
 
 
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 __all__ = [
     'MarketError',
     'InvalidMarketError',
@@ -362,13 +362,13 @@ class Plan(object):
 
         for e in spec.entities:
             if e['action'] == PlanSetting.DELETE:
-                conf.append(self.__conf_del_entity(e['id'], e['type']))
+                conf.append(self.__conf_del_entity(e['id'], e['projection']))
             elif e['action'] == PlanSetting.ADD:
-                conf.append(self.__conf_add_entity(e['id'], e['type'],
-                                                   e['count'], e['projection']))
+                conf.append(self.__conf_add_entity(e['id'], e['count'],
+                                                   e['projection']))
             elif e['action'] == PlanSetting.REPLACE:
                 conf.append(self.__conf_replace_entity(e['id'], e['template'],
-                                                       e['type']))
+                                                       e['projection']))
 
         return conf
 
