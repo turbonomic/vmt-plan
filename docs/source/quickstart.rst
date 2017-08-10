@@ -53,3 +53,56 @@ period.
 
    if plan.is_complete():
        plan.get_stats()
+
+
+Complex Plans
+-------------
+
+The plan engine is capable of complex multi-stage plans. For instance, you may
+want to see what happens when you let Turbonomic fully control your environment
+before making new VM placements, and compare it against simply adding the VMs
+in the current environment. Multi-staged plans are also called plan-on-plan
+projections because we are running a plan on top of the results of a previous
+plan.
+
+Let's say we want to simulate merging two clusters before adding workload. First
+we need to deal with the clusters and let Turbonomic sort out the environment.
+
+.. code:: python
+
+   # scoping to two clusters by UUID
+   scope = ['430e28cbaabf35522a180859d4160562d123ac78',
+            'e48fd3270917221d3e6290e1affead34b872e95b']
+
+   cluster_merge = vp.PlanSpec(name='custom scenario',
+                               type=vp.PlanType.CUSTOM,
+                               scope=scope,
+                               host_suspension=True,
+                               datastore_removal=True
+                               resize=True)
+
+   stage1 = vp.Plan(vmt, cluster_merge)
+   stage1.run()
+
+After the plan finishes, we can utilize the first stage market as the input to
+the next stage, into which we will add our new workload.
+
+.. code:: python
+
+   # new scenario called add_workload
+   add_workload = vp.PlanSpec(name='custom scenario',
+                              type=vp.PlanType.CUSTOM)
+
+   # add 10 copies of a VM immediately
+   add_workload.add_entity('1341c28a-c9b7-46a5-ab25-321260482a91',
+                           count=10, periods=[0])
+
+   stage2 = vp.Plan(vmt, add_workload,
+                    market=stage1.market_id)
+   stage2.run()
+
+In this case we did not need to re-scope the second plan because the results
+market from stage1 already contains only the clusters we want, and we want
+everything in the results market. You'll note when creating the :class:`Plan`
+we specify we are using a market other than the default one by passing in the
+market uuid from `stage1`.

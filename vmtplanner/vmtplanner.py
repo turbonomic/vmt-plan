@@ -22,7 +22,7 @@ except ImportError:
         print('Critical failure: no enum module found')
 
 
-__version__ = '1.1.1'
+__version__ = '1.2.0'
 __all__ = [
     'MarketError',
     'InvalidMarketError',
@@ -38,6 +38,9 @@ __all__ = [
     'Plan',
     'PlanSpec'
 ]
+
+_VERSION_REQ = ['5.8.5+']
+_VERSION_EXC = []
 
 
 ## ----------------------------------------------------
@@ -203,6 +206,9 @@ class Plan(object):
         self.__plan_duration = None
         self.base_market = market
 
+        ver = vmtconnect.VMTVersion(_VERSION_REQ, exclude=_VERSION_EXC)
+        ver.check(connection.version)
+
     @property
     def initialized(self):
         return self.__init
@@ -242,7 +248,8 @@ class Plan(object):
         return 'CUSTOM_' + datetime.datetime.today().strftime('%Y%m%d_%H%M%S')
 
     def __gen_market_name(self):
-        return 'CUSTOM_' + self.__vmt.get_users('me')['username'] + '_' + str(int(time.time()))
+        return 'CUSTOM_' + self.__vmt.get_users('me')[0]['username'] + '_' \
+               + str(int(time.time()))
 
     def __wait_for_stop(self):
         for x in range(0, self.__plan.abort_timeout):
@@ -262,7 +269,7 @@ class Plan(object):
         while not done:
             if self.is_complete() or self.is_stopped():
                 done = True
-            elif self.__plan.timeout > 0\
+            elif self.__plan.timeout > 0 \
                  and datetime.datetime.now() >= (self.__plan_start + datetime.timedelta(minutes=self.__plan.timeout)):
                 try:
                     self.stop()
@@ -384,7 +391,8 @@ class Plan(object):
         dto['changes'] = changes
         dto_string = json.dumps(dto, sort_keys=False)
 
-        response = self.__vmt.request('scenarios/' + self.__scenario_name, method='POST', dto=dto_string)
+        response = self.__vmt.request('scenarios/' + self.__scenario_name,
+                                      method='POST', dto=dto_string)[0]
 
         self.__scenario_id = response['uuid']
         self.__scenario_name = response['displayName']
@@ -394,7 +402,8 @@ class Plan(object):
     def __apply_scenario_options(self):
         param = urlencode({k: v for k,v in self.__plan.scenario_settings.items() if v is not None}) or None
 
-        self.__vmt.request('scenarios/' + self.__scenario_id, method='PUT', query=param)
+        self.__vmt.request('scenarios/' + self.__scenario_id, method='PUT',
+                           query=param)
 
         return True
 
@@ -405,7 +414,7 @@ class Plan(object):
         param = urlencode({k: v for k,v in self.__plan.market_settings.items() if v is not None}) or None
         path = 'markets/{}/scenarios/{}'.format(self.base_market, self.__scenario_id)
 
-        response = self.__vmt.request(path, method='POST', query=param)
+        response = self.__vmt.request(path, method='POST', query=param)[0]
 
         self.__market_id = response['uuid']
         self.__market_name = response['displayName']
@@ -500,7 +509,7 @@ class Plan(object):
             market = self.__vmt.get_markets(uuid=self.__market_id)
             self.__init = True
 
-            return MarketState[market['state']]
+            return MarketState[market[0]['state']]
         except Exception:
             raise
 
@@ -533,7 +542,8 @@ class Plan(object):
             bool: ``True`` upon success. Raises an exception otherwise.
         """
         try:
-            self.__vmt.request('markets', uuid=self.__market_id, method='PUT', query='operation=stop')
+            self.__vmt.request('markets', uuid=self.__market_id, method='PUT',
+                               query='operation=stop')
             self.__wait_for_stop()
             self.__plan_duration = (datetime.datetime.now() - self.__plan_start).total_seconds()
 
