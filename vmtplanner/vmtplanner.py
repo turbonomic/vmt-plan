@@ -22,7 +22,7 @@ except ImportError:
         print('Critical failure: no enum module found')
 
 
-__version__ = '1.1.0.dev'
+__version__ = '1.2.0.dev'
 __all__ = [
     'MarketError',
     'InvalidMarketError',
@@ -38,6 +38,9 @@ __all__ = [
     'Plan',
     'PlanSpec'
 ]
+
+_VERSION_REQ = ['5.8.5+']
+_VERSION_EXC = []
 
 
 ## ----------------------------------------------------
@@ -202,6 +205,9 @@ class Plan(object):
         self.__plan_end = None
         self.__plan_duration = None
         self.base_market = market
+
+        ver = vmtconnect.VMTVersion(_VERSION_REQ, exclude=_VERSION_EXC)
+        ver.check(connection.version)
 
     @property
     def initialized(self):
@@ -500,7 +506,7 @@ class Plan(object):
             market = self.__vmt.get_markets(uuid=self.__market_id)
             self.__init = True
 
-            return MarketState[market['state']]
+            return MarketState[market[0]['state']]
         except Exception:
             raise
 
