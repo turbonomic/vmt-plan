@@ -22,7 +22,7 @@ except ImportError:
         print('Critical failure: no enum module found')
 
 
-__version__ = '1.2.0.dev'
+__version__ = '1.3.0.dev'
 __all__ = [
     'MarketError',
     'InvalidMarketError',
@@ -167,6 +167,23 @@ class ServerResponse(Enum):
     ERROR = 'error'
 
 
+class ConstraintCommodity(Enum):
+    """Plan constraint commodities."""
+    #:
+    All = ''
+    #:
+    Cluster = 'ClusterCommodity'
+    #:
+    Network = 'NetworkCommodity'
+    #:
+    Datastore = 'DatastoreCommodity'
+    #:
+    StorageCluster = 'StorageClusterCommodity'
+    #:
+    DataCenter = 'DataCenterCommodity'
+
+
+
 # ----------------------------------------------------
 #  API Wrapper Classes
 # ----------------------------------------------------
@@ -303,54 +320,37 @@ class Plan(object):
             raise
 
     def __conf_add_entity(self, uuid, count=1, projection=[0]):
-        conf = {}
-        tgt = self.get_entity_profile(uuid)
+        tgt = kw_to_dict(uuid=uuid)
+        type = 'ADD_REPEAT' if len(projection) > 1 else 'ADDED'
 
-        conf['type'] = 'ADD_REPEAT' if len(projection) > 1 else 'ADDED'
-        conf['targets'] = [tgt]
-        conf['value'] = int(count)
-        conf['projectionDays'] = projection
-
-        return conf
+        return kw_to_dict(type=type, targets=[tgt], value=int(count),
+                          projectionDays=projection)
 
     def __conf_replace_entity(self, target, template, projection=[0]):
-        conf = {}
-        tgt = self.get_entity_profile(target)
-        tmp = self.get_entity_profile(template)
+        tgt = kw_to_dict(uuid=target)
+        tmp = kw_to_dict(uuid=template)
 
-        conf['type'] = 'REPLACED'
-        conf['targets'] = [tgt, tmp]
-        conf['projectionDays'] = projection
-
-        return conf
+        return kw_to_dict(type='REPLACED', targets=[tgt, tmp],
+                          projectionDays=projection)
 
     def __conf_del_entity(self, uuid, projection=[0]):
-        conf = {}
-        tgt = self.get_entity_profile(uuid)
+        tgt = kw_to_dict(uuid=uuid)
 
-        conf['type'] = 'REMOVED'
-        conf['targets'] = [tgt]
-        conf['projectionDays'] = projection
-
-        return conf
+        return kw_to_dict(type='REMOVED', targets=[tgt],
+                          projectionDays=projection)
 
     def __build_scope(self, spec):
-        conf = {}
-        scope = []
+        #scope = []
 
-        if spec.scope is None:
-            return self.__build_scope('Market')
+        #if spec.scope is None:
+            #return self.__build_scope('Market')
 
-        for uuid in spec.scope:
-            scope.append(self.get_entity_profile(uuid))
+        #for uuid in spec.scope:
+            #scope.append(kw_to_dict(uuid=uuid))
 
-        conf['type'] = 'SCOPE'
-        conf['scope'] = scope
-
-        return conf
+        return kw_to_dict(type='SCOPE', scope=kw_to_list_dict('uuid', spec.scope))
 
     def __build_projection(self, spec):
-        conf = {}
         days = [0]
 
         if spec.entities is not None:
@@ -358,11 +358,11 @@ class Plan(object):
                 if 'projection' in e:
                     days += e['projection']
 
-        conf['type'] = 'PROJECTION_PERIODS'
-        conf['projectionDays'] = list(set(days))
-        conf['projectionDays'].sort()
+        days = list(set(days))
+        days.sort()
 
-        return conf
+        return kw_to_dict(type='PROJECTION_PERIODS',
+                              projectionDays=list(set(days)))
 
     def __build_entities(self, spec):
         conf = []
@@ -386,6 +386,7 @@ class Plan(object):
         changes.append(self.__build_scope(self.__plan))
         changes.append(self.__build_projection(self.__plan))
         changes += self.__build_entities(self.__plan)
+        changes += self.__plan.changes
 
         dto['type'] = self.__plan.type.value
         dto['changes'] = changes
@@ -435,17 +436,6 @@ class Plan(object):
         self.__plan_duration = (datetime.datetime.now() - self.__plan_start).total_seconds()
 
         return self.state
-
-    def get_entity_profile(self, uuid):
-        """Returns the given UUID in the required format for an input DTO.
-
-        Args:
-            uuid (str): UUID to format.
-
-        Returns:
-            dict: A formatted UUID.
-        """
-        return {'uuid': uuid}
 
     def get_stats(self):
         """Returns statistics for the market.
@@ -579,7 +569,8 @@ class PlanSpec(object):
         name (str): Name of the plan scenario.
         type (:class:`PlanType`): Type of plan to be run.
         scope (list, optional): Scope of the plan market.
-        entities (list, optional): List of `entity definitions` to alter plan with. See `entity spec`_.
+        entities (list, optional): List of `entity definitions` to alter plan with.
+        changes (list, optional): List of dictionary formatted `change` block settings.
         **kwargs: Additional :ref:`scenario_param` and, or :ref:`market_param`.
 
     Attributes:
@@ -588,6 +579,10 @@ class PlanSpec(object):
         max_retry (int): Plan retry limit.
         poll_freq (int): Status polling interval in seconds, 0 = dynamic.
         timeout (int): Plan timeout in minutes, 0 = infinite.
+
+    See Also:
+        `entity spec`_.
+        `change block settings`_.
     """
     abort_timeout = 5
     abort_poll_freq = 5
@@ -608,13 +603,14 @@ class PlanSpec(object):
                           'time']
     __market_options = ['ignore_constraints', 'plan_market_name']
 
-    def __init__(self, name, type=PlanType.CUSTOM, scope=[], entities=[], **kwargs):
+    def __init__(self, name, type=PlanType.CUSTOM, scope=None, entities=[], changes=None, **kwargs):
         self.plan_name = name
         self.market_settings = self.__parse_options(self.__market_options, kwargs)
         self.scenario_settings = self.__parse_options(self.__scenario_options, kwargs)
         self.entities = entities
-        self.scope = scope
+        self.scope = scope or ['Market']
         self.type = type
+        self.changes = changes or []
 
     def __parse_options(self, fields, args):
         return {f: args[f] for f in fields if f in args}
@@ -678,3 +674,159 @@ class PlanSpec(object):
         self.entities.append({'id': id,
                               'action': PlanSetting.DELETE,
                               'projection': periods})
+
+    def change_constraint(self, commodity, value, ids):
+        """Changes VM commodity constraints on placement.
+
+        Args:
+            commodity (:class:``ConstraintCommodity``): Affected commodity.
+            value (bool): True or False.
+        """
+        change = kw_to_dict(type='CONSTRAINTCHANGED', name=commodity.value,
+                            value=value, targets=kw_to_list_dict('uuid', ids))
+        self.changes.append(change)
+
+    def add_hist(self, value):
+        """Setting to add VMs based on inventory changes in the last month.
+
+        This settings is the same as specifying the optional keyword argument
+        `add_historical` when creating the scenario. Use only one or the other,
+        not both.
+
+        Args:
+            value (bool): True or False.
+        """
+        change = kw_to_dict(type='ADD_HIST', value=value)
+        self.changes.append(change)
+
+    def include_reserved(self, value):
+        """Setting to include reserved VMs in the plan.
+
+        This settings is the same as specifying the optional keyword argument
+        `include_reservations` when creating the scenario. Use only one or the
+        other, not both.
+
+        Args:
+            value (bool): True or False.
+        """
+        change = kw_to_dict(type='INCLUDE_RESERVED', value=value)
+        self.changes.append(change)
+
+    def set(self, center=None, diameter=None, description=None):
+        """Set uncategorized settings for the scenario.
+
+        Args:
+            center (int, optional): Center of the desired state 0 to 100.
+            diameter (int, optional): Distance from the center as diameter 0 to 100.
+            description (str, optional): Description of changes.
+        """
+        kw = {}
+
+        if center is not None:
+            kw['center'] = center
+        if diameter is not None:
+            kw['diameter'] = diameter
+        if description is not None:
+            kw['description'] = description
+        if len(kw) > 0:
+            change = kw_to_dict(type='SET', **kw)
+            self.changes.append(change)
+
+    def set_hist_baseline(self, value):
+        """Set the used and peak utilization for the plan.
+
+        Args:
+            value (int): Date as a Unix timestamp in milliseconds.
+        """
+        change = kw_to_dict(type='SET_HIST_BASELINE', value=value)
+        self.changes.append(change)
+
+    def set_peak_baseline(self, value, ids):
+        """Set the peak baseline utilization for a VM cluster.
+
+        Args:
+            value (int): Date as a Unix timestamp in milliseconds.
+            ids (list): List of VM cluster UUIDs.
+        """
+        change = kw_to_dict(type='SET_PEAK_BASELINE', value=value,
+                            targets=kw_to_list_dict('uuid', ids))
+        self.changes.append(change)
+
+    def set_used(self, value, ids):
+        """Set the percentage of resources (workload) that an entity or group
+        will use.
+
+        Args:
+            value (int): Utilization value as an integer -100 to 100.
+            ids (list): List of entity or group UUIDs.
+        """
+        change = kw_to_dict(type='SET_USED', value=value,
+                            targets=kw_to_list_dict('uuid', ids))
+        self.changes.append(change)
+
+    def set_utilization(self, value, ids):
+        """Set percentage of capacity consumers can utilize for host and
+        storage entities, and groups.
+
+        Args:
+            value (int): Utilization value as a positive integer 0 to 100.
+            ids (list): List of entity or group UUIDs.
+        """
+        change = kw_to_dict(type='SET_UTILIZATION', value=value,
+                            targets=kw_to_list_dict('uuid', ids))
+        self.changes.append(change)
+
+    def set_max_utilization(self, type, value, ids):
+        """Set the max percentage of a commodity's capacity a VM or group of
+        VMs can consume.
+
+        Args:
+            type (str): Commodity type to modify.
+            value (int): Utilization value as a positive integer 0 to 100.
+            ids (list): List of entity or group UUIDs.
+        """
+        change = kw_to_dict(type='SET_MAX_UTILIZATION', maxUtilType=type,
+                            value=value, targets=kw_to_list_dict('uuid', ids))
+        self.changes.append(change)
+
+
+
+## ----------------------------------------------------
+##  General functions
+## ----------------------------------------------------
+def kw_to_dict(**kwargs):
+    """Returns a dictionary based on keyword arguments
+
+    Args:
+        **kwargs: Arguments to convert.
+
+    Returns:
+        dict: A formatted dictionary.
+    """
+    out = {}
+
+    for k, v in kwargs.items():
+        out[k] = v
+
+    return out
+
+
+def kw_to_list_dict(key, values):
+    """Returns a list of single entry dictionaries with key of ``key`` and value
+    from ``values``.
+
+    Args:
+        key (str): String representing the key name to use for all values.
+        values (list): List of values to be paired individually with the key.
+
+    Returns:
+        list: A list of formatted dictionaries.
+    """
+    out = []
+
+    for x in values:
+        out.append({key: x})
+
+    return out
+
+
