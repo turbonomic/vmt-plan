@@ -170,6 +170,8 @@ class ServerResponse(Enum):
 class ConstraintCommodity(Enum):
     """Plan constraint commodities."""
     #:
+    All = ''
+    #:
     Cluster = 'ClusterCommodity'
     #:
     Network = 'NetworkCommodity'
@@ -338,15 +340,15 @@ class Plan(object):
                           projectionDays=projection)
 
     def __build_scope(self, spec):
-        scope = []
+        #scope = []
 
-        if spec.scope is None:
-            return self.__build_scope('Market')
+        #if spec.scope is None:
+            #return self.__build_scope('Market')
 
-        for uuid in spec.scope:
-            scope.append(kw_to_dict(uuid=uuid))
+        #for uuid in spec.scope:
+            #scope.append(kw_to_dict(uuid=uuid))
 
-        return kw_to_dict(type='SCOPE', scope=scope)
+        return kw_to_dict(type='SCOPE', scope=kw_to_list_dict('uuid', spec.scope))
 
     def __build_projection(self, spec):
         days = [0]
@@ -601,12 +603,12 @@ class PlanSpec(object):
                           'time']
     __market_options = ['ignore_constraints', 'plan_market_name']
 
-    def __init__(self, name, type=PlanType.CUSTOM, scope=[], entities=[], changes=None, **kwargs):
+    def __init__(self, name, type=PlanType.CUSTOM, scope=None, entities=[], changes=None, **kwargs):
         self.plan_name = name
         self.market_settings = self.__parse_options(self.__market_options, kwargs)
         self.scenario_settings = self.__parse_options(self.__scenario_options, kwargs)
         self.entities = entities
-        self.scope = scope
+        self.scope = scope or ['Market']
         self.type = type
         self.changes = changes or []
 
