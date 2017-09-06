@@ -8,6 +8,8 @@ import math
 import json
 import vmtconnect
 
+from types import MethodType
+
 try:
     from urllib.parse import urlencode
 except ImportError:
@@ -226,6 +228,10 @@ class Plan(object):
         ver = vmtconnect.VMTVersion(_VERSION_REQ, exclude=_VERSION_EXC)
         ver.check(connection.version)
 
+        # instance version monkey patching magic, default is pre 5.9.1
+        if connection.version >= '5.9.1':
+            self.__init_scenario_request = self.__init_scenario_request_591
+
     @property
     def initialized(self):
         return self.__init
@@ -340,14 +346,6 @@ class Plan(object):
                           projectionDays=projection)
 
     def __build_scope(self, spec):
-        #scope = []
-
-        #if spec.scope is None:
-            #return self.__build_scope('Market')
-
-        #for uuid in spec.scope:
-            #scope.append(kw_to_dict(uuid=uuid))
-
         return kw_to_dict(type='SCOPE', scope=kw_to_list_dict('uuid', spec.scope))
 
     def __build_projection(self, spec):
@@ -379,6 +377,20 @@ class Plan(object):
 
         return conf
 
+    def __init_scenario_request(self, dto):
+        # pre 5.9.1 compatibility (upto & including 5.9.0)
+        dto_string = json.dumps(dto, sort_keys=False)
+
+        return self.__vmt.request('scenarios/' + self.__scenario_name,
+                                  method='POST', dto=dto_string)[0]
+
+    def __init_scenario_request_591(self, dto):
+        # 5.9.1 and later compatibility
+        dto['displayName'] = self.__scenario_name
+        dto_string = json.dumps(dto, sort_keys=False)
+
+        return self.__vmt.request('scenarios', method='POST', dto=dto_string)[0]
+
     def __init_scenario(self):
         changes = []
         dto = {}
@@ -390,10 +402,8 @@ class Plan(object):
 
         dto['type'] = self.__plan.type.value
         dto['changes'] = changes
-        dto_string = json.dumps(dto, sort_keys=False)
 
-        response = self.__vmt.request('scenarios/' + self.__scenario_name,
-                                      method='POST', dto=dto_string)[0]
+        response = self.__init_scenario_request(dto)
 
         self.__scenario_id = response['uuid']
         self.__scenario_name = response['displayName']
