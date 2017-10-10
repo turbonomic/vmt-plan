@@ -22,7 +22,7 @@ except ImportError:
         print('Critical failure: no enum module found')
 
 
-__version__ = '1.3.0.dev'
+__version__ = '1.2.1'
 __all__ = [
     'MarketError',
     'InvalidMarketError',
