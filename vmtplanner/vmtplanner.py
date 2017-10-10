@@ -8,8 +8,6 @@ import math
 import json
 import vmtconnect
 
-from types import MethodType
-
 try:
     from urllib.parse import urlencode
 except ImportError:
@@ -116,6 +114,9 @@ class MarketState(Enum):
     #: Indicates the market plan stopped.
     STOPPED = 'stop'
 
+    #: Indicates the market plan was stop manually by a user.
+    USER_STOPPED = 'user_stop'
+
 
 class PlanType(Enum):
     """Plan scenario types."""
@@ -155,6 +156,8 @@ class PlanSetting(Enum):
     DELETE = 'delete'
     #:
     REPLACE = 'replace'
+    #:
+    MIGRATE = 'migration'
 
 
 class ServerResponse(Enum):
@@ -205,12 +208,17 @@ class Plan(object):
         market_name (str): Market name, read-only attribute.
         scenario_id (str): Scenario UUID, read-only attribute.
         scenario_name (str): Scenario name, read-only attribute.
+        script_duration (int): Plan script duration in seconds.
+        server_duration (int): Plan server side duration in seconds.
         state (:class:`MarketState`): Current state of the market.
         start (:class:`~datetime.datetime`): Datetime object representing the
             start time, or None if no plan has been run.
+        unplaced_entities (bool): True if there are unplaced entities.
     """
     # system level markets to block certain actions
     __system = ['Market', 'Market_Default']
+
+    __datetime_format = "%Y-%m-%dT%H:%M:%S%z"
 
     def __init__(self, connection, spec=None, market='Market'):
         self.__vmt = connection
@@ -223,6 +231,10 @@ class Plan(object):
         self.__plan_start = None
         self.__plan_end = None
         self.__plan_duration = None
+        self.__plan_server_start = None
+        self.__plan_server_end = None
+        self.__plan_server_duration = None
+        self.unplaced = None
         self.base_market = market
 
         ver = vmtconnect.VMTVersion(_VERSION_REQ, exclude=_VERSION_EXC)
@@ -249,6 +261,17 @@ class Plan(object):
 
     @property
     def duration(self):
+        if self.__plan_server_duration is not None:
+            return self.__plan_server_duration
+        else:
+            return self.__plan_duration
+
+    @property
+    def server_duration(self):
+        return self.__plan_server_duration
+
+    @property
+    def script_duration(self):
         return self.__plan_duration
 
     @property
@@ -267,12 +290,29 @@ class Plan(object):
     def market_name(self):
         return self.__market_name
 
+    @property
+    def unplaced_entities(self):
+        return self.unplaced
+
     def __gen_scenario_name(self):
         return 'CUSTOM_' + datetime.datetime.today().strftime('%Y%m%d_%H%M%S')
 
     def __gen_market_name(self):
         return 'CUSTOM_' + self.__vmt.get_users('me')[0]['username'] + '_' \
                + str(int(time.time()))
+
+    def __sync_server_data(self):
+        market = self.__vmt.get_markets(uuid=self.__market_id)
+
+        try:
+            self.__market_id = market['uuid']
+            self.__market_name = market['displayName']
+            self.unplaced = market['unplacedEntities']
+            self.__plan_server_start = datetime.datetime.strptime(market['runDate'], self.__datetime_format)
+            self.__plan_server_end = datetime.datetime.strptime(market['runCompleteDate'], self.__datetime_format)
+            self.__plan_server_duration = (self.__plan_server_end - self.__plan_server_start).total_seconds()
+        except Exception as e:
+            pass
 
     def __wait_for_stop(self):
         for x in range(0, self.__plan.abort_timeout):
@@ -315,8 +355,8 @@ class Plan(object):
 
     def __delete(self):
         try:
-            m = self.__vmt.request('markets', method='DELETE', uuid=self.__market_id)
-            s = self.__vmt.request('scenarios', method='DELETE', uuid=self.__scenario_id)
+            m = self.__vmt.del_market(self.__market_id)
+            s = self.__vmt.del_scenario(self.__scenario_id)
 
             if m and s:
                 return True
@@ -332,8 +372,8 @@ class Plan(object):
         return kw_to_dict(type=type, targets=[tgt], value=int(count),
                           projectionDays=projection)
 
-    def __conf_replace_entity(self, target, template, projection=[0]):
-        tgt = kw_to_dict(uuid=target)
+    def __conf_replace_entity(self, uuid, template, projection=[0]):
+        tgt = kw_to_dict(uuid=uuid)
         tmp = kw_to_dict(uuid=template)
 
         return kw_to_dict(type='REPLACED', targets=[tgt, tmp],
@@ -343,6 +383,12 @@ class Plan(object):
         tgt = kw_to_dict(uuid=uuid)
 
         return kw_to_dict(type='REMOVED', targets=[tgt],
+                          projectionDays=projection)
+
+    def __conf_migrate_entity(self, uuid, dest, projection=[0]):
+        tgt = kw_to_list_dict('uuid', [uuid, dest])
+
+        return kw_to_dict(type='MIGRATION', targets=tgt,
                           projectionDays=projection)
 
     def __build_scope(self, spec):
@@ -360,7 +406,7 @@ class Plan(object):
         days.sort()
 
         return kw_to_dict(type='PROJECTION_PERIODS',
-                              projectionDays=list(set(days)))
+                          projectionDays=list(set(days)))
 
     def __build_entities(self, spec):
         conf = []
@@ -373,6 +419,9 @@ class Plan(object):
                                                    e['projection']))
             elif e['action'] == PlanSetting.REPLACE:
                 conf.append(self.__conf_replace_entity(e['id'], e['template'],
+                                                       e['projection']))
+            elif e['action'] == PlanSetting.MIGRATE:
+                conf.append(self.__conf_migrate_entity(e['id'], e['dest'],
                                                        e['projection']))
 
         return conf
@@ -443,6 +492,7 @@ class Plan(object):
             return self.state
 
         self.__wait_for_plan()
+        self.__sync_server_data()
         self.__plan_duration = (datetime.datetime.now() - self.__plan_start).total_seconds()
 
         return self.state
@@ -685,6 +735,24 @@ class PlanSpec(object):
                               'action': PlanSetting.DELETE,
                               'projection': periods})
 
+    def migrate_entity(self, id, destination_id, period=0):
+        """Migrate an entity.
+
+        Args:
+            id (str): Target entity or group UUID to migrate.
+            destination_id (str): Destination entity or group UUID.
+            period (int, optional): Period in which to migrate. (default: 0)
+
+        Notes:
+            Unlike in :class:`~PlanSpec.add_entity`, :class:`~PlanSpec.replace_entity`,
+                or :class:`~PlanSpec.delete_entity` operations, ``period`` is a
+                singular value in migrations.
+        """
+        self.entities.append({'id': id,
+                              'dest': destination_id,
+                              'action': PlanSetting.MIGRATE,
+                              'projection': [period]})
+
     def change_constraint(self, commodity, value, ids):
         """Changes VM commodity constraints on placement.
 
@@ -812,6 +880,10 @@ def kw_to_dict(**kwargs):
 
     Returns:
         dict: A formatted dictionary.
+
+
+    Example:
+        ``kw_to_dict(foo='Hello', bar='World')`` returns ``{'foo': 'Hello', 'bar': 'World'}``
     """
     out = {}
 
@@ -831,6 +903,9 @@ def kw_to_list_dict(key, values):
 
     Returns:
         list: A list of formatted dictionaries.
+
+    Example:
+        ``kw_to_list_dict('uuid', [1,2,3])`` returns ``[{'uuid': 1}, {'uuid': 2}, {'uuid': 3}]``
     """
     out = []
 
