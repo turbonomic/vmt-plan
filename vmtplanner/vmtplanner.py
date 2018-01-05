@@ -642,6 +642,7 @@ class PlanSpec(object):
 
     See Also:
         `entity spec`_.
+
         `change block settings`_.
     """
     abort_timeout = 5
@@ -880,7 +881,6 @@ def kw_to_dict(**kwargs):
 
     Returns:
         dict: A formatted dictionary.
-
 
     Example:
         ``kw_to_dict(foo='Hello', bar='World')`` returns ``{'foo': 'Hello', 'bar': 'World'}``

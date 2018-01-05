@@ -37,6 +37,20 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.napoleon'
 ]
 
+# Napoleon settings
+napoleon_google_docstring = True
+napoleon_numpy_docstring = False
+napoleon_include_init_with_doc = False
+napoleon_include_private_with_doc = False
+napoleon_include_special_with_doc = False
+napoleon_use_admonition_for_examples = False
+napoleon_use_admonition_for_notes = True
+napoleon_use_admonition_for_references = False
+napoleon_use_ivar = False
+napoleon_use_param = True
+napoleon_use_rtype = True
+napoleon_use_keyword = True
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -51,7 +65,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'vmt-plan'
-copyright = u'2017, R.A. Stern'
+copyright = u'2017-2018, R.A. Stern'
 author = u'R.A. Stern'
 
 # The version info for the project you're documenting, acts as replacement for
