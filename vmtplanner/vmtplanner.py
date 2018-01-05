@@ -642,8 +642,6 @@ class PlanSpec(object):
 
     See Also:
         `entity spec`_.
-
-        `change block settings`_.
     """
     abort_timeout = 5
     abort_poll_freq = 5
