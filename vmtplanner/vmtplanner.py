@@ -22,7 +22,7 @@ except ImportError:
         print('Critical failure: no enum module found')
 
 
-__version__ = '1.2.1'
+__version__ = '1.3.0'
 __all__ = [
     'MarketError',
     'InvalidMarketError',
@@ -39,7 +39,7 @@ __all__ = [
     'PlanSpec'
 ]
 
-_VERSION_REQ = ['5.8.5+']
+_VERSION_REQ = ['5.9.0+']
 _VERSION_EXC = []
 
 
@@ -444,7 +444,9 @@ class Plan(object):
         changes = []
         dto = {}
 
-        changes.append(self.__build_scope(self.__plan))
+        if self.__plan.scope is not None:
+            changes.append(self.__build_scope(self.__plan))
+
         changes.append(self.__build_projection(self.__plan))
         changes += self.__build_entities(self.__plan)
         changes += self.__plan.changes
@@ -642,7 +644,6 @@ class PlanSpec(object):
 
     See Also:
         `entity spec`_.
-        `change block settings`_.
     """
     abort_timeout = 5
     abort_poll_freq = 5
@@ -668,7 +669,7 @@ class PlanSpec(object):
         self.market_settings = self.__parse_options(self.__market_options, kwargs)
         self.scenario_settings = self.__parse_options(self.__scenario_options, kwargs)
         self.entities = entities
-        self.scope = scope or ['Market']
+        self.scope = scope
         self.type = type
         self.changes = changes or []
 
@@ -880,7 +881,6 @@ def kw_to_dict(**kwargs):
 
     Returns:
         dict: A formatted dictionary.
-
 
     Example:
         ``kw_to_dict(foo='Hello', bar='World')`` returns ``{'foo': 'Hello', 'bar': 'World'}``
