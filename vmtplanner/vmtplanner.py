@@ -39,7 +39,7 @@ __all__ = [
     'PlanSpec'
 ]
 
-_VERSION_REQ = ['5.8.5+']
+_VERSION_REQ = ['5.9.0+']
 _VERSION_EXC = []
 
 
