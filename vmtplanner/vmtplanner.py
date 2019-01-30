@@ -39,7 +39,7 @@ __all__ = [
     'PlanSpec'
 ]
 
-_VERSION_REQ = ['5.8.5+']
+_VERSION_REQ = ['5.9.0+']
 _VERSION_EXC = []
 
 
@@ -444,7 +444,9 @@ class Plan(object):
         changes = []
         dto = {}
 
-        changes.append(self.__build_scope(self.__plan))
+        if self.__plan.scope is not None:
+            changes.append(self.__build_scope(self.__plan))
+
         changes.append(self.__build_projection(self.__plan))
         changes += self.__build_entities(self.__plan)
         changes += self.__plan.changes
@@ -667,7 +669,7 @@ class PlanSpec(object):
         self.market_settings = self.__parse_options(self.__market_options, kwargs)
         self.scenario_settings = self.__parse_options(self.__scenario_options, kwargs)
         self.entities = entities
-        self.scope = scope or ['Market']
+        self.scope = scope
         self.type = type
         self.changes = changes or []
 
