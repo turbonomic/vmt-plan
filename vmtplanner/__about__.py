@@ -11,7 +11,7 @@
 # limitations under the License.
 # libraries
 
-__title__ = 'vmplan'
+__title__ = 'vmtplan'
 __description__ = 'Turbonomic Plan Engine'
 __version__ = '1.3.0.dev'
 __author__ = 'R.A. Stern'
