@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 
 about = {}
-with open(os.path.join(here, 'vmtconnect', '__about__.py'), 'r', 'utf-8') as fp:
+with open(os.path.join(here, 'vmtplanner', '__about__.py'), 'r', 'utf-8') as fp:
     exec(fp.read(), about)
 
 with open(os.path.join(here, 'README.rst'), 'r', 'utf-8') as fp:
