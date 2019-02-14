@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>vmtplanner — Developer Interfaces &#8212; vmt-plan 1.3.0 documentation</title>
+    <title>vmtplanner — Developer Interfaces &#8212; vmt-plan 1.3.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.3.0',
+        VERSION:     '1.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -228,10 +228,9 @@ as defined by the settings in a <a class="reference internal" href="#vmtplanner.
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>connection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – <a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.VMTConnection" title="(in vmt-connect v2.2.0)"><code class="xref py py-class docutils literal"><span class="pre">VMTConnection</span></code></a> object.</li>
+<li><strong>connection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – <a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.VMTConnection" title="(in vmt-connect v1.2.2)"><code class="xref py py-class docutils literal"><span class="pre">VMTConnection</span></code></a> object.</li>
 <li><strong>spec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a><em>, </em><em>optional</em>) – <a class="reference internal" href="#vmtplanner.PlanSpec" title="vmtplanner.PlanSpec"><code class="xref py py-class docutils literal"><span class="pre">PlanSpec</span></code></a> settings to apply to the market.</li>
-<li><strong>market</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Base market UUID to apply the settings to.
-(default: Market)</li>
+<li><strong>market</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Base market UUID to apply the settings to.</li>
 </ul>
 </td>
 </tr>
@@ -445,7 +444,7 @@ will be ignored. The <a class="reference internal" href="#vmtplanner.Plan.durati
 
 <dl class="class">
 <dt id="vmtplanner.PlanSpec">
-<em class="property">class </em><code class="descclassname">vmtplanner.</code><code class="descname">PlanSpec</code><span class="sig-paren">(</span><em>name</em>, <em>type=&lt;PlanType.CUSTOM: 'CUSTOM'&gt;</em>, <em>scope=None</em>, <em>entities=[]</em>, <em>changes=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vmtplanner.PlanSpec" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">vmtplanner.</code><code class="descname">PlanSpec</code><span class="sig-paren">(</span><em>name</em>, <em>type=&lt;PlanType.CUSTOM: 'CUSTOM'&gt;</em>, <em>scope=None</em>, <em>entities=None</em>, <em>changes=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vmtplanner.PlanSpec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plan specification.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
