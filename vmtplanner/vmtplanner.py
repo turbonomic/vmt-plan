@@ -640,14 +640,14 @@ class PlanSpec(object):
                           'time']
     __market_options = ['ignore_constraints', 'plan_market_name']
 
-    def __init__(self, name, type=PlanType.CUSTOM, scope=None, entities=[], changes=None, **kwargs):
+    def __init__(self, name, type=PlanType.CUSTOM, scope=None, entities=None, changes=None, **kwargs):
         self.plan_name = name
         self.market_settings = self.__parse_options(self.__market_options, kwargs)
         self.scenario_settings = self.__parse_options(self.__scenario_options, kwargs)
-        self.entities = entities
+        self.entities = [] if entities is None else entities
         self.scope = scope
         self.type = type
-        self.changes = changes or []
+        self.changes = [] if changes is None else changes
 
     def __parse_options(self, fields, args):
         return {f: args[f] for f in fields if f in args}
