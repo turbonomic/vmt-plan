@@ -721,9 +721,7 @@ class PlanSpec(object):
             period (int, optional): Period in which to migrate. (default: 0)
 
         Notes:
-            Unlike in :class:`~PlanSpec.add_entity`, :class:`~PlanSpec.replace_entity`,
-                or :class:`~PlanSpec.delete_entity` operations, ``period`` is a
-                singular value in migrations.
+            Unlike in :class:`~PlanSpec.add_entity`, :class:`~PlanSpec.replace_entity`, or :class:`~PlanSpec.delete_entity` operations, ``period`` is a singular value in migrations.
         """
         self.entities.append({'id': id,
                               'dest': destination_id,
