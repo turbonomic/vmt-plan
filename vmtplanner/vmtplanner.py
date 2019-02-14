@@ -1,17 +1,11 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import datetime
 import time
 import math
 import json
 import vmtconnect
 
-try:
-    from urllib.parse import urlencode
-except ImportError:
-    from urllib import urlencode
+from urllib.parse import urlencode
+
 
 try:
     from enum import Enum
@@ -21,23 +15,6 @@ except ImportError:
     except ImportError:
         print('Critical failure: no enum module found')
 
-
-__version__ = '1.3.0.dev'
-__all__ = [
-    'MarketError',
-    'InvalidMarketError',
-    'PlanError',
-    'PlanRunning',
-    'PlanRunFailure',
-    'PlanDeprovisionError',
-    'PlanExecutionExceeded',
-    'MarketState',
-    'PlanSetting',
-    'PlanType',
-    'ServerResponse',
-    'Plan',
-    'PlanSpec'
-]
 
 _VERSION_REQ = ['5.9.0+']
 _VERSION_EXC = []
@@ -199,7 +176,6 @@ class Plan(object):
         connection (object): :class:`~vmtconnect.VMTConnection` object.
         spec (object, optional): :class:`PlanSpec` settings to apply to the market.
         market (str, optional): Base market UUID to apply the settings to.
-            (default: Market)
 
     Attributes:
         duration (int): Plan duration in seconds, or None if unavailable.
@@ -664,14 +640,14 @@ class PlanSpec(object):
                           'time']
     __market_options = ['ignore_constraints', 'plan_market_name']
 
-    def __init__(self, name, type=PlanType.CUSTOM, scope=None, entities=[], changes=None, **kwargs):
+    def __init__(self, name, type=PlanType.CUSTOM, scope=None, entities=None, changes=None, **kwargs):
         self.plan_name = name
         self.market_settings = self.__parse_options(self.__market_options, kwargs)
         self.scenario_settings = self.__parse_options(self.__scenario_options, kwargs)
-        self.entities = entities
+        self.entities = [] if entities is None else entities
         self.scope = scope
         self.type = type
-        self.changes = changes or []
+        self.changes = [] if changes is None else changes
 
     def __parse_options(self, fields, args):
         return {f: args[f] for f in fields if f in args}
