@@ -11,7 +11,7 @@
 # limitations under the License.
 # libraries
 
-from .vmtconnect import *
+from .vmtplanner import *
 from .__about__ import *
 
 __all__ = [
