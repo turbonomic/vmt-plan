@@ -1,3 +1,5 @@
+# Copyright 2017-2019 R.A. Stern
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -15,18 +17,29 @@ from .vmtplanner import *
 from .__about__ import *
 
 __all__ = [
-    'MarketError',
+    '__author__',
+    '__build__',
+    '__copyright__',
+    '__description__',
+    '__license__',
+    '__title__',
+    '__version__',
+    'AutomationSetting',
+    'CloudLicense',
+    'CloudOS',
+    'CloudTargetOS',
+    'EntityAction'
     'InvalidMarketError',
+    'MarketError',
+    'MarketState',
     'PlanError',
+    'PlanExecutionExceeded',
     'PlanRunning',
     'PlanRunFailure',
     'PlanDeprovisionError',
-    'PlanExecutionExceeded',
-    'MarketState',
-    'PlanSetting',
     'PlanType',
-    'ServerResponse',
     'Plan',
-    'PlanSpec'
+    'PlanSpec',
+    'ServerResponse',
 ]
 
