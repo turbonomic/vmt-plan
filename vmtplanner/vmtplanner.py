@@ -643,7 +643,7 @@ class Plan:
         Raises:
             InvalidMarketError: Attempting to delete system market
             InvalidMarketError: Market does not exist
-            PlanDeprovisionError
+            PlanDeprovisionError: Error removing the plan
         """
         if self.is_system():
             raise InvalidMarketError('Attempting to delete system market')
@@ -772,8 +772,8 @@ class PlanSpec:
 
         Args:
             id (str): Target entity UUID.
-            count (int, optional): Number of copies to add. (default: 1)
-            periods (list, optional): List of periods to add copies. (default: [0])
+            count (int, optional): Number of copies to add. (default: `1`)
+            periods (list, optional): List of periods to add copies. (default: `[0]`)
 
         See Also:
             See :ref:`plan_periods`.
@@ -808,7 +808,7 @@ class PlanSpec:
         Args:
             id (str): Target entity UUID.
             count (int, optional): Number of copies to add. (default: 1)
-            periods (list, optional): List of periods to add copies. (default: [0])
+            periods (list, optional): List of periods to add copies. (default: `[0]`)
 
         See Also:
             See :ref:`plan_periods`.
@@ -862,8 +862,8 @@ class PlanSpec:
         Args:
             action (:class:`EntityAction`): Change to effect on the entity.
             targets (list): List of entity or group UUIDs.
-            projection (list): List of days from today at which to make change. (default: [0])
-            count (int): Number of copies to add. (default: 1)
+            projection (list): List of days from today at which to make change. (default: `[0]`)
+            count (int): Number of copies to add. (default: `1`)
             new_target (str): Template UUID to replace ``target`` with. Destination
               group or host UUID for migrations.
 
@@ -908,7 +908,7 @@ class PlanSpec:
             targets (list): List of entity or group UUIDs.
             type (str, conditional): Commodity type to modify. (ignored in 6.1.0+)
             value (int): Utilization value as a positive integer 0 to 100.
-            projection (int, optional): Singular period in which to set the setting. (default: 0)
+            projection (int, optional): Singular period in which to set the setting. (default: `0`)
 
         Notes:
             This method provides backwards compatibility with previous versions of
@@ -984,7 +984,7 @@ class PlanSpec:
 
         Args:
             id (str): Target entity UUID.
-            periods (list, optional): List of periods to add copies. (default: [0])
+            periods (list, optional): List of periods to add copies. (default: `[0]`)
 
         See Also:
             See :ref:`plan_periods`.
@@ -1033,7 +1033,7 @@ class PlanSpec:
         Args:
             id (str): Target entity or group UUID to migrate.
             destination_id (str): Destination entity or group UUID.
-            period (int, optional): Period in which to migrate. (default: 0)
+            period (int, optional): Period in which to migrate. (default: `0`)
 
         See Also:
             See :ref:`plan_periods`.
@@ -1072,8 +1072,8 @@ class PlanSpec:
         Args:
             id (str): UUID of the entity to replace.
             replacement_id (str): Template UUID to use as a replacement.
-            count (int, optional): Number of copies to add. (default: 1)
-            periods (list, optional): List of periods to add copies. (default: [0])
+            count (int, optional): Number of copies to add. (default: `1`)
+            periods (list, optional): List of periods to add copies. (default: `[0]`)
 
         See Also:
             See :ref:`plan_periods`.
@@ -1151,7 +1151,7 @@ class PlanSpec:
 
         Args:
             targets (list): List of entity or group UUIDs.
-            append (bool, optional): If `True`, scope will be extended. (default: `False`)
+            append (bool, optional): If ``True``, scope will be extended. (default: ``False``)
         """
         if not targets:
             self.__scope = []

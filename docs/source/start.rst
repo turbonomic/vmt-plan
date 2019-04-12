@@ -8,8 +8,21 @@
 .. _vmt-connect: https://github.com/rastern/vmt-connect/
 .. _enum34: https://pypi.python.org/pypi/enum34
 .. _aenum: https://pypi.python.org/pypi/aenum/2.0.8
+.. _Apache 2.0: https://github.com/rastern/vmt-plan/blob/master/LICENSE
+.. _Turbonomic: http://www.turbonomic.com
 
-============
+===============
+Getting Started
+===============
+
+About
+=====
+
+*vmt-plan* is a companion library to `vmt-connect`_ for working with the `Turbonomic`_
+API. The core purpose of the library is to provide interfaces for constructing
+and running plans within Turbonomic.
+
+
 Installation
 ============
 
@@ -24,7 +37,7 @@ installed via pip. The package is not available on PyPi_ at this time.
 
 
 Requirements
-============
+------------
 
 In order to use *vmt-plan* you will need to be running a supported version of
 Python, and install the vmt-connect_ module.
@@ -43,7 +56,7 @@ Python, and install the vmt-connect_ module.
 
 
 Importing
-=========
+---------
 
 In the most basic case, you need to import the package.
 
@@ -57,19 +70,6 @@ However, you may find it more useful to alias the import
 
    import vmtplanner as vp
 
-Alternatively, you can manually update the internal import search path within
-your script to import vmt-connect from another location. For instance, if you
-created a folder in your project directory for local modules called `modules`,
-you could add the relative path for importing:
-
-.. code:: python
-
-   import os
-   import sys
-   sys.path.insert(0, os.path.abspath('./modules'))
-
-   import vmtplanner
-
 
 GitHub Source
 =============
@@ -79,3 +79,26 @@ The source code for *vmt-plan* is provided via a read-only GitHub repository_.
 Individual release archives may be found `here`__.
 
 __ releases_
+
+
+Contributors
+============
+
+Author:
+  * R.A. Stern
+
+Bug Fixes:
+  * Austin Portal
+
+Additional QA:
+  * Chris Sawtelle
+  * Ray Mileo
+
+
+License
+=======
+
+*vmt-plan* is distributed under the `Apache 2.0`_ software license, which may
+also be obtained from the Apache Software Foundation, http://www.apache.org/licenses/LICENSE-2.0
+
+vmt-plan is copyright 2017-2019  R.A. Stern

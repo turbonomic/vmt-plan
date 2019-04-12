@@ -2,6 +2,8 @@
 .. _API: https://cdn.turbonomic.com/wp-content/uploads/docs/VMT_REST2_API_PRINT.pdf
 .. _vmt-connect: https://github.com/rastern/vmt-connect/
 
+.. _plan_configuration:
+
 ===================
 Plan Configurations
 ===================

@@ -13,9 +13,9 @@ running plans using Turbonomic `API 2.0`_.
 
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
-   install
-   quickstart
+   start
+   userguide
    plan_configuration
    vmtplanner

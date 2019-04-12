@@ -51,18 +51,3 @@ Exceptions
 .. autoexception:: vmtplanner.PlanRunFailure
 .. autoexception:: vmtplanner.PlanDeprovisionError
 .. autoexception:: vmtplanner.PlanExecutionExceeded
-
-
-.. _scenario_param:
-
-.. include:: scenario_param.rst
-
-
-.. _market_param:
-
-.. include:: market_param.rst
-
-
-.. _plan_periods:
-
-.. include:: plan_periods.rst
