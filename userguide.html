@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>User Guide &#8212; vmt-plan 2.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Plan Configurations" href="plan_configuration.html" />
+    <link rel="prev" title="Getting Started" href="start.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="user-guide">
+<h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
+<p><em>vmt-plan</em> utilizes <a class="reference external" href="https://github.com/rastern/vmt-connect/">vmt-connect</a> for base communication with the <a class="reference external" href="http://www.turbonomic.com">Turbonomic</a> <a class="reference external" href="https://cdn.turbonomic.com/wp-content/uploads/docs/VMT_REST2_API_PRINT.pdf">API</a>,
+while providing additional planning capabilities.</p>
+<div class="section" id="creating-plans">
+<h2>Creating Plans<a class="headerlink" href="#creating-plans" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="basic-plans">
+<h3>Basic Plans<a class="headerlink" href="#basic-plans" title="Permalink to this headline">¶</a></h3>
+<p>Using the <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> class to connect to Turbonomic.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">vmtconnect</span> <span class="kn">as</span> <span class="nn">vc</span>
+<span class="kn">import</span> <span class="nn">vmtplanner</span> <span class="kn">as</span> <span class="nn">vp</span>
+
+<span class="n">vmt</span> <span class="o">=</span> <span class="n">vc</span><span class="o">.</span><span class="n">Connection</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s1">&#39;bob&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;*****&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With this we have a connection setup and ready to use. Now we can create a plan
+scenario. Here will will do a simple projection plan using two groups of VMs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scoping to two groups by UUID</span>
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;430e28cbaabf35522a180859d4160562d123ac78&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;e48fd3270917221d3e6290e1affead34b872e95b&#39;</span><span class="p">]</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;Custom Scenario&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">CUSTOM</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="c1"># add 5 copies of a VM immediately</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">ADD</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1341c28a-c9b7-46a5-ab25-321260482a91&#39;</span><span class="p">],</span>
+                       <span class="n">projection</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                       <span class="n">count</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># add 1 copy each month for 3 months, starting next month</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">ADD</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1341c28a-c9b7-46a5-ab25-321260482a91&#39;</span><span class="p">],</span>
+                       <span class="n">projection</span><span class="o">=</span><span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span>
+                       <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With the scenario created, and VMs added, we can initialize the market and run
+the plan using our connection in the first example.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plan</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">Plan</span><span class="p">(</span><span class="n">vmt</span><span class="p">,</span> <span class="n">scenario</span><span class="p">)</span>
+<span class="n">plan</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>When the plan is finished, we can retrieve the stats for the market plan we ran.
+Plan results will be listed for each period the plan ran, with a minimum of one
+period.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">plan</span><span class="o">.</span><span class="n">is_complete</span><span class="p">():</span>
+    <span class="n">plan</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="advanced-plans">
+<h3>Advanced Plans<a class="headerlink" href="#advanced-plans" title="Permalink to this headline">¶</a></h3>
+<p>The plan engine is capable of complex multi-stage plans. For instance, you may
+want to see what happens when you let Turbonomic fully control your environment
+before making new VM placements, and compare it against simply adding the VMs
+in the current environment. Multi-staged plans are also called plan-on-plan
+projections because we are running a plan on top of the results of a previous
+plan.</p>
+<p>Let’s say we want to simulate merging two clusters before adding workload. First
+we need to deal with the clusters and let Turbonomic sort out the environment.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scoping to two clusters by UUID</span>
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;430e28cbaabf35522a180859d4160562d123ac78&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;e48fd3270917221d3e6290e1affead34b872e95b&#39;</span><span class="p">]</span>
+
+<span class="n">cluster_merge</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Custom Scenario&#39;</span><span class="p">,</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">CUSTOM</span><span class="p">,</span>
+                            <span class="n">scope</span><span class="o">=</span><span class="n">scope</span><span class="p">)</span>
+
+<span class="n">cluster_merge</span><span class="o">.</span><span class="n">change_automation_setting</span><span class="p">(</span><span class="n">vp</span><span class="o">.</span><span class="n">AutomationSetting</span><span class="o">.</span><span class="n">SUSPEND_PM</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">cluster_merge</span><span class="o">.</span><span class="n">change_automation_setting</span><span class="p">(</span><span class="n">vp</span><span class="o">.</span><span class="n">AutomationSetting</span><span class="o">.</span><span class="n">SUSPEND_DS</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">cluster_merge</span><span class="o">.</span><span class="n">change_auotmation_setting</span><span class="p">(</span><span class="n">vp</span><span class="o">.</span><span class="n">AutomationSetting</span><span class="o">.</span><span class="n">RESIZE</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+
+<span class="n">stage1</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">Plan</span><span class="p">(</span><span class="n">vmt</span><span class="p">,</span> <span class="n">cluster_merge</span><span class="p">)</span>
+<span class="n">stage1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>After the plan finishes, we can utilize the first stage market as the input to
+the next stage, into which we will add our new workload.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># new scenario called add_workload</span>
+<span class="n">add_workload</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;custom scenario&#39;</span><span class="p">,</span>
+                           <span class="nb">type</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">CUSTOM</span><span class="p">)</span>
+
+<span class="c1"># add 10 copies of a VM immediately</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">ADD</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1341c28a-c9b7-46a5-ab25-321260482a91&#39;</span><span class="p">],</span>
+                       <span class="n">projection</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                       <span class="n">count</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">stage2</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">Plan</span><span class="p">(</span><span class="n">vmt</span><span class="p">,</span> <span class="n">add_workload</span><span class="p">,</span>
+                 <span class="n">market</span><span class="o">=</span><span class="n">stage1</span><span class="o">.</span><span class="n">market_id</span><span class="p">)</span>
+<span class="n">stage2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In this case we did not need to re-scope the second plan because the results
+market from stage1 already contains only the clusters we want, and we want
+everything in the results market. You’ll note when creating the <a class="reference internal" href="vmtplanner.html#vmtplanner.Plan" title="vmtplanner.Plan"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plan</span></code></a>
+we specify we are using a market other than the default one by passing in the
+market uuid from <cite>stage1</cite>.</p>
+</div>
+<div class="section" id="addtional-information">
+<h3>Addtional Information<a class="headerlink" href="#addtional-information" title="Permalink to this headline">¶</a></h3>
+<p>Additional information on supported plan types and their requirements, as well
+as examples, is provided in the <a class="reference internal" href="plan_configuration.html#plan-configuration"><span class="std std-ref">Plan Configurations</span></a> section.</p>
+</div>
+</div>
+<div class="section" id="scenario-parameters">
+<span id="id1"></span><h2>Scenario Parameters<a class="headerlink" href="#scenario-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Turbonomic now accepts these parameters as part of the base DTO, and the use of GET parameters
+has been deprecated within vmt-plan. As of version 2.0.0 you must make use of <code class="xref py py-class docutils literal notranslate"><span class="pre">AutomationSetting</span></code>
+in conjunction with <code class="xref py py-meth docutils literal notranslate"><span class="pre">PlanSpec.change_automation_setting()</span></code>.</p>
+</div>
+<div class="section" id="market-parameters">
+<span id="id2"></span><h2>Market Parameters<a class="headerlink" href="#market-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Market parameters are now handled transplarently by the <code class="xref py py-class docutils literal notranslate"><span class="pre">PlanSpec</span></code> class.</p>
+</div>
+<div class="section" id="plan-periods">
+<span id="id3"></span><h2>Plan Periods<a class="headerlink" href="#plan-periods" title="Permalink to this headline">¶</a></h2>
+<p>Most settings within a plan include either a single integer <code class="docutils literal notranslate"><span class="pre">projectionDay</span></code>
+or list of integer values as <code class="docutils literal notranslate"><span class="pre">projectionDays</span></code> for which the setting is to be
+applied. Legacy methods and compatibility aliases may refer to this value as
+either <code class="docutils literal notranslate"><span class="pre">period</span></code> or <code class="docutils literal notranslate"><span class="pre">periods</span></code> in the parameters, for backwards compatibilty
+reasons.</p>
+<p>In all cases the purpose is the same. Turbonomic applies the specific plan
+setting at the given number of days counted from today. If the setting accepts a
+list, then it is applied at each given date calculated as days from today. The
+easiest to understand example is when adding a specific workload at a regular
+interval. For instance, if you wanted to add 1 VM per month, for 6 months, you
+would have <code class="docutils literal notranslate"><span class="pre">projectionDays</span></code> as follows: <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">30,</span> <span class="pre">60,</span> <span class="pre">90,</span> <span class="pre">120,</span> <span class="pre">180]</span></code>. Lists of
+periods are most appropirate to workload changes in the plan, whereas most other
+settings accept only a single value as to when the setting takes place; for
+which you will nearly always use the value <code class="docutils literal notranslate"><span class="pre">0</span></code> to have the setting take effect
+immediately.</p>
+<p>Changing settings at a future date, for which all workload changes occure before
+the setting change is undocumented behavior and should be avoided. Toggling or
+otherwise changing a non-workload setting multiple times within a plan, at
+different periods is also undocumented behavior, and should be avoided. When
+in doubt all settings other than workload changes should be set at period <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+</div>
+<div class="section" id="deprecated-interfaces">
+<span id="deprecated"></span><h2>Deprecated Interfaces<a class="headerlink" href="#deprecated-interfaces" title="Permalink to this headline">¶</a></h2>
+<p>With the release of version 2.0 several interfaces have been deprecated. Most
+notably, the management of entities is moved entirely to <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanSpec.change_entity" title="vmtplanner.PlanSpec.change_entity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">change_entity()</span></code></a>.
+Additionally, the spec initialization no longer supports automation settings
+passed in as parameters. In most cases, the previous methods are maintained as
+aliases to their replacements, and fully support the original parameters including
+if using keyword assignment. Automation settings, however, must be set utilizing
+the new <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanSpec.change_automation_setting" title="vmtplanner.PlanSpec.change_automation_setting"><code class="xref py py-meth docutils literal notranslate"><span class="pre">change_automation_setting()</span></code></a> method.</p>
+<p>To illustrate, the first plan example from above could still be run in the
+previous manner as shown below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scoping to two groups by UUID</span>
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;430e28cbaabf35522a180859d4160562d123ac78&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;e48fd3270917221d3e6290e1affead34b872e95b&#39;</span><span class="p">]</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;custom scenario&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">CUSTOM</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="c1"># add 5 copies of a VM immediately</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span><span class="s1">&#39;1341c28a-c9b7-46a5-ab25-321260482a91&#39;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="c1"># add 1 copy each month for 2 months</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span><span class="s1">&#39;1341c28a-c9b7-46a5-ab25-321260482a91&#39;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>While using deprecated methods is provided for convenience, you are strongly
+encouraged to update to the newer interfaces as soon as possible. Deprecated
+interfaces will throw warnings, and will be removed completely in a future release.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#creating-plans">Creating Plans</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scenario-parameters">Scenario Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#market-parameters">Market Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plan-periods">Plan Periods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deprecated-interfaces">Deprecated Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plan_configuration.html">Plan Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vmtplanner.html">vmtplanner — Developer Interfaces</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="start.html" title="previous chapter">Getting Started</a></li>
+      <li>Next: <a href="plan_configuration.html" title="next chapter">Plan Configurations</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017-2019, R.A. Stern.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/userguide.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

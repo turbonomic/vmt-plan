@@ -1,69 +1,73 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>vmt-plan Documentation Contents &#8212; vmt-plan 1.3.0 documentation</title>
+    <meta charset="utf-8" />
+    <title>vmt-plan Documentation Contents &#8212; vmt-plan 2.0.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.3.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation" href="install.html" />
+    <link rel="next" title="Getting Started" href="start.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="vmt-plan-documentation-contents">
 <h1>vmt-plan Documentation Contents<a class="headerlink" href="#vmt-plan-documentation-contents" title="Permalink to this headline">¶</a></h1>
-<p>vmt-plan encompases a single Python module called <code class="docutils literal"><span class="pre">vmtplanner</span></code>. This module
-provides a set of wrapper classes and utility methods used to handle running
-plans using Turbonomic <a class="reference external" href="https://cdn.turbonomic.com/wp-content/uploads/docs/VMT_REST2_API_PRINT.pdf">API 2.0</a>.</p>
+<p><em>vmt-plan</em> provides a set of wrapper classes and utility methods used to handle
+running plans using Turbonomic <a class="reference external" href="https://cdn.turbonomic.com/wp-content/uploads/docs/VMT_REST2_API_PRINT.pdf">API 2.0</a>.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#importing">Importing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#github-source">GitHub Source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="start.html#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start.html#github-source">GitHub Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start.html#contributors">Contributors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start.html#license">License</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="quickstart.html#getting-connected">Getting Connected</a></li>
-<li class="toctree-l2"><a class="reference internal" href="quickstart.html#complex-plans">Complex Plans</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userguide.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userguide.html#creating-plans">Creating Plans</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userguide.html#scenario-parameters">Scenario Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userguide.html#market-parameters">Market Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userguide.html#plan-periods">Plan Periods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userguide.html#deprecated-interfaces">Deprecated Interfaces</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="vmtplanner.html"><code class="docutils literal"><span class="pre">vmtplanner</span></code> — Developer Interfaces</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="plan_configuration.html">Plan Configurations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#add-workload">Add Workload</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#decommission-hosts">Decommission Hosts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#hardware-refresh">Hardware Refresh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#migrate-to-public-cloud">Migrate to Public Cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#optimize-cloud">Optimize Cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#on-prem-workload-migration">On-Prem Workload Migration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#alleviate-pressure">Alleviate Pressure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#custom">Custom</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vmtplanner.html">vmtplanner — Developer Interfaces</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="vmtplanner.html#enumerations">Enumerations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vmtplanner.html#classes">Classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vmtplanner.html#exceptions">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vmtplanner.html#scenario-parameters">Scenario Parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vmtplanner.html#market-parameters">Market Parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vmtplanner.html#entity-specification">Entity Specification</a></li>
 </ul>
 </li>
 </ul>
@@ -72,32 +76,34 @@ plans using Turbonomic <a class="reference external" href="https://cdn.turbonomi
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper"><h3>Navigation</h3>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vmtplanner.html"><code class="docutils literal"><span class="pre">vmtplanner</span></code> — Developer Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userguide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plan_configuration.html">Plan Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vmtplanner.html">vmtplanner — Developer Interfaces</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="install.html" title="next chapter">Installation</a></li>
+      <li>Next: <a href="start.html" title="next chapter">Getting Started</a></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -108,8 +114,8 @@ plans using Turbonomic <a class="reference external" href="https://cdn.turbonomi
       &copy;2017-2019, R.A. Stern.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/index.rst.txt"

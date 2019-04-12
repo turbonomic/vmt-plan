@@ -1,27 +1,18 @@
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Index &#8212; vmt-plan 1.3.0 documentation</title>
+    <meta charset="utf-8" />
+    <title>Index &#8212; vmt-plan 2.0.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.3.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
    
@@ -30,13 +21,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
 
@@ -50,6 +42,7 @@
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
@@ -67,17 +60,23 @@
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.abort_timeout">abort_timeout (vmtplanner.PlanSpec attribute)</a>
 </li>
-      <li><a href="vmtplanner.html#vmtplanner.PlanSetting.ADD">ADD (vmtplanner.PlanSetting attribute)</a>
+      <li><a href="vmtplanner.html#vmtplanner.EntityAction.ADD">ADD (vmtplanner.EntityAction attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.add_entity">add_entity() (vmtplanner.PlanSpec method)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.add_hist">add_hist() (vmtplanner.PlanSpec method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.add_historical">add_historical() (vmtplanner.PlanSpec method)</a>
+</li>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.add_template">add_template() (vmtplanner.PlanSpec method)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanType.ADD_WORKLOAD">ADD_WORKLOAD (vmtplanner.PlanType attribute)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.PlanType.ALLEVIATE_PRESSURE">ALLEVIATE_PRESSURE (vmtplanner.PlanType attribute)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.AutomationSetting">AutomationSetting (class in vmtplanner)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -85,12 +84,22 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.change_constraint">change_constraint() (vmtplanner.PlanSpec method)</a>
+      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.change_automation_setting">change_automation_setting() (vmtplanner.PlanSpec method)</a>
 </li>
-      <li><a href="vmtplanner.html#vmtplanner.PlanType.CLOUD_MIGRATION">CLOUD_MIGRATION (vmtplanner.PlanType attribute)</a>
+      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.change_entity">change_entity() (vmtplanner.PlanSpec method)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.change_max_utilization">change_max_utilization() (vmtplanner.PlanSpec method)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.change_utilization">change_utilization() (vmtplanner.PlanSpec method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="vmtplanner.html#vmtplanner.PlanType.CLOUD_MIGRATION">CLOUD_MIGRATION (vmtplanner.PlanType attribute)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.cloud_os_profile">cloud_os_profile() (vmtplanner.PlanSpec method)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.CloudOS">CloudOS (class in vmtplanner)</a>
+</li>
       <li><a href="vmtplanner.html#vmtplanner.MarketState.COPYING">COPYING (vmtplanner.MarketState attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanType.CUSTOM">CUSTOM (vmtplanner.PlanType attribute)</a>
@@ -103,8 +112,6 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.PlanType.DECOMMISSION_HOST">DECOMMISSION_HOST (vmtplanner.PlanType attribute)</a>
 </li>
-      <li><a href="vmtplanner.html#vmtplanner.PlanSetting.DELETE">DELETE (vmtplanner.PlanSetting attribute)</a>
-</li>
       <li><a href="vmtplanner.html#vmtplanner.Plan.delete">delete() (vmtplanner.Plan method)</a>
 </li>
   </ul></td>
@@ -112,8 +119,6 @@
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.delete_entity">delete_entity() (vmtplanner.PlanSpec method)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.MarketState.DELETING">DELETING (vmtplanner.MarketState attribute)</a>
-</li>
-      <li><a href="vmtplanner.html#vmtplanner.PlanSetting.DISABLED">DISABLED (vmtplanner.PlanSetting attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.Plan.duration">duration (vmtplanner.Plan attribute)</a>
 </li>
@@ -123,7 +128,7 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="vmtplanner.html#vmtplanner.PlanSetting.ENABLED">ENABLED (vmtplanner.PlanSetting attribute)</a>
+      <li><a href="vmtplanner.html#vmtplanner.EntityAction">EntityAction (class in vmtplanner)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -135,12 +140,8 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="vmtplanner.html#vmtplanner.PlanSetting.FALSE">FALSE (vmtplanner.PlanSetting attribute)</a>
-
-      <ul>
-        <li><a href="vmtplanner.html#vmtplanner.ServerResponse.FALSE">(vmtplanner.ServerResponse attribute)</a>
+      <li><a href="vmtplanner.html#vmtplanner.ServerResponse.FALSE">FALSE (vmtplanner.ServerResponse attribute)</a>
 </li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -182,6 +183,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="vmtplanner.html#vmtplanner.CloudOS.LINUX">LINUX (vmtplanner.CloudOS attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -197,7 +206,7 @@
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.max_retry">max_retry (vmtplanner.PlanSpec attribute)</a>
 </li>
-      <li><a href="vmtplanner.html#vmtplanner.PlanSetting.MIGRATE">MIGRATE (vmtplanner.PlanSetting attribute)</a>
+      <li><a href="vmtplanner.html#vmtplanner.EntityAction.MIGRATE">MIGRATE (vmtplanner.EntityAction attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.migrate_entity">migrate_entity() (vmtplanner.PlanSpec method)</a>
 </li>
@@ -217,12 +226,10 @@
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanRunFailure">PlanRunFailure</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.PlanRunning">PlanRunning</a>
 </li>
-      <li><a href="vmtplanner.html#vmtplanner.PlanSetting">PlanSetting (class in vmtplanner)</a>
-</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec">PlanSpec (class in vmtplanner)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanType">PlanType (class in vmtplanner)</a>
@@ -230,6 +237,10 @@
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.poll_freq">poll_freq (vmtplanner.PlanSpec attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanType.PROJECTION">PROJECTION (vmtplanner.PlanType attribute)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.AutomationSetting.PROVISION_DS">PROVISION_DS (vmtplanner.AutomationSetting attribute)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.AutomationSetting.PROVISION_PM">PROVISION_PM (vmtplanner.AutomationSetting attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -241,13 +252,21 @@
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanType.RECONFIGURE_HARDWARE">RECONFIGURE_HARDWARE (vmtplanner.PlanType attribute)</a>
 </li>
-      <li><a href="vmtplanner.html#vmtplanner.PlanSetting.REPLACE">REPLACE (vmtplanner.PlanSetting attribute)</a>
+      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.relieve_pressure">relieve_pressure() (vmtplanner.PlanSpec method)</a>
 </li>
-      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.replace_entity">replace_entity() (vmtplanner.PlanSpec method)</a>
+      <li><a href="vmtplanner.html#vmtplanner.EntityAction.REMOVE">REMOVE (vmtplanner.EntityAction attribute)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.remove_constraints">remove_constraints() (vmtplanner.PlanSpec method)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.EntityAction.REPLACE">REPLACE (vmtplanner.EntityAction attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="vmtplanner.html#vmtplanner.PlanSetting.RUN">RUN (vmtplanner.PlanSetting attribute)</a>
+      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.replace_entity">replace_entity() (vmtplanner.PlanSpec method)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.AutomationSetting.RESIZE">RESIZE (vmtplanner.AutomationSetting attribute)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.CloudOS.RHEL">RHEL (vmtplanner.CloudOS attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.Plan.run">run() (vmtplanner.Plan method)</a>
 </li>
@@ -275,9 +294,13 @@
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.set_hist_baseline">set_hist_baseline() (vmtplanner.PlanSpec method)</a>
 </li>
+      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.set_historical_baseline">set_historical_baseline() (vmtplanner.PlanSpec method)</a>
+</li>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.set_max_utilization">set_max_utilization() (vmtplanner.PlanSpec method)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.set_peak_baseline">set_peak_baseline() (vmtplanner.PlanSpec method)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.set_scope">set_scope() (vmtplanner.PlanSpec method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -285,11 +308,11 @@
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.set_utilization">set_utilization() (vmtplanner.PlanSpec method)</a>
 </li>
+      <li><a href="vmtplanner.html#vmtplanner.CloudOS.SLES">SLES (vmtplanner.CloudOS attribute)</a>
+</li>
       <li><a href="vmtplanner.html#vmtplanner.Plan.start">start (vmtplanner.Plan attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.Plan.state">state (vmtplanner.Plan attribute)</a>
-</li>
-      <li><a href="vmtplanner.html#vmtplanner.PlanSetting.STOP">STOP (vmtplanner.PlanSetting attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.Plan.stop">stop() (vmtplanner.Plan method)</a>
 </li>
@@ -299,22 +322,28 @@
 </li>
       <li><a href="vmtplanner.html#vmtplanner.ServerResponse.SUCCESS">SUCCESS (vmtplanner.ServerResponse attribute)</a>
 </li>
+      <li><a href="vmtplanner.html#vmtplanner.CloudOS.SUSE">SUSE (vmtplanner.CloudOS attribute)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.AutomationSetting.SUSPEND_DS">SUSPEND_DS (vmtplanner.AutomationSetting attribute)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.AutomationSetting.SUSPEND_PM">SUSPEND_PM (vmtplanner.AutomationSetting attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="vmtplanner.html#vmtplanner.AutomationSetting.TARGET_BAND">TARGET_BAND (vmtplanner.AutomationSetting attribute)</a>
+</li>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.timeout">timeout (vmtplanner.PlanSpec attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="vmtplanner.html#vmtplanner.PlanSetting.TRUE">TRUE (vmtplanner.PlanSetting attribute)</a>
-
-      <ul>
-        <li><a href="vmtplanner.html#vmtplanner.ServerResponse.TRUE">(vmtplanner.ServerResponse attribute)</a>
+      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.to_json">to_json() (vmtplanner.PlanSpec method)</a>
 </li>
-      </ul></li>
+      <li><a href="vmtplanner.html#vmtplanner.ServerResponse.TRUE">TRUE (vmtplanner.ServerResponse attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -326,6 +355,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.MarketState.USER_STOPPED">USER_STOPPED (vmtplanner.MarketState attribute)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.AutomationSetting.UTIL_TARGET">UTIL_TARGET (vmtplanner.AutomationSetting attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -341,6 +372,10 @@
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="vmtplanner.html#vmtplanner.CloudOS.WINDOWS">WINDOWS (vmtplanner.CloudOS attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.PlanType.WORKLOAD_MIGRATION">WORKLOAD_MIGRATION (vmtplanner.PlanType attribute)</a>
 </li>
   </ul></td>
@@ -349,14 +384,16 @@
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper"><h3>Navigation</h3>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vmtplanner.html"><code class="docutils literal"><span class="pre">vmtplanner</span></code> — Developer Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userguide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plan_configuration.html">Plan Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vmtplanner.html">vmtplanner — Developer Interfaces</a></li>
 </ul>
 
 <div class="relations">
@@ -368,12 +405,12 @@
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -384,8 +421,8 @@
       &copy;2017-2019, R.A. Stern.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 
