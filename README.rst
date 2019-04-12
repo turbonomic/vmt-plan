@@ -1,4 +1,4 @@
-.. _installation: https://rastern.github.io/vmt-plan/install.html
+.. _installation: https://rastern.github.io/vmt-plan/start.html#install
 .. _vmt-connect: https://github.com/rastern/vmt-connect
 
 vmt-plan: Turbonomic API plan engine
