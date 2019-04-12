@@ -1,0 +1,502 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Plan Configurations &#8212; vmt-plan 2.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="vmtplanner — Developer Interfaces" href="vmtplanner.html" />
+    <link rel="prev" title="User Guide" href="userguide.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="plan-configurations">
+<span id="plan-configuration"></span><h1>Plan Configurations<a class="headerlink" href="#plan-configurations" title="Permalink to this headline">¶</a></h1>
+<p><em>vmt-plan</em> provides the necessary interfaces to the Turbonomic API required to
+setup and run any of the supported plan types in Turbonomic. For some plan
+types, Turbonomic provides a UI wizard that simplifies establishing the plan
+parameters, prior to running the plan itself. <em>vmt-plan</em> does not perform plan
+type validation, therefore, it is up to the developer to ensure that the required
+parameters for the given <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType" title="vmtplanner.PlanType"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType</span></code></a> are established.</p>
+<p>Although Turbonomic, Inc. does not provide detailed developer documentation
+for the API, the reference given below for each plan type should cover most
+use cases required. This is unfortunately not meant to be exhaustive, and if
+in doubt, the recommended course of action is to first create the plan in the
+UI to ensure it is valid.</p>
+<p>In the examples below, all assume you have established a connection and stored
+it in an object called <code class="docutils literal notranslate"><span class="pre">vmt</span></code>, as well as imported <code class="docutils literal notranslate"><span class="pre">vmtplanner</span></code> under the
+name <code class="docutils literal notranslate"><span class="pre">vp</span></code> as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">vmtplanner</span> <span class="kn">as</span> <span class="nn">vp</span>
+</pre></div>
+</div>
+<div class="section" id="add-workload">
+<h2>Add Workload<a class="headerlink" href="#add-workload" title="Permalink to this headline">¶</a></h2>
+<p>Add Workload plans run a simple simulation of additional workload being added
+into the environment at a given time. The workload can be an existing entity,
+which will be copied, a group of entities, or a template.</p>
+<div class="section" id="description">
+<h3>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h3>
+<p>Turbonomic describes the plan as follows:</p>
+<blockquote>
+<div><p>See whether you can add more workload without provisioning more hosts or datastores.</p>
+</div></blockquote>
+</div>
+<div class="section" id="requirements">
+<h3>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Plan Type: <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType.ADD_WORKLOAD" title="vmtplanner.PlanType.ADD_WORKLOAD"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.ADD_WORKLOAD</span></code></a></p></li>
+<li><p>Addition of one or more new workloads</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scoping to &#39;real-time&#39; market</span>
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Market&#39;</span><span class="p">]</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;Add Workload&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">ADD_WORKLOAD</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="c1"># add copies of a VM immediately</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">ADD</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1341c28a-c9b7-46a5-ab25-321260482a91&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="decommission-hosts">
+<h2>Decommission Hosts<a class="headerlink" href="#decommission-hosts" title="Permalink to this headline">¶</a></h2>
+<p>In order to simulate the effect from removing one or more hosts on an existing
+environment, without altering hardware, you can run a Decommission Hosts plan.</p>
+<div class="section" id="id1">
+<h3>Description<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Turbonomic describes the plan as follows:</p>
+<blockquote>
+<div><p>See whether you can remove hosts from the environment and still assure performance for your workload. This shows whether your environment is overprovisioned, and how many hosts you can remove.</p>
+</div></blockquote>
+</div>
+<div class="section" id="id2">
+<h3>Requirements<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Plan Type: <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType.DECOMMISSION_HOST" title="vmtplanner.PlanType.DECOMMISSION_HOST"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.DECOMMISSION_HOST</span></code></a></p></li>
+<li><p>Removal of one or more host entities</p></li>
+<li><p>Disabling host provisioning</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="id3">
+<h3>Example<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scoping to &#39;real-time&#39; market</span>
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Market&#39;</span><span class="p">]</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;Decommission Hosts&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">DECOMMISSION_HOST</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="c1"># remove hosts</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">REMOVE</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;4238a9ea-0c49-31dd-7a7e-87fdab53c974&#39;</span><span class="p">])</span>
+
+<span class="c1"># disable host provisioning</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_automation_setting</span><span class="p">(</span><span class="n">vp</span><span class="o">.</span><span class="n">AutomationSetting</span><span class="o">.</span><span class="n">PROVISION_PM</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="hardware-refresh">
+<h2>Hardware Refresh<a class="headerlink" href="#hardware-refresh" title="Permalink to this headline">¶</a></h2>
+<p>Running a Hardware Refresh plan simulates upgrading or altering the underlying
+host and storage entities in the environment. This is most commonly run in
+anticipation of replacing host or storage hardware with newer models.</p>
+<div class="section" id="id4">
+<h3>Description<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>Turbonomic describes the plan as follows:</p>
+<blockquote>
+<div><p>View the effect on your environment when you reconfigure your hosts and storage devices.</p>
+</div></blockquote>
+</div>
+<div class="section" id="id5">
+<h3>Requirements<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Plan Type: <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType.RECONFIGURE_HARDWARE" title="vmtplanner.PlanType.RECONFIGURE_HARDWARE"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.RECONFIGURE_HARDWARE</span></code></a></p></li>
+<li><p>One or more entity replacements</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="id6">
+<h3>Example<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scoping to &#39;real-time&#39; market</span>
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Market&#39;</span><span class="p">]</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;Reconfigure Hardware&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">RECONFIGURE_HARDWARE</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="c1"># replace hosts</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">REPLACE</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;4238a9ea-0c49-31dd-7a7e-87fdab53c974&#39;</span><span class="p">,</span> <span class="s1">&#39;34313133-3630-4d58-5138-333941325459&#39;</span><span class="p">],</span>
+                       <span class="n">new_target</span><span class="o">=</span><span class="s1">&#39;_v0Q70spiEd-hypXfJzX8Wg&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="migrate-to-public-cloud">
+<h2>Migrate to Public Cloud<a class="headerlink" href="#migrate-to-public-cloud" title="Permalink to this headline">¶</a></h2>
+<p>Cloud Migration plans provide cost based analysis for running existing workloads
+in one of the supported cloud infrastructure providers. The destination details
+may be tailored to the desired analysis to be performed, such as permitting
+migration to any available provider, specifying a specific provider, or narrowing
+down to a region within a provider.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>In order for the cost analysis to isolate only the workload being migrated,
+the plan must be set to ignore all existing workloads by removing them from
+the simulation.</p>
+</div>
+<p>In the first example, the catch-all group “All Cloud Zones” is used to allow
+Turbonomic to select the cloud provider. In the second example, AWS is selected
+explicitly, and in the third example a region is used to narrow the migration
+further. Additional options such as OS migration mapping may also be used, as
+in the fourth example.</p>
+<div class="section" id="id7">
+<h3>Description<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<p>Turbonomic describes the plan as follows:</p>
+<blockquote>
+<div><p>Calculate the cost to run your workload on a public cloud provider.</p>
+</div></blockquote>
+</div>
+<div class="section" id="id8">
+<h3>Requirements<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Plan Type: <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType.CLOUD_MIGRATION" title="vmtplanner.PlanType.CLOUD_MIGRATION"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.CLOUD_MIGRATION</span></code></a></p></li>
+<li><p>One or more entity migrations</p></li>
+<li><p>Remove all workloads in all cloud zones</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="example-1">
+<h3>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This plan setup may take excessively long to run. You should always use the
+most narrow scope possible for Cloud Migration plans.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scope to the entities we&#39;re working with</span>
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_yrLMoFY9EemGOqc0YaqTpg&#39;</span><span class="p">,</span> <span class="s1">&#39;_lRrTYB--EeewItqBJctLGw&#39;</span><span class="p">]</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;Migrate to Cloud&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">CLOUD_MIGRATION</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="c1"># migrate entities in a group</span>
+<span class="c1"># &#39;_lRrTYB--EeewItqBJctLGw&#39; is the system group &quot;All Cloud Zones&quot;</span>
+<span class="c1"># the UUID may change between versions</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">MIGRATE</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;_yrLMoFY9EemGOqc0YaqTpg&#39;</span><span class="p">],</span>
+                       <span class="n">new_target</span><span class="o">=</span><span class="s1">&#39;_lRrTYB--EeewItqBJctLGw&#39;</span><span class="p">)</span>
+
+<span class="c1"># remove all existing workloads</span>
+<span class="c1"># &#39;_nJUm4FvLEemGOqc0YaqTpg&#39; is the system group &quot;All VMs In All Cloud Zones&quot;</span>
+<span class="c1"># the UUID may change between versions</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">REMOVE</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;_nJUm4FvLEemGOqc0YaqTpg&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-2">
+<h3>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scope to the entities we&#39;re working with</span>
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_yrLMoFY9EemGOqc0YaqTpg&#39;</span><span class="p">,</span> <span class="s1">&#39;GROUP-PMsByTargetType_AWS&#39;</span><span class="p">]</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;Migrate to Cloud&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">CLOUD_MIGRATION</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="c1"># migrate entities in a group</span>
+<span class="c1"># &#39;GROUP-PMsByTargetType_AWS&#39; is the system generated group &quot;PMs_AWS&quot;</span>
+<span class="c1"># the UUID may change between versions</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">MIGRATE</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;_yrLMoFY9EemGOqc0YaqTpg&#39;</span><span class="p">],</span>
+                       <span class="n">new_target</span><span class="o">=</span><span class="s1">&#39;GROUP-PMsByTargetType_AWS&#39;</span><span class="p">)</span>
+
+<span class="c1"># remove all existing workloads</span>
+<span class="c1"># &#39;_MNqUoFxuEemz8-rKgfgVNQ&#39; is the system generated group &quot;All VMs In PMs_AWS&quot;</span>
+<span class="c1"># the UUID may change between versions</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">REMOVE</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;_MNqUoFxuEemz8-rKgfgVNQ&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-3">
+<h3>Example 3<a class="headerlink" href="#example-3" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scope to the entities we&#39;re working with</span>
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_yrLMoFY9EemGOqc0YaqTpg&#39;</span><span class="p">,</span> <span class="s1">&#39;709593f226ce7055eddc39f753103ef891268769&#39;</span><span class="p">]</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;Migrate to Cloud&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">CLOUD_MIGRATION</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="c1"># migrate entities in a group</span>
+<span class="c1"># &#39;709593f226ce7055eddc39f753103ef891268769&#39; is the system generated group</span>
+<span class="c1"># &quot;PMs_aws-US East (N. Virginia)&quot;</span>
+<span class="c1"># the UUID may be different for you</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">MIGRATE</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;_yrLMoFY9EemGOqc0YaqTpg&#39;</span><span class="p">],</span>
+                       <span class="n">new_target</span><span class="o">=</span><span class="s1">&#39;709593f226ce7055eddc39f753103ef891268769&#39;</span><span class="p">)</span>
+
+<span class="c1"># remove all existing workloads</span>
+<span class="c1"># &#39;_pD8jcFxuEemz8-rKgfgVNQ&#39; is the system generated group</span>
+<span class="c1"># &quot;All VMs In PMs_aws-US East (N. Virginia)&quot;</span>
+<span class="c1"># the UUID may be different for you</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">REMOVE</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;_pD8jcFxuEemz8-rKgfgVNQ&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-4">
+<h3>Example 4<a class="headerlink" href="#example-4" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scope to the entities we&#39;re working with</span>
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_yrLMoFY9EemGOqc0YaqTpg&#39;</span><span class="p">,</span> <span class="s1">&#39;709593f226ce7055eddc39f753103ef891268769&#39;</span><span class="p">]</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;Migrate to Cloud&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">CLOUD_MIGRATION</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="c1"># migrate entities in a group</span>
+<span class="c1"># &#39;709593f226ce7055eddc39f753103ef891268769&#39; is the system generated group</span>
+<span class="c1"># &quot;PMs_aws-US East (N. Virginia)&quot;</span>
+<span class="c1"># the UUID may be different for you</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">MIGRATE</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;_yrLMoFY9EemGOqc0YaqTpg&#39;</span><span class="p">],</span>
+                       <span class="n">new_target</span><span class="o">=</span><span class="s1">&#39;709593f226ce7055eddc39f753103ef891268769&#39;</span><span class="p">)</span>
+
+<span class="c1"># remove all existing workloads</span>
+<span class="c1"># &#39;_pD8jcFxuEemz8-rKgfgVNQ&#39; is the system generated group</span>
+<span class="c1"># &quot;All VMs In PMs_aws-US East (N. Virginia)&quot;</span>
+<span class="c1"># the UUID may be different for you</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">REMOVE</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;_pD8jcFxuEemz8-rKgfgVNQ&#39;</span><span class="p">])</span>
+
+<span class="c1"># set source RHEL and SUSE OSes to generic Linux at destination</span>
+<span class="n">cloud_os_profile</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">CloudOS</span><span class="o">.</span><span class="n">RHEL</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">CloudOS</span><span class="o">.</span><span class="n">Linux</span><span class="p">,</span> <span class="n">unlicensed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">cloud_os_profile</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">CloudOS</span><span class="o">.</span><span class="n">SUSE</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">CloudOS</span><span class="o">.</span><span class="n">Linux</span><span class="p">,</span> <span class="n">unlicensed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="optimize-cloud">
+<h2>Optimize Cloud<a class="headerlink" href="#optimize-cloud" title="Permalink to this headline">¶</a></h2>
+<p>An Optimize Cloud plan will analyze the targeted cloud environment, usually a
+region, for the most cost efficient template sizes and can take into account
+reserved instances.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Reserved instance settings are not yet implemented in <em>vmt-plan</em>.</p>
+</div>
+<div class="section" id="id9">
+<h3>Description<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<p>Turbonomic describes the plan as follows:</p>
+<blockquote>
+<div><p>See how to maximize savings in your cloud environment, while also assuring application performance</p>
+</div></blockquote>
+</div>
+<div class="section" id="id10">
+<h3>Requirements<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Plan Type: <code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.OPTIMIZE_CLOUD</span></code></p></li>
+<li><p>Resizing enabled</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="id11">
+<h3>Example<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scoping to a region</span>
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;4cb9f02f906cd330e52323c9c6615b1a42ee26c3&#39;</span><span class="p">]</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;Optimize Cloud&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">OPTIMIZE_CLOUD</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="c1"># set resizing on, so we can optimize</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_automation_setting</span><span class="p">(</span><span class="n">vp</span><span class="o">.</span><span class="n">AutomationSetting</span><span class="o">.</span><span class="n">RESIZE</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+
+<span class="c1"># TODO: RI settings are not yet implemented, and would need to be set</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="on-prem-workload-migration">
+<h2>On-Prem Workload Migration<a class="headerlink" href="#on-prem-workload-migration" title="Permalink to this headline">¶</a></h2>
+<p>On-Prem Migration plans simulate adding workload to a cluster in order to evaluate
+the capacity requirements, such as if new hosts or storage capacity is required.
+In its current form, On-Prem Migration operates equivalent to a scoped Add
+Workload plan without distinction.</p>
+<div class="section" id="id12">
+<h3>Description<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<p>Turbonomic describes the plan as follows:</p>
+<blockquote>
+<div><p>View the results of moving workload from one cluster to another — Say from the Development cluster to the Production cluster. See whether Production has enough supply, or whether you must add new hosts.</p>
+</div></blockquote>
+</div>
+<div class="section" id="id13">
+<h3>Requirements<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Plan Type: <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType.WORKLOAD_MIGRATION" title="vmtplanner.PlanType.WORKLOAD_MIGRATION"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.WORKLOAD_MIGRATION</span></code></a></p></li>
+<li><p>Addition of workloads from source</p></li>
+<li><p>Scope set to destination cluster</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="id14">
+<h3>Example<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scoping to the destination cluster</span>
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;97e9154697ac16f9e193bd8ba2bdc41b3172dcd8&#39;</span><span class="p">]</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;Migrate to Cloud&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">WORKLOAD_MIGRATION</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="c1"># add the workload from the source</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_entity</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">EntityAction</span><span class="o">.</span><span class="n">ADD</span><span class="p">,</span>
+                       <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bae429974e7013362c070429292144003e025f64&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="alleviate-pressure">
+<h2>Alleviate Pressure<a class="headerlink" href="#alleviate-pressure" title="Permalink to this headline">¶</a></h2>
+<p>An Alleviate Pressure plan is similar in nature to a Migration plan, with the
+distinct purpose being to move as little workload as possible from the “Hot”
+cluster into the “Cold” cluster.</p>
+<div class="section" id="id15">
+<h3>Description<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<p>Turbonomic describes the plan as follows:</p>
+<blockquote>
+<div><p>Reduce pressure from a hot cluster by moving a minimal number of VMs into another one.</p>
+</div></blockquote>
+</div>
+<div class="section" id="id16">
+<h3>Requirements<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Plan Type: <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType.ALLEVIATE_PRESSURE" title="vmtplanner.PlanType.ALLEVIATE_PRESSURE"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.ALLEVIATE_PRESSURE</span></code></a></p></li>
+<li><p>Scope set to hot and cold clusters</p></li>
+<li><p>Relieve pressure setting</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="id17">
+<h3>Example<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scoping to the affected clusters</span>
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;97e9154697ac16f9e193bd8ba2bdc41b3172dcd8&#39;</span><span class="p">,</span> <span class="s1">&#39;99408929-82cf-4dc7-a532-9d998063fa95&#39;</span><span class="p">]</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;Migrate to Cloud&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">ALLEVIATE_PRESSURE</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="c1"># move minimal amount of workload</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">relieve_pressure</span><span class="p">(</span><span class="n">sources</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;97e9154697ac16f9e193bd8ba2bdc41b3172dcd8&#39;</span><span class="p">],</span>
+                          <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;99408929-82cf-4dc7-a532-9d998063fa95&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="custom">
+<h2>Custom<a class="headerlink" href="#custom" title="Permalink to this headline">¶</a></h2>
+<p>Custom plans allow for more customization of the plan parameters. From the UI
+perspective, this type does not utilize a plan wizard, whereas other types do.</p>
+<div class="section" id="id18">
+<h3>Description<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<p>Turbonomic describes the plan as follows:</p>
+<blockquote>
+<div><p>Create custom plan to calculate optimal workload distribution across your environment.</p>
+</div></blockquote>
+</div>
+<div class="section" id="id19">
+<h3>Requirements<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Plan Type: <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType.CUSTOM" title="vmtplanner.PlanType.CUSTOM"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.CUSTOM</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="id20">
+<h3>Example<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scoping to &#39;real-time&#39; market</span>
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Market&#39;</span><span class="p">]</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;Migrate to Cloud&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">CUSTOM</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="c1"># simple rebalance plan</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_automation_setting</span><span class="p">(</span><span class="n">vp</span><span class="o">.</span><span class="n">AutomationSetting</span><span class="o">.</span><span class="n">RESIZE</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+
+<span class="c1"># optionally could ignore constrains completely, for the most optimal</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">remove_constraints</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userguide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plan Configurations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#add-workload">Add Workload</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#decommission-hosts">Decommission Hosts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hardware-refresh">Hardware Refresh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#migrate-to-public-cloud">Migrate to Public Cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optimize-cloud">Optimize Cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#on-prem-workload-migration">On-Prem Workload Migration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#alleviate-pressure">Alleviate Pressure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom">Custom</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vmtplanner.html">vmtplanner — Developer Interfaces</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="userguide.html" title="previous chapter">User Guide</a></li>
+      <li>Next: <a href="vmtplanner.html" title="next chapter">vmtplanner — Developer Interfaces</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017-2019, R.A. Stern.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/plan_configuration.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
