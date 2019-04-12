@@ -1,3 +1,6 @@
 modules.rst
 build
 dist
+data
+resources
+tests

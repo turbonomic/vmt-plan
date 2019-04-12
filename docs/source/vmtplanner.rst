@@ -1,19 +1,27 @@
-:mod:`vmtplanner` --- Developer Interfaces
-==========================================
+===================================
+vmtplanner --- Developer Interfaces
+===================================
 
 .. module:: vmtplanner
 
-vmt-plan provides a plan engine class called :class:`Plan`, which executes a plan
-as defined by the settings in a :class:`PlanSpec`.
+*vmt-plan* provides a single module called ``vmtplanner``. This module provides
+a plan engine class called :class:`Plan`, which executes a plan as defined by
+the settings in a :class:`PlanSpec`.
 
 
 Enumerations
-------------
+============
 
-.. autoclass:: MarketState
+.. autoclass:: AutomationSetting
    :members:
 
-.. autoclass:: PlanSetting
+.. autoclass:: CloudOS
+   :members:
+
+.. autoclass:: EntityAction
+   :members:
+
+.. autoclass:: MarketState
    :members:
 
 .. autoclass:: PlanType
@@ -24,7 +32,7 @@ Enumerations
 
 
 Classes
--------
+=======
 
 .. autoclass:: Plan
    :members:
@@ -34,7 +42,7 @@ Classes
 
 
 Exceptions
-----------
+==========
 
 .. autoexception:: vmtplanner.MarketError
 .. autoexception:: vmtplanner.InvalidMarketError
@@ -55,6 +63,6 @@ Exceptions
 .. include:: market_param.rst
 
 
-.. _entity spec:
+.. _plan_periods:
 
-.. include:: entity_spec.rst
+.. include:: plan_periods.rst

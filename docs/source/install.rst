@@ -1,6 +1,6 @@
 .. # Links
 .. _CPython: http://www.python.org/
-.. _PyPy: http://pypy.org/
+.. _PyPi: http://pypi.org/
 .. _Requests: http://docs.python-requests.org/en/master/
 .. _IronPython: http://http://ironpython.net/
 .. _repository: https://github.com/rastern/vmt-plan
@@ -9,23 +9,29 @@
 .. _enum34: https://pypi.python.org/pypi/enum34
 .. _aenum: https://pypi.python.org/pypi/aenum/2.0.8
 
+============
 Installation
 ============
 
-vmt-plan is a stand-alone Python module, and not provided as a PyPi package.
-The module can be placed in the same folder as your calling script and imported
-locally, or it can be placed in a folder included in the ``PYTHONPATH``.
+Prior to version 2.0, *vmt-plan* was distributed as a stand-alone single file
+Python module, which could be placed into the same folder as the calling script.
+As of version 2.0, *vmt-plan* is now distributed as a Python wheel package to be
+installed via pip. The package is not available on PyPi_ at this time.
+
+.. code:: bash
+
+   pip install vmtplan-2.0.0-py3-none-any.whl
 
 
 Requirements
--------------
+============
 
-In order to use vmt-plan you will need to be running a supported version of
-Python, and install the Requests_ module.
+In order to use *vmt-plan* you will need to be running a supported version of
+Python, and install the vmt-connect_ module.
 
-* Python -- one of the following:
+* Python:
 
-  - CPython_ >= 2.7 or >= 3.3
+  - CPython_ >= 3.4
 
 * Enum -- one of the following:
 
@@ -33,14 +39,13 @@ Python, and install the Requests_ module.
   - enum34_ >= 1.1.6
   - aenum_ >= 2.0.6
 
-* vmt-connect_ >= 1.1.0
+* vmt-connect_ >= 3.0.0
 
 
 Importing
----------
+=========
 
-In the most basic case, you need to import the module, either from a local source
-file or from a location in your ``PYTHONPATH``.
+In the most basic case, you need to import the package.
 
 .. code:: python
 
@@ -67,9 +72,9 @@ you could add the relative path for importing:
 
 
 GitHub Source
--------------
+=============
 
-The source code for vmt-plan is provided via a read-only GitHub repository_.
+The source code for *vmt-plan* is provided via a read-only GitHub repository_.
 
 Individual release archives may be found `here`__.
 
