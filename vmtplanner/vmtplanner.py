@@ -497,7 +497,7 @@ class Plan:
         if self.__plan.params:
             param.update(self.__plan.params)
 
-        response = self.__vmt.request(path, method='POST', query=urlencode(param)[0])
+        response = self.__vmt.request(path, method='POST', query=urlencode(param)[0])[0]
 
         self.__market_id = response['uuid']
         self.__market_name = response['displayName']
