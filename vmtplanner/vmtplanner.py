@@ -94,6 +94,7 @@ class CloudLicense(Enum):
     SUSE = 'slesByol'
     WINDOWS = 'windowsByol'
 
+
 class CloudOS(Enum):
     """Cloud OS definitions."""
     #: Generic Linux OS
@@ -107,6 +108,7 @@ class CloudOS(Enum):
     #: Microsoft Windows
     WINDOWS = 'WINDOWS'
 
+
 class CloudTargetOS(Enum):
     """Cloud Target OS definitions."""
     LINUX = 'linuxTargetOs'
@@ -114,6 +116,20 @@ class CloudTargetOS(Enum):
     SLES = 'slesTargetOs'
     SUSE = 'slesTargetOs'
     WINDOWS = 'windowsTargetOs'
+
+
+class ConstraintCommodity(Enum):
+    """Plan constraint commodities."""
+    #:
+    CLUSTER = 'ClusterCommodity'
+    #:
+    NETWORK = 'NetworkCommodity'
+    #:
+    #Datastore = 'DatastoreCommodity'
+    #:
+    STORAGECLUSTER = 'StorageClusterCommodity'
+    #:
+    DATACENTER = 'DataCenterCommodity'
 
 
 class EntityAction(Enum):
@@ -130,23 +146,27 @@ class EntityAction(Enum):
 
 class MarketState(Enum):
     """Market states."""
-    #: Indicates market plan is setup and ready to be run.
-    READY_TO_START = 'ready'
 
     #: Indicates the plan scope is being copied.
     COPYING = 'copy'
 
+    #: Indicates the market was created.
+    CREATED = 'created'
+
     #: Indicates the market plan is being deleted.
     DELETING = 'del'
+
+    #: Indicates market plan is setup and ready to be run.
+    READY_TO_START = 'ready'
 
     #: Indicates the market plan is running.
     RUNNING = 'run'
 
-    #: Indicates the market plan succeeded.
-    SUCCEEDED = 'success'
-
     #: Indicates the market plan stopped.
     STOPPED = 'stop'
+
+    #: Indicates the market plan succeeded.
+    SUCCEEDED = 'success'
 
     #: Indicates the market plan was stop manually by a user.
     USER_STOPPED = 'user_stop'
@@ -205,7 +225,7 @@ _dto_map_scenario_settings = {
     AutomationSetting.SUSPEND_DS: {'changes': [{'type': 'SET_ACTION_SETTING', 'name': 'suspend', 'value': 'Storage', 'enable': '$value'}]},
     AutomationSetting.RESIZE: {'changes': [{'type': '$type', 'name': 'resize', 'enable': '$value', 'description': '$desc'}]},
 
-    'constraint': {'changes': [{'type': 'CONSTRAINTCHANGED', 'projectionDays': ['$projection'], 'enable': '$value', 'targets': [{'uuid': '$uuid'}]}]},
+    'constraint': {'changes': [{'type': 'CONSTRAINTCHANGED', 'projectionDays': ['$projection'], 'name': '$name', 'enable': '$value', 'targets': [{'uuid': '$uuid'}]}]},
 
     EntityAction.ADD: {'changes': [{'type': 'ADDED', 'projectionDays': '$projection', 'targets': [{'uuid': '$target'}, {'uuid': '$new_target'}]}]},
     EntityAction.MIGRATE: {'changes': [{'type': 'MIGRATION', 'projectionDays': '$projection', 'targets': [{'uuid': '$target'}, {'uuid': '$new_target'}]}]},
@@ -236,7 +256,7 @@ _dto_map_scenario_settings_610 = {
 
     'osmigration': {'configChanges': {'osMigrationSettingsList': [{'uuid': '$setting', 'value': '$value'}]}},
 
-    'constraint': {'configChanges': {'removeConstraintList': [{'projectionDay': '$projection', 'target': [{'uuid': '$uuid'}]}]}},
+    'constraint': {'configChanges': {'removeConstraintList': [{'projectionDay': '$projection', 'constraintType': '$name', 'target': [{'uuid': '$uuid'}]}]}},
 
     'histbaseline': {'loadChanges': {'baselineDate': '$date'}},
     'peakbaseline': {'loadChanges': {'peakBaselineList': [{'date': '$date', 'target': {'uuid': '$uuid'}}]}},
@@ -462,6 +482,10 @@ class Plan:
 
                 time.sleep(wait)
 
+                if self.is_state(MarketState.CREATED):
+                    # catches a failed start after the first wait
+                    raise PlanRunFailure('Plan failed to run')
+
     def __delete(self, scenario=True):
         m = self.__vmt.del_market(self.__market_id)
         s = True if scenario else self.__vmt.del_scenario(self.__scenario_id)
@@ -497,7 +521,7 @@ class Plan:
         if self.__plan.params:
             param.update(self.__plan.params)
 
-        response = self.__vmt.request(path, method='POST', query=urlencode(param)[0])
+        response = self.__vmt.request(path, method='POST', query=urlencode(param)[0])[0]
 
         self.__market_id = response['uuid']
         self.__market_name = response['displayName']
@@ -927,7 +951,7 @@ class PlanSpec:
         Args:
             targets (list): List of entity or group UUIDs.
             value (int): Utilization value as a positive integer 0 to 100.
-            projections (int, optional): Singular period in which to set the setting.
+            projection (int, optional): Singular period in which to set the setting.
         """
         if isinstance(targets, str):
             targets = [targets]
@@ -1040,11 +1064,13 @@ class PlanSpec:
         """
         self.change_entity(EntityAction.MIGRATE, targets=id, projection=period, new_target=destination_id)
 
-    def remove_constraints(self, targets=None, projection=0):
+    def remove_constraints(self, targets=None, commodity=None, projection=0):
         """Removes constraints for selected entities, or the entire market.
 
         Args:
             targets (list, optional): List of entity or group UUIDs.
+            commodity (:class:`ConstraintCommodity`, optional): Commodity constraint to remove on a target.
+            projection (int, optional): Singular period in which to set the setting.
 
         Notes:
             If no target is specified, constraints will be removed from all
@@ -1055,8 +1081,15 @@ class PlanSpec:
             if isinstance(targets, str):
                 targets = [targets]
 
+            base = {'projection': projection, 'value': False}
+
+            if commodity:
+                base['name'] = commodity.value
+
             for id in targets:
-                self.__setting_update('constraint', {'uuid': id, 'projection': projection, 'value': False}, filter={'uuid': id})
+                values = base.copy()
+                values['uuid'] = id
+                self.__setting_update('constraint', values, filter={'uuid': id})
         else:
             self.ignore_constraints = True
 
@@ -1099,7 +1132,7 @@ class PlanSpec:
         if isinstance(sources, str):
             sources = [sources]
 
-        if isinstance(targetrs, str):
+        if isinstance(targets, str):
             targets = [targets]
 
         self.set_scope(sources, append=True)
