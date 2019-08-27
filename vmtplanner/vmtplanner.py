@@ -94,6 +94,7 @@ class CloudLicense(Enum):
     SUSE = 'slesByol'
     WINDOWS = 'windowsByol'
 
+
 class CloudOS(Enum):
     """Cloud OS definitions."""
     #: Generic Linux OS
@@ -107,6 +108,7 @@ class CloudOS(Enum):
     #: Microsoft Windows
     WINDOWS = 'WINDOWS'
 
+
 class CloudTargetOS(Enum):
     """Cloud Target OS definitions."""
     LINUX = 'linuxTargetOs'
@@ -114,6 +116,20 @@ class CloudTargetOS(Enum):
     SLES = 'slesTargetOs'
     SUSE = 'slesTargetOs'
     WINDOWS = 'windowsTargetOs'
+
+
+class ConstraintCommodity(Enum):
+    """Plan constraint commodities."""
+    #:
+    CLUSTER = 'ClusterCommodity'
+    #:
+    NETWORK = 'NetworkCommodity'
+    #:
+    #Datastore = 'DatastoreCommodity'
+    #:
+    STORAGECLUSTER = 'StorageClusterCommodity'
+    #:
+    DATACENTER = 'DataCenterCommodity'
 
 
 class EntityAction(Enum):
@@ -130,23 +146,27 @@ class EntityAction(Enum):
 
 class MarketState(Enum):
     """Market states."""
-    #: Indicates market plan is setup and ready to be run.
-    READY_TO_START = 'ready'
 
     #: Indicates the plan scope is being copied.
     COPYING = 'copy'
 
+    #: Indicates the market was created.
+    CREATED = 'created'
+
     #: Indicates the market plan is being deleted.
     DELETING = 'del'
+
+    #: Indicates market plan is setup and ready to be run.
+    READY_TO_START = 'ready'
 
     #: Indicates the market plan is running.
     RUNNING = 'run'
 
-    #: Indicates the market plan succeeded.
-    SUCCEEDED = 'success'
-
     #: Indicates the market plan stopped.
     STOPPED = 'stop'
+
+    #: Indicates the market plan succeeded.
+    SUCCEEDED = 'success'
 
     #: Indicates the market plan was stop manually by a user.
     USER_STOPPED = 'user_stop'
@@ -205,7 +225,7 @@ _dto_map_scenario_settings = {
     AutomationSetting.SUSPEND_DS: {'changes': [{'type': 'SET_ACTION_SETTING', 'name': 'suspend', 'value': 'Storage', 'enable': '$value'}]},
     AutomationSetting.RESIZE: {'changes': [{'type': '$type', 'name': 'resize', 'enable': '$value', 'description': '$desc'}]},
 
-    'constraint': {'changes': [{'type': 'CONSTRAINTCHANGED', 'projectionDays': ['$projection'], 'enable': '$value', 'targets': [{'uuid': '$uuid'}]}]},
+    'constraint': {'changes': [{'type': 'CONSTRAINTCHANGED', 'projectionDays': ['$projection'], 'name': '$name', 'enable': '$value', 'targets': [{'uuid': '$uuid'}]}]},
 
     EntityAction.ADD: {'changes': [{'type': 'ADDED', 'projectionDays': '$projection', 'targets': [{'uuid': '$target'}, {'uuid': '$new_target'}]}]},
     EntityAction.MIGRATE: {'changes': [{'type': 'MIGRATION', 'projectionDays': '$projection', 'targets': [{'uuid': '$target'}, {'uuid': '$new_target'}]}]},
@@ -216,7 +236,7 @@ _dto_map_scenario_settings = {
 _scenario_settings_collations = {
     'maxutil': {'type': 'list_value', 'groups': [{'label': 'ids', 'fields': ['uuid']}], 'opt': {'field_value': 'keeplast'}},
     'curutil': {'type': 'list_value', 'groups': [{'label': 'ids', 'fields': ['uuid']}], 'opt': {'field_value': 'keeplast'}},
-    'peakbaseline': {'type': 'list_value', 'groups': [{'label': 'ids', 'fields': ['uuid', 'date']}], 'opt': {'field_value': 'keeplast'}},
+    'peakbaseline': {'type': 'list_value', 'groups': [{'label': 'ids', 'fields': ['uuid', 'value']}], 'opt': {'field_value': 'keeplast'}},
 }
 
 
@@ -236,7 +256,7 @@ _dto_map_scenario_settings_610 = {
 
     'osmigration': {'configChanges': {'osMigrationSettingsList': [{'uuid': '$setting', 'value': '$value'}]}},
 
-    'constraint': {'configChanges': {'removeConstraintList': [{'projectionDay': '$projection', 'target': [{'uuid': '$uuid'}]}]}},
+    'constraint': {'configChanges': {'removeConstraintList': [{'projectionDay': '$projection', 'constraintType': '$name', 'target': [{'uuid': '$uuid'}]}]}},
 
     'histbaseline': {'loadChanges': {'baselineDate': '$date'}},
     'peakbaseline': {'loadChanges': {'peakBaselineList': [{'date': '$date', 'target': {'uuid': '$uuid'}}]}},
@@ -293,7 +313,7 @@ class Plan:
     """Plan instance.
 
     Args:
-        connection (:class:`~vmtconnect.VMTConnection`): :class:`~vmtconnect.VMTConnection` or derived object.
+        connection (:class:`~vmtconnect.Connection`): :class:`~vmtconnect.Connection` or :class:`~vmtconnect.Session`.
         spec (:class:`PlanSpec`, optional): Settings to apply to the market, if running a plan.
         market (str, optional): Base market UUID to apply the settings to.
 
@@ -461,6 +481,10 @@ class Plan:
                     wait = rnd_up(run_time/12, 5) if run_time < 600 else 60
 
                 time.sleep(wait)
+
+                if self.is_state(MarketState.CREATED):
+                    # catches a failed start after the first wait
+                    raise PlanRunFailure('Plan failed to run')
 
     def __delete(self, scenario=True):
         m = self.__vmt.del_market(self.__market_id)
@@ -807,7 +831,7 @@ class PlanSpec:
 
         Args:
             id (str): Target entity UUID.
-            count (int, optional): Number of copies to add. (default: 1)
+            count (int, optional): Number of copies to add. (default: `1`)
             periods (list, optional): List of periods to add copies. (default: `[0]`)
 
         See Also:
@@ -912,7 +936,7 @@ class PlanSpec:
 
         Notes:
             This method provides backwards compatibility with previous versions of
-            Turbonomic which require deprecated parameters. The ``type`` parameter
+            Turbonomic which require deprecated parameters. The `type` parameter
             is required by versions of Turbonomic prior to 6.1.0, and ignored otherewise.
         """
         if isinstance(targets, str):
@@ -927,7 +951,7 @@ class PlanSpec:
         Args:
             targets (list): List of entity or group UUIDs.
             value (int): Utilization value as a positive integer 0 to 100.
-            projections (int, optional): Singular period in which to set the setting.
+            projection (int, optional): Singular period in which to set the setting.
         """
         if isinstance(targets, str):
             targets = [targets]
@@ -942,8 +966,8 @@ class PlanSpec:
           {'source': :class:`CloudOS`, 'target': :class:`CloudOS`, 'unlicensed': :obj:`bool`}
 
         Args:
-            match_source (bool, optional): If `True`, the source OS will be matched.
-            unlicensed (bool, optional): If `True`, destination targets will be selected without licensed OSes.
+            match_source (bool, optional): If ``True``, the source OS will be matched.
+            unlicensed (bool, optional): If ``True``, destination targets will be selected without licensed OSes.
             source (:class:`CloudOS`): Source OS to map from.
             target (:class:`CloudOS`): Target OS to map to.
             custom (list, optional): List of :obj:`dict` custom OS settings.
@@ -1040,11 +1064,13 @@ class PlanSpec:
         """
         self.change_entity(EntityAction.MIGRATE, targets=id, projection=period, new_target=destination_id)
 
-    def remove_constraints(self, targets=None, projection=0):
+    def remove_constraints(self, targets=None, commodity=None, projection=0):
         """Removes constraints for selected entities, or the entire market.
 
         Args:
             targets (list, optional): List of entity or group UUIDs.
+            commodity (:class:`ConstraintCommodity`, optional): Commodity constraint to remove on a target.
+            projection (int, optional): Singular period in which to set the setting.
 
         Notes:
             If no target is specified, constraints will be removed from all
@@ -1055,8 +1081,15 @@ class PlanSpec:
             if isinstance(targets, str):
                 targets = [targets]
 
+            base = {'projection': projection, 'value': False}
+
+            if commodity:
+                base['name'] = commodity.value
+
             for id in targets:
-                self.__setting_update('constraint', {'uuid': id, 'projection': projection, 'value': False}, filter={'uuid': id})
+                values = base.copy()
+                values['uuid'] = id
+                self.__setting_update('constraint', values, filter={'uuid': id})
         else:
             self.ignore_constraints = True
 
@@ -1099,7 +1132,7 @@ class PlanSpec:
         if isinstance(sources, str):
             sources = [sources]
 
-        if isinstance(targetrs, str):
+        if isinstance(targets, str):
             targets = [targets]
 
         self.set_scope(sources, append=True)
@@ -1353,52 +1386,65 @@ def map_settings(map, values, setting=None):
 def collate_settings(s, c):
     """Collates fields across settings entries based on a collation mapping.
 
+    Collates multiple individual settings entries into a single combined entry
+    where a collation mapping exists.
+    type - type of collation to perform (currently only list_value)
+    groups - list of groupings to collate based on labels
+    label - a tag for the groupable field name, appended in square brackets: [ids]
+    fields - list of fields to group to a label
+    opt - optional list of grouping settings
+        keepfirst - keeps the first value for non-groupable values (default)
+        keeplast  - keeps the last value for non-groupable values
+
     Args:
         s (list): List of settings
         c (list): List of collation instructions
     """
     _set = []
     ignore = []
-
     # parse settings
     for i, val in enumerate(s):
         key = list(val)[0]
-
         # ignore already processed
         if key in ignore:
             continue
 
-        # collating map exists
-        elif key in c:
+        # check collating map exists for this setting
+        if key in c:
             _t = {}
+            fieldgroups = {y: x['label'] for x in c[key]['groups'] for y in x['fields']}
 
-            # perform group by using field groups in collation map
+            # group settings entries into single entry based on collation map
             if c[key]['type'] == 'list_value':
-                for j, val2 in enumerate(s, i):                                # pylint: disable=W0612
-                    fieldgroups = {y: x['label'] for x in c[key]['groups'] for y in x['fields']}
-                    _grp = collections.defaultdict(lambda: {})
+                for j, val2 in enumerate(s):
+                    # skip ones we don't care about
+                    if j < i:
+                        continue
 
-                    # parse group fields
+                    _grp = collections.defaultdict(lambda: {})
+                    # parse fields
                     for k, v in val2[key].items():
                         # group by
                         if k in fieldgroups:
                             _grp[fieldgroups[k]].update({k: v})
-
                         else:
                             # non-grouped field options
-                            if k not in _t or (c[key]['opt']['field_value'] == 'keeplast'):
-                                _t[k] = v
+                            try:
+                                fv_opt = c[key]['opt']['field_value']
+                            except KeyError:
+                                fv_opt = 'keepfirst'
 
-                    # add back groups
+                            if k not in _t or \
+                               (fv_opt == 'keepfirst' and k not in _t) or \
+                               fv_opt == 'keeplast':
+                                _t[k] = v            # add back non-group value
+
                     for k, v in _grp.items():
                         _t[k] = _t.get(k, [])
                         _t[k].append(v)
-
             _set.append({key: _t})
             ignore.append(key) # prevent double processing settings
-
         # noop
         else:
             _set.append(val)
-
     return _set
