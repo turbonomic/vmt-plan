@@ -1,35 +1,161 @@
 
-<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta charset="utf-8" />
-    <title>vmtplanner — Developer Interfaces &#8212; vmt-plan 2.0.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>vmtplanner — Developer Interfaces &mdash; vmt-plan 2.0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Plan Configurations" href="plan_configuration.html" />
+    <link rel="prev" title="Plan Configurations" href="plan_configuration.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
           
 
-          <div class="body" role="main">
+          
+            <a href="index.html" class="icon icon-home"> vmt-plan
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userguide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plan_configuration.html">Plan Configurations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">vmtplanner — Developer Interfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#enumerations">Enumerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">vmt-plan</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>vmtplanner — Developer Interfaces</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/vmtplanner.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="module-vmtplanner">
 <span id="vmtplanner-developer-interfaces"></span><h1>vmtplanner — Developer Interfaces<a class="headerlink" href="#module-vmtplanner" title="Permalink to this headline">¶</a></h1>
@@ -156,6 +282,12 @@ the settings in a <a class="reference internal" href="#vmtplanner.PlanSpec" titl
 <dt id="vmtplanner.MarketState.COPYING">
 <code class="descname">COPYING</code><em class="property"> = 'copy'</em><a class="headerlink" href="#vmtplanner.MarketState.COPYING" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indicates the plan scope is being copied.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.MarketState.CREATED">
+<code class="descname">CREATED</code><em class="property"> = 'created'</em><a class="headerlink" href="#vmtplanner.MarketState.CREATED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicates the market was created.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -286,7 +418,7 @@ the settings in a <a class="reference internal" href="#vmtplanner.PlanSpec" titl
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>connection</strong> (<a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.VMTConnection" title="(in vmt-connect v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">VMTConnection</span></code></a>) – <a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.VMTConnection" title="(in vmt-connect v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">VMTConnection</span></code></a> or derived object.</p></li>
+<li><p><strong>connection</strong> (<a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.Connection" title="(in vmt-connect v3.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – <a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.Connection" title="(in vmt-connect v3.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> or <a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.Session" title="(in vmt-connect v3.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>.</p></li>
 <li><p><strong>spec</strong> (<a class="reference internal" href="#vmtplanner.PlanSpec" title="vmtplanner.PlanSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlanSpec</span></code></a>, optional) – Settings to apply to the market, if running a plan.</p></li>
 <li><p><strong>market</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Base market UUID to apply the settings to.</p></li>
 </ul>
@@ -557,7 +689,7 @@ will be ignored. The <a class="reference internal" href="#vmtplanner.Plan.durati
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.HTTP500Error" title="(in vmt-connect v2.2.2)"><strong>vmtconnect.HTTP500Error</strong></a> – </p></li>
+<li><p><a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.HTTP500Error" title="(in vmt-connect v3.0.0)"><strong>vmtconnect.HTTP500Error</strong></a> – </p></li>
 <li><p><a class="reference internal" href="#vmtplanner.PlanError" title="vmtplanner.PlanError"><strong>PlanError</strong></a> – Error stopping plan</p></li>
 </ul>
 </dd>
@@ -700,7 +832,7 @@ compatibility.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Target entity UUID.</p></li>
-<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Number of copies to add. (default: 1)</p></li>
+<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Number of copies to add. (default: <cite>1</cite>)</p></li>
 <li><p><strong>periods</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>, </em><em>optional</em>) – List of periods to add copies. (default: <cite>[0]</cite>)</p></li>
 </ul>
 </dd>
@@ -791,7 +923,7 @@ VMs can consume.</p>
 <div class="admonition-notes admonition">
 <p class="admonition-title">Notes</p>
 <p>This method provides backwards compatibility with previous versions of
-Turbonomic which require deprecated parameters. The <code class="docutils literal notranslate"><span class="pre">type</span></code> parameter
+Turbonomic which require deprecated parameters. The <cite>type</cite> parameter
 is required by versions of Turbonomic prior to 6.1.0, and ignored otherewise.</p>
 </div>
 </dd></dl>
@@ -805,7 +937,7 @@ is required by versions of Turbonomic prior to 6.1.0, and ignored otherewise.</p
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>targets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of entity or group UUIDs.</p></li>
 <li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Utilization value as a positive integer 0 to 100.</p></li>
-<li><p><strong>projections</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Singular period in which to set the setting.</p></li>
+<li><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Singular period in which to set the setting.</p></li>
 </ul>
 </dd>
 </dl>
@@ -822,8 +954,8 @@ is required by versions of Turbonomic prior to 6.1.0, and ignored otherewise.</p
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>match_source</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <cite>True</cite>, the source OS will be matched.</p></li>
-<li><p><strong>unlicensed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <cite>True</cite>, destination targets will be selected without licensed OSes.</p></li>
+<li><p><strong>match_source</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the source OS will be matched.</p></li>
+<li><p><strong>unlicensed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, destination targets will be selected without licensed OSes.</p></li>
 <li><p><strong>source</strong> (<a class="reference internal" href="#vmtplanner.CloudOS" title="vmtplanner.CloudOS"><code class="xref py py-class docutils literal notranslate"><span class="pre">CloudOS</span></code></a>) – Source OS to map from.</p></li>
 <li><p><strong>target</strong> (<a class="reference internal" href="#vmtplanner.CloudOS" title="vmtplanner.CloudOS"><code class="xref py py-class docutils literal notranslate"><span class="pre">CloudOS</span></code></a>) – Target OS to map to.</p></li>
 <li><p><strong>custom</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>, </em><em>optional</em>) – List of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a> custom OS settings.</p></li>
@@ -913,11 +1045,15 @@ methods, <a class="reference internal" href="#vmtplanner.PlanSpec.relieve_pressu
 
 <dl class="method">
 <dt id="vmtplanner.PlanSpec.remove_constraints">
-<code class="descname">remove_constraints</code><span class="sig-paren">(</span><em>targets=None</em>, <em>projection=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vmtplanner.PlanSpec.remove_constraints" title="Permalink to this definition">¶</a></dt>
+<code class="descname">remove_constraints</code><span class="sig-paren">(</span><em>targets=None</em>, <em>commodity=None</em>, <em>projection=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vmtplanner.PlanSpec.remove_constraints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes constraints for selected entities, or the entire market.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>targets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>, </em><em>optional</em>) – List of entity or group UUIDs.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>targets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>, </em><em>optional</em>) – List of entity or group UUIDs.</p></li>
+<li><p><strong>commodity</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintCommodity</span></code>, optional) – Commodity constraint to remove on a target.</p></li>
+<li><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Singular period in which to set the setting.</p></li>
+</ul>
 </dd>
 </dl>
 <div class="admonition-notes admonition">
@@ -1087,60 +1223,50 @@ compatibility.</p>
 </div>
 
 
+           </div>
+           
           </div>
-          
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="plan_configuration.html" class="btn btn-neutral float-left" title="Plan Configurations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017-2019, R.A. Stern
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="start.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="userguide.html">User Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plan_configuration.html">Plan Configurations</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">vmtplanner — Developer Interfaces</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#enumerations">Enumerations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a></li>
-</ul>
-</li>
-</ul>
 
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="plan_configuration.html" title="previous chapter">Plan Configurations</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2017-2019, R.A. Stern.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/vmtplanner.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
+    </section>
 
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
     
+   
 
-    
-  </body>
+</body>
 </html>
