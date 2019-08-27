@@ -236,7 +236,7 @@ _dto_map_scenario_settings = {
 _scenario_settings_collations = {
     'maxutil': {'type': 'list_value', 'groups': [{'label': 'ids', 'fields': ['uuid']}], 'opt': {'field_value': 'keeplast'}},
     'curutil': {'type': 'list_value', 'groups': [{'label': 'ids', 'fields': ['uuid']}], 'opt': {'field_value': 'keeplast'}},
-    'peakbaseline': {'type': 'list_value', 'groups': [{'label': 'ids', 'fields': ['uuid', 'date']}], 'opt': {'field_value': 'keeplast'}},
+    'peakbaseline': {'type': 'list_value', 'groups': [{'label': 'ids', 'fields': ['uuid', 'value']}], 'opt': {'field_value': 'keeplast'}},
 }
 
 
@@ -831,7 +831,7 @@ class PlanSpec:
 
         Args:
             id (str): Target entity UUID.
-            count (int, optional): Number of copies to add. (default: 1)
+            count (int, optional): Number of copies to add. (default: `1`)
             periods (list, optional): List of periods to add copies. (default: `[0]`)
 
         See Also:
@@ -936,7 +936,7 @@ class PlanSpec:
 
         Notes:
             This method provides backwards compatibility with previous versions of
-            Turbonomic which require deprecated parameters. The ``type`` parameter
+            Turbonomic which require deprecated parameters. The `type` parameter
             is required by versions of Turbonomic prior to 6.1.0, and ignored otherewise.
         """
         if isinstance(targets, str):
@@ -966,8 +966,8 @@ class PlanSpec:
           {'source': :class:`CloudOS`, 'target': :class:`CloudOS`, 'unlicensed': :obj:`bool`}
 
         Args:
-            match_source (bool, optional): If `True`, the source OS will be matched.
-            unlicensed (bool, optional): If `True`, destination targets will be selected without licensed OSes.
+            match_source (bool, optional): If ``True``, the source OS will be matched.
+            unlicensed (bool, optional): If ``True``, destination targets will be selected without licensed OSes.
             source (:class:`CloudOS`): Source OS to map from.
             target (:class:`CloudOS`): Target OS to map to.
             custom (list, optional): List of :obj:`dict` custom OS settings.
@@ -1386,52 +1386,65 @@ def map_settings(map, values, setting=None):
 def collate_settings(s, c):
     """Collates fields across settings entries based on a collation mapping.
 
+    Collates multiple individual settings entries into a single combined entry
+    where a collation mapping exists.
+    type - type of collation to perform (currently only list_value)
+    groups - list of groupings to collate based on labels
+    label - a tag for the groupable field name, appended in square brackets: [ids]
+    fields - list of fields to group to a label
+    opt - optional list of grouping settings
+        keepfirst - keeps the first value for non-groupable values (default)
+        keeplast  - keeps the last value for non-groupable values
+
     Args:
         s (list): List of settings
         c (list): List of collation instructions
     """
     _set = []
     ignore = []
-
     # parse settings
     for i, val in enumerate(s):
         key = list(val)[0]
-
         # ignore already processed
         if key in ignore:
             continue
 
-        # collating map exists
-        elif key in c:
+        # check collating map exists for this setting
+        if key in c:
             _t = {}
+            fieldgroups = {y: x['label'] for x in c[key]['groups'] for y in x['fields']}
 
-            # perform group by using field groups in collation map
+            # group settings entries into single entry based on collation map
             if c[key]['type'] == 'list_value':
-                for j, val2 in enumerate(s, i):                                # pylint: disable=W0612
-                    fieldgroups = {y: x['label'] for x in c[key]['groups'] for y in x['fields']}
-                    _grp = collections.defaultdict(lambda: {})
+                for j, val2 in enumerate(s):
+                    # skip ones we don't care about
+                    if j < i:
+                        continue
 
-                    # parse group fields
+                    _grp = collections.defaultdict(lambda: {})
+                    # parse fields
                     for k, v in val2[key].items():
                         # group by
                         if k in fieldgroups:
                             _grp[fieldgroups[k]].update({k: v})
-
                         else:
                             # non-grouped field options
-                            if k not in _t or (c[key]['opt']['field_value'] == 'keeplast'):
-                                _t[k] = v
+                            try:
+                                fv_opt = c[key]['opt']['field_value']
+                            except KeyError:
+                                fv_opt = 'keepfirst'
 
-                    # add back groups
+                            if k not in _t or \
+                               (fv_opt == 'keepfirst' and k not in _t) or \
+                               fv_opt == 'keeplast':
+                                _t[k] = v            # add back non-group value
+
                     for k, v in _grp.items():
                         _t[k] = _t.get(k, [])
                         _t[k].append(v)
-
             _set.append({key: _t})
             ignore.append(key) # prevent double processing settings
-
         # noop
         else:
             _set.append(val)
-
     return _set
