@@ -313,7 +313,7 @@ class Plan:
     """Plan instance.
 
     Args:
-        connection (:class:`~vmtconnect.VMTConnection`): :class:`~vmtconnect.VMTConnection` or derived object.
+        connection (:class:`~vmtconnect.Connection`): :class:`~vmtconnect.Connection` or :class:`~vmtconnect.Session`.
         spec (:class:`PlanSpec`, optional): Settings to apply to the market, if running a plan.
         market (str, optional): Base market UUID to apply the settings to.
 
