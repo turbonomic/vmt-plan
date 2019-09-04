@@ -213,6 +213,12 @@ the settings in a <a class="reference internal" href="#vmtplanner.PlanSpec" titl
 </dd></dl>
 
 <dl class="class">
+<dt id="vmtplanner.CloudLicense">
+<em class="property">class </em><code class="descclassname">vmtplanner.</code><code class="descname">CloudLicense</code><a class="headerlink" href="#vmtplanner.CloudLicense" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cloud OS licensing.</p>
+</dd></dl>
+
+<dl class="class">
 <dt id="vmtplanner.CloudOS">
 <em class="property">class </em><code class="descclassname">vmtplanner.</code><code class="descname">CloudOS</code><a class="headerlink" href="#vmtplanner.CloudOS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cloud OS definitions.</p>
@@ -245,6 +251,38 @@ the settings in a <a class="reference internal" href="#vmtplanner.PlanSpec" titl
 <code class="descname">WINDOWS</code><em class="property"> = 'WINDOWS'</em><a class="headerlink" href="#vmtplanner.CloudOS.WINDOWS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Microsoft Windows</p>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="vmtplanner.CloudTargetOS">
+<em class="property">class </em><code class="descclassname">vmtplanner.</code><code class="descname">CloudTargetOS</code><a class="headerlink" href="#vmtplanner.CloudTargetOS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cloud Target OS definitions.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="vmtplanner.ConstraintCommodity">
+<em class="property">class </em><code class="descclassname">vmtplanner.</code><code class="descname">ConstraintCommodity</code><a class="headerlink" href="#vmtplanner.ConstraintCommodity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plan constraint commodities.</p>
+<dl class="attribute">
+<dt id="vmtplanner.ConstraintCommodity.CLUSTER">
+<code class="descname">CLUSTER</code><em class="property"> = 'ClusterCommodity'</em><a class="headerlink" href="#vmtplanner.ConstraintCommodity.CLUSTER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.ConstraintCommodity.DATACENTER">
+<code class="descname">DATACENTER</code><em class="property"> = 'DataCenterCommodity'</em><a class="headerlink" href="#vmtplanner.ConstraintCommodity.DATACENTER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.ConstraintCommodity.NETWORK">
+<code class="descname">NETWORK</code><em class="property"> = 'NetworkCommodity'</em><a class="headerlink" href="#vmtplanner.ConstraintCommodity.NETWORK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.ConstraintCommodity.STORAGECLUSTER">
+<code class="descname">STORAGECLUSTER</code><em class="property"> = 'StorageClusterCommodity'</em><a class="headerlink" href="#vmtplanner.ConstraintCommodity.STORAGECLUSTER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1051,7 +1089,7 @@ methods, <a class="reference internal" href="#vmtplanner.PlanSpec.relieve_pressu
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>targets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>, </em><em>optional</em>) – List of entity or group UUIDs.</p></li>
-<li><p><strong>commodity</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintCommodity</span></code>, optional) – Commodity constraint to remove on a target.</p></li>
+<li><p><strong>commodity</strong> (<a class="reference internal" href="#vmtplanner.ConstraintCommodity" title="vmtplanner.ConstraintCommodity"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintCommodity</span></code></a>, optional) – Commodity constraint to remove on a target.</p></li>
 <li><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Singular period in which to set the setting.</p></li>
 </ul>
 </dd>

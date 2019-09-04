@@ -15,7 +15,16 @@ Enumerations
 .. autoclass:: AutomationSetting
    :members:
 
+.. autoclass:: CloudLicense
+   :members:
+
 .. autoclass:: CloudOS
+   :members:
+
+.. autoclass:: CloudTargetOS
+   :members:
+
+.. autoclass:: ConstraintCommodity
    :members:
 
 .. autoclass:: EntityAction
