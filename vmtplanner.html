@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>vmtplanner — Developer Interfaces &mdash; vmt-plan 2.0.2 documentation</title>
+  <title>vmtplanner — Developer Interfaces &mdash; vmt-plan 2.0.3 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
             
           
@@ -1084,20 +1084,21 @@ methods, <a class="reference internal" href="#vmtplanner.PlanSpec.relieve_pressu
 <dl class="method">
 <dt id="vmtplanner.PlanSpec.remove_constraints">
 <code class="descname">remove_constraints</code><span class="sig-paren">(</span><em>targets=None</em>, <em>commodity=None</em>, <em>projection=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vmtplanner.PlanSpec.remove_constraints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes constraints for selected entities, or the entire market.</p>
+<dd><p>Removes specific constraints for selected entities, or all constraints for the entire market.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>targets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>, </em><em>optional</em>) – List of entity or group UUIDs.</p></li>
-<li><p><strong>commodity</strong> (<a class="reference internal" href="#vmtplanner.ConstraintCommodity" title="vmtplanner.ConstraintCommodity"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintCommodity</span></code></a>, optional) – Commodity constraint to remove on a target.</p></li>
+<li><p><strong>commodity</strong> (<a class="reference internal" href="#vmtplanner.ConstraintCommodity" title="vmtplanner.ConstraintCommodity"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintCommodity</span></code></a>, optional) – Commodity constraint to remove on a target.
+<cite>targets</cite> is required with this parameter, or it is ignored.</p></li>
 <li><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Singular period in which to set the setting.</p></li>
 </ul>
 </dd>
 </dl>
 <div class="admonition-notes admonition">
 <p class="admonition-title">Notes</p>
-<p>If no target is specified, constraints will be removed from all
-entities in the market (global level).</p>
+<p>To remove all constraints from the entire market (global level),
+leave the <cite>targets</cite> and <cite>commodity</cite> fields empty.</p>
 </div>
 </dd></dl>
 
