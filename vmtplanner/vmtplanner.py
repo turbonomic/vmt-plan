@@ -255,8 +255,7 @@ _dto_map_scenario_settings_610 = {
     AutomationSetting.RESIZE: {'configChanges': {'automationSettingList': [{'uuid': '$uuid', 'value': '$value', 'entityType': 'VirtualMachine'}]}},
 
     'osmigration': {'configChanges': {'osMigrationSettingsList': [{'uuid': '$setting', 'value': '$value'}]}},
-
-    'constraint': {'configChanges': {'removeConstraintList': [{'projectionDay': '$projection', 'constraintType': '$name', 'target': [{'uuid': '$uuid'}]}]}},
+    'constraint': {'configChanges': {'removeConstraintList': [{'projectionDay': '$projection', 'constraintType': '$name', 'target': {'uuid': '$uuid'}}]}},
 
     'histbaseline': {'loadChanges': {'baselineDate': '$date'}},
     'peakbaseline': {'loadChanges': {'peakBaselineList': [{'date': '$date', 'target': {'uuid': '$uuid'}}]}},
@@ -1065,19 +1064,20 @@ class PlanSpec:
         self.change_entity(EntityAction.MIGRATE, targets=id, projection=period, new_target=destination_id)
 
     def remove_constraints(self, targets=None, commodity=None, projection=0):
-        """Removes constraints for selected entities, or the entire market.
+        """Removes specific constraints for selected entities, or all constraints for the entire market.
 
         Args:
             targets (list, optional): List of entity or group UUIDs.
             commodity (:class:`ConstraintCommodity`, optional): Commodity constraint to remove on a target.
+                `targets` is required with this parameter, or it is ignored.
             projection (int, optional): Singular period in which to set the setting.
 
         Notes:
-            If no target is specified, constraints will be removed from all
-            entities in the market (global level).
+            To remove all constraints from the entire market (global level),
+            leave the `targets` and `commodity` fields empty.
 
         """
-        if targets:
+        if targets and commodity:
             if isinstance(targets, str):
                 targets = [targets]
 
@@ -1090,7 +1090,7 @@ class PlanSpec:
                 values = base.copy()
                 values['uuid'] = id
                 self.__setting_update('constraint', values, filter={'uuid': id})
-        else:
+        elif not targets and not commodity:
             self.ignore_constraints = True
 
     def replace_entity(self, id, replacement_id, count=1, periods=None):
