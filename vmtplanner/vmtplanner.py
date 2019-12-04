@@ -612,15 +612,17 @@ class Plan:
             PlanError: Retry limit reached.
         """
         run = 1
+        error = None
 
         while run < self.__plan.max_retry:
             try:
                 return self.__run()
             except (vmtconnect.HTTP500Error, PlanError) as e:
+                error = e
                 run += 1
                 pass
 
-        raise PlanError('Retry limit reached.')
+        raise PlanError(f'Retry limit reached. Last error:\n{error}')
 
     def run_async(self):
         """Runs the market plan in asynchronous mode.
