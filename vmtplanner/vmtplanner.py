@@ -4,6 +4,7 @@ import datetime
 import json
 import math
 import time
+import traceback
 import warnings
 
 from enum import Enum
@@ -146,28 +147,20 @@ class EntityAction(Enum):
 
 class MarketState(Enum):
     """Market states."""
-
     #: Indicates the plan scope is being copied.
     COPYING = 'copy'
-
     #: Indicates the market was created.
     CREATED = 'created'
-
     #: Indicates the market plan is being deleted.
     DELETING = 'del'
-
     #: Indicates market plan is setup and ready to be run.
     READY_TO_START = 'ready'
-
     #: Indicates the market plan is running.
     RUNNING = 'run'
-
     #: Indicates the market plan stopped.
     STOPPED = 'stop'
-
     #: Indicates the market plan succeeded.
     SUCCEEDED = 'success'
-
     #: Indicates the market plan was stop manually by a user.
     USER_STOPPED = 'user_stop'
 
@@ -471,7 +464,7 @@ class Plan:
                 except vmtconnect.HTTPError:
                     raise PlanError('Plan stop command error')
 
-                raise PlanExecutionExceeded()
+                raise PlanExecutionExceeded(f'Plan execution time exceeded maximum allowed, market state: {self.get_state()}')
             else:
                 if self.__plan.poll_freq > 0:
                     wait = self.__plan.poll_freq
@@ -483,7 +476,8 @@ class Plan:
 
                 if self.is_state(MarketState.CREATED):
                     # catches a failed start after the first wait
-                    raise PlanRunFailure('Plan failed to run')
+                    # indicates a stuck plan
+                    raise PlanRunFailure(f'Plan failed to properly initialize. Check catalina.out for more details. Market ID: [{self.__market_id}], Scenario ID: [{self.__scenario_id}]')
 
     def __delete(self, scenario=True):
         m = self.__vmt.del_market(self.__market_id)
@@ -612,17 +606,17 @@ class Plan:
             PlanError: Retry limit reached.
         """
         run = 1
-        error = None
+        trace = None
 
         while run < self.__plan.max_retry:
             try:
                 return self.__run()
             except (vmtconnect.HTTP500Error, PlanError) as e:
-                error = e
+                trace = traceback.format_exc()
                 run += 1
                 pass
 
-        raise PlanError(f'Retry limit reached. Last error:\n{error}')
+        raise PlanError(f'Retry limit reached. Last error:\n{trace}')
 
     def run_async(self):
         """Runs the market plan in asynchronous mode.
@@ -652,7 +646,7 @@ class Plan:
         except vmtconnect.HTTP500Error:
             raise
         except Exception as e:
-            raise PlanError('Error stopping plan: {}'.format(e))
+            raise PlanError(f'Error stopping plan: {e}')
 
         return True
 

@@ -93,6 +93,7 @@ Bug Fixes:
 Additional QA:
   * Chris Sawtelle
   * Ray Mileo
+  * Ryan Geyer
 
 
 License
