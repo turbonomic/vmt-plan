@@ -216,6 +216,31 @@ the settings in a <a class="reference internal" href="#vmtplanner.PlanSpec" titl
 <dt id="vmtplanner.CloudLicense">
 <em class="property">class </em><code class="descclassname">vmtplanner.</code><code class="descname">CloudLicense</code><a class="headerlink" href="#vmtplanner.CloudLicense" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cloud OS licensing.</p>
+<dl class="attribute">
+<dt id="vmtplanner.CloudLicense.LINUX">
+<code class="descname">LINUX</code><em class="property"> = 'linuxByol'</em><a class="headerlink" href="#vmtplanner.CloudLicense.LINUX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.CloudLicense.RHEL">
+<code class="descname">RHEL</code><em class="property"> = 'rhelByol'</em><a class="headerlink" href="#vmtplanner.CloudLicense.RHEL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.CloudLicense.SLES">
+<code class="descname">SLES</code><em class="property"> = 'slesByol'</em><a class="headerlink" href="#vmtplanner.CloudLicense.SLES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.CloudLicense.SUSE">
+<code class="descname">SUSE</code><em class="property"> = 'slesByol'</em><a class="headerlink" href="#vmtplanner.CloudLicense.SUSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.CloudLicense.WINDOWS">
+<code class="descname">WINDOWS</code><em class="property"> = 'windowsByol'</em><a class="headerlink" href="#vmtplanner.CloudLicense.WINDOWS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -258,6 +283,31 @@ the settings in a <a class="reference internal" href="#vmtplanner.PlanSpec" titl
 <dt id="vmtplanner.CloudTargetOS">
 <em class="property">class </em><code class="descclassname">vmtplanner.</code><code class="descname">CloudTargetOS</code><a class="headerlink" href="#vmtplanner.CloudTargetOS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cloud Target OS definitions.</p>
+<dl class="attribute">
+<dt id="vmtplanner.CloudTargetOS.LINUX">
+<code class="descname">LINUX</code><em class="property"> = 'linuxTargetOs'</em><a class="headerlink" href="#vmtplanner.CloudTargetOS.LINUX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.CloudTargetOS.RHEL">
+<code class="descname">RHEL</code><em class="property"> = 'rhelTargetOs'</em><a class="headerlink" href="#vmtplanner.CloudTargetOS.RHEL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.CloudTargetOS.SLES">
+<code class="descname">SLES</code><em class="property"> = 'slesTargetOs'</em><a class="headerlink" href="#vmtplanner.CloudTargetOS.SLES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.CloudTargetOS.SUSE">
+<code class="descname">SUSE</code><em class="property"> = 'slesTargetOs'</em><a class="headerlink" href="#vmtplanner.CloudTargetOS.SUSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.CloudTargetOS.WINDOWS">
+<code class="descname">WINDOWS</code><em class="property"> = 'windowsTargetOs'</em><a class="headerlink" href="#vmtplanner.CloudTargetOS.WINDOWS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -401,6 +451,12 @@ the settings in a <a class="reference internal" href="#vmtplanner.PlanSpec" titl
 </dd></dl>
 
 <dl class="attribute">
+<dt id="vmtplanner.PlanType.OPTIMIZE_ONPREM">
+<code class="descname">OPTIMIZE_ONPREM</code><em class="property"> = 'OPTIMIZE_ONPREM'</em><a class="headerlink" href="#vmtplanner.PlanType.OPTIMIZE_ONPREM" title="Permalink to this definition">¶</a></dt>
+<dd><p>On-Prem Optimization</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="vmtplanner.PlanType.PROJECTION">
 <code class="descname">PROJECTION</code><em class="property"> = 'PROJECTION'</em><a class="headerlink" href="#vmtplanner.PlanType.PROJECTION" title="Permalink to this definition">¶</a></dt>
 <dd><p>Future Workload Change</p>
@@ -456,8 +512,9 @@ the settings in a <a class="reference internal" href="#vmtplanner.PlanSpec" titl
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>connection</strong> (<a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.Connection" title="(in vmt-connect v3.0.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – <a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.Connection" title="(in vmt-connect v3.0.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> or <a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.Session" title="(in vmt-connect v3.0.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>.</p></li>
-<li><p><strong>spec</strong> (<a class="reference internal" href="#vmtplanner.PlanSpec" title="vmtplanner.PlanSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlanSpec</span></code></a>, optional) – Settings to apply to the market, if running a plan.</p></li>
+<li><p><strong>connection</strong> (<a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.Connection" title="(in vmt-connect v3.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – <a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.Connection" title="(in vmt-connect v3.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> or <a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.Session" title="(in vmt-connect v3.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>.</p></li>
+<li><p><strong>spec</strong> (<a class="reference internal" href="#vmtplanner.PlanSpec" title="vmtplanner.PlanSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlanSpec</span></code></a>, optional) – Settings to apply to the market, if
+running a plan.</p></li>
 <li><p><strong>market</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Base market UUID to apply the settings to.</p></li>
 </ul>
 </dd>
@@ -502,6 +559,17 @@ the settings in a <a class="reference internal" href="#vmtplanner.PlanSpec" titl
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.Plan.results">
+<code class="descname">results</code><a class="headerlink" href="#vmtplanner.Plan.results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Market API response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>obj</p>
 </dd>
 </dl>
 </dd></dl>
@@ -564,8 +632,8 @@ the settings in a <a class="reference internal" href="#vmtplanner.PlanSpec" titl
 <dl class="attribute">
 <dt id="vmtplanner.Plan.start">
 <code class="descname">start</code><a class="headerlink" href="#vmtplanner.Plan.start" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> object representing the
-start time, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if no plan has been run.</p>
+<dd><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> object
+representing the start time, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if no plan has been run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a></p>
@@ -697,10 +765,7 @@ start time, or <code class="docutils literal notranslate"><span class="pre">None
 <dd><p>Runs the market with currently applied scenario and settings.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#vmtplanner.PlanExecutionExceeded" title="vmtplanner.PlanExecutionExceeded"><strong>PlanExecutionExceeded</strong></a> – </p></li>
-<li><p><a class="reference internal" href="#vmtplanner.PlanError" title="vmtplanner.PlanError"><strong>PlanError</strong></a> – Retry limit reached.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>PlanError if retry limit is reached.</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -711,7 +776,8 @@ start time, or <code class="docutils literal notranslate"><span class="pre">None
 <dd><p>Runs the market plan in asynchronous mode.</p>
 <p>When run asynchronously the plan will be started and the state returned
 immediately. All settings pertaining to polling, timeout, and retry
-will be ignored. The <a class="reference internal" href="#vmtplanner.Plan.duration" title="vmtplanner.Plan.duration"><code class="xref py py-class docutils literal notranslate"><span class="pre">duration</span></code></a> will not be recorded.</p>
+will be ignored. The <a class="reference internal" href="#vmtplanner.Plan.duration" title="vmtplanner.Plan.duration"><code class="xref py py-class docutils literal notranslate"><span class="pre">duration</span></code></a> will not be recorded, and
+plan hooks are not called.</p>
 </dd></dl>
 
 <dl class="method">
@@ -727,7 +793,7 @@ will be ignored. The <a class="reference internal" href="#vmtplanner.Plan.durati
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.HTTP500Error" title="(in vmt-connect v3.0.4)"><strong>vmtconnect.HTTP500Error</strong></a> – </p></li>
+<li><p><a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.HTTP500Error" title="(in vmt-connect v3.2.0)"><strong>vmtconnect.HTTP500Error</strong></a> – </p></li>
 <li><p><a class="reference internal" href="#vmtplanner.PlanError" title="vmtplanner.PlanError"><strong>PlanError</strong></a> – Error stopping plan</p></li>
 </ul>
 </dd>
@@ -812,7 +878,7 @@ If <cite>version</cite> is not supplied, the <code class="xref py py-class docut
 will be used when the scenario is evaluated by the <a class="reference internal" href="#vmtplanner.Plan" title="vmtplanner.Plan"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plan</span></code></a> class.
 If you need to generate a scenario DTO without a <a class="reference internal" href="#vmtplanner.Plan" title="vmtplanner.Plan"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plan</span></code></a> class,
 you will need to supply the <cite>version</cite> prior to calling <a class="reference internal" href="#vmtplanner.PlanSpec.to_json" title="vmtplanner.PlanSpec.to_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_json()</span></code></a>
-or accessing the <code class="docutils literal notranslate"><span class="pre">json</span></code> property.</p>
+or accessing the <cite>json</cite> property.</p>
 </div>
 <dl class="method">
 <dt id="vmtplanner.PlanSpec.add_entity">
@@ -828,7 +894,7 @@ compatibility.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Target entity UUID.</p></li>
-<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Number of copies to add. (default: <cite>1</cite>)</p></li>
+<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Number of copies to add. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
 <li><p><strong>periods</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, </em><em>optional</em>) – List of periods to add copies. (default: <cite>[0]</cite>)</p></li>
 </ul>
 </dd>
@@ -870,8 +936,8 @@ compatibility.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Target entity UUID.</p></li>
-<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Number of copies to add. (default: <cite>1</cite>)</p></li>
-<li><p><strong>periods</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, </em><em>optional</em>) – List of periods to add copies. (default: <cite>[0]</cite>)</p></li>
+<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Number of copies to add. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>periods</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, </em><em>optional</em>) – List of periods to add copies. (default: <code class="docutils literal notranslate"><span class="pre">[0]</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -930,9 +996,10 @@ as defined below.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>action</strong> (<a class="reference internal" href="#vmtplanner.EntityAction" title="vmtplanner.EntityAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntityAction</span></code></a>) – Change to effect on the entity.</p></li>
 <li><p><strong>targets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of entity or group UUIDs.</p></li>
-<li><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of days from today at which to make change. (default: <cite>[0]</cite>)</p></li>
-<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Number of copies to add. (default: <cite>1</cite>)</p></li>
-<li><p><strong>new_target</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Template UUID to replace <code class="docutils literal notranslate"><span class="pre">target</span></code> with. Destination
+<li><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of days from today at which to make change.
+(default: <code class="docutils literal notranslate"><span class="pre">[0]</span></code>)</p></li>
+<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Number of copies to add. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>new_target</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Template UUID to replace <cite>target</cite> with. Destination
 group or host UUID for migrations.</p></li>
 </ul>
 </dd>
@@ -954,7 +1021,8 @@ VMs can consume.</p>
 <li><p><strong>targets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of entity or group UUIDs.</p></li>
 <li><p><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>conditional</em>) – Commodity type to modify. (ignored in 6.1.0+)</p></li>
 <li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Utilization value as a positive integer 0 to 100.</p></li>
-<li><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Singular period in which to set the setting. (default: <cite>0</cite>)</p></li>
+<li><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Singular period in which to set the setting.
+(default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -962,7 +1030,8 @@ VMs can consume.</p>
 <p class="admonition-title">Notes</p>
 <p>This method provides backwards compatibility with previous versions of
 Turbonomic which require deprecated parameters. The <cite>type</cite> parameter
-is required by versions of Turbonomic prior to 6.1.0, and ignored otherewise.</p>
+is required by versions of Turbonomic prior to 6.1.0, and ignored
+otherewise.</p>
 </div>
 </dd></dl>
 
@@ -975,7 +1044,8 @@ is required by versions of Turbonomic prior to 6.1.0, and ignored otherewise.</p
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>targets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of entity or group UUIDs.</p></li>
 <li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Utilization value as a positive integer 0 to 100.</p></li>
-<li><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Singular period in which to set the setting.</p></li>
+<li><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Singular period in which to set the
+setting.</p></li>
 </ul>
 </dd>
 </dl>
@@ -992,8 +1062,10 @@ is required by versions of Turbonomic prior to 6.1.0, and ignored otherewise.</p
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>match_source</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the source OS will be matched.</p></li>
-<li><p><strong>unlicensed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, destination targets will be selected without licensed OSes.</p></li>
+<li><p><strong>match_source</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the source OS will be
+matched.</p></li>
+<li><p><strong>unlicensed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, destination targets will
+be selected without licensed OSes.</p></li>
 <li><p><strong>source</strong> (<a class="reference internal" href="#vmtplanner.CloudOS" title="vmtplanner.CloudOS"><code class="xref py py-class docutils literal notranslate"><span class="pre">CloudOS</span></code></a>) – Source OS to map from.</p></li>
 <li><p><strong>target</strong> (<a class="reference internal" href="#vmtplanner.CloudOS" title="vmtplanner.CloudOS"><code class="xref py py-class docutils literal notranslate"><span class="pre">CloudOS</span></code></a>) – Target OS to map to.</p></li>
 <li><p><strong>custom</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, </em><em>optional</em>) – List of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a> custom OS settings.</p></li>
@@ -1016,7 +1088,7 @@ compatibility.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Target entity UUID.</p></li>
-<li><p><strong>periods</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, </em><em>optional</em>) – List of periods to add copies. (default: <cite>[0]</cite>)</p></li>
+<li><p><strong>periods</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, </em><em>optional</em>) – List of periods to add copies. (default: <code class="docutils literal notranslate"><span class="pre">[0]</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1052,7 +1124,7 @@ compatibility.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Target entity or group UUID to migrate.</p></li>
 <li><p><strong>destination_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Destination entity or group UUID.</p></li>
-<li><p><strong>period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Period in which to migrate. (default: <cite>0</cite>)</p></li>
+<li><p><strong>period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Period in which to migrate. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1068,8 +1140,8 @@ compatibility.</p>
 <dd><p>Migrates hot clusters to cold clusters to alleviate resource pressure.</p>
 <p>Scope should not be set to market for this plan type. Unlike other entity
 methods, <a class="reference internal" href="#vmtplanner.PlanSpec.relieve_pressure" title="vmtplanner.PlanSpec.relieve_pressure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">relieve_pressure()</span></code></a> is primairly purposed for the
-<cite>ALLEVIATE_PRESSURE</cite> plan type. It should only be used in
-<cite>ALLEVIATE_PRESSURE</cite> or <cite>CUSTOM</cite> plans.</p>
+<code class="docutils literal notranslate"><span class="pre">ALLEVIATE_PRESSURE</span></code> plan type. It should only be used in
+<code class="docutils literal notranslate"><span class="pre">ALLEVIATE_PRESSURE</span></code> or <code class="docutils literal notranslate"><span class="pre">CUSTOM</span></code> plans.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1117,8 +1189,8 @@ compatibility.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – UUID of the entity to replace.</p></li>
 <li><p><strong>replacement_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Template UUID to use as a replacement.</p></li>
-<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Number of copies to add. (default: <cite>1</cite>)</p></li>
-<li><p><strong>periods</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, </em><em>optional</em>) – List of periods to add copies. (default: <cite>[0]</cite>)</p></li>
+<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Number of copies to add. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>periods</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, </em><em>optional</em>) – List of periods to add copies. (default: <code class="docutils literal notranslate"><span class="pre">[0]</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1204,9 +1276,12 @@ compatibility.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>version</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><em>object</em></a>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">Version</span></code> object.</p></li>
+<li><p><strong>version</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><em>object</em></a><em>, </em><em>optional</em>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">Version</span></code> object.</p></li>
 <li><p><strong>**kwargs</strong> – Additional JSON processing arguments.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>PlanError if no version definition is supplied.</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -1279,7 +1354,7 @@ compatibility.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017-2019, R.A. Stern
+        &copy; Copyright 2017-2019
 
     </p>
   </div>
