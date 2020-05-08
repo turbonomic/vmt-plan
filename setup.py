@@ -15,8 +15,9 @@ with open(os.path.join(here, 'README.rst'), 'r', 'utf-8') as fp:
     readme = fp.read()
 
 requires = [
-    'vmtconnect>=2.2.1',
-    'requests>=2.21.0'
+    'vmtconnect>=3.2.1',
+    'requests>=2.21.0',
+    'umsg>=1.0.2'
 ]
 
 setup(

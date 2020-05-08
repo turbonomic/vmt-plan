@@ -67,7 +67,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'vmt-plan'
-copyright = u'2017-2019, R.A. Stern'
+copyright = u'2017-2019'
 author = u'R.A. Stern'
 
 # The version info for the project you're documenting, acts as replacement for
