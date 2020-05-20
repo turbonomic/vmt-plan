@@ -1,5 +1,5 @@
 # Copyright 2017-2020 R.A. Stern
-# Copyright 2020 Turbonomic, Inc
+# Portions Copyright 2020 Turbonomic, Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
