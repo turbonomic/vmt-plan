@@ -1,4 +1,3 @@
-# Copyright 2017-2020 R.A. Stern
 # Copyright 2020 Turbonomic, Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,10 +13,15 @@
 # limitations under the License.
 # libraries
 
-__title__ = 'vmtplan'
-__description__ = 'Turbonomic Plan Engine'
-__version__ = '2.1.0.dev9'
-__author__ = 'R.A. Stern'
-__author_email__ = 'rastern@gmail.com'
-__license__ = 'Apache 2.0'
-__copyright__ = 'Copyright 2017-2020 R.A. Stern'
+from .headroom import (ClusterHeadroom, condense_supplychain, Group,
+                       HeadroomEncoder, HeadroomMode, Template)
+
+__all__ = [
+    'ClusterHeadroom',
+    'cluster_headroom',
+    'condense_supplychain',
+    'Group',
+    'HeadroomEncoder',
+    'HeadroomMode',
+    'Template'
+]
