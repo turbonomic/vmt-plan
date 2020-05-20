@@ -1,18 +1,40 @@
-import collections
+# Copyright 2017-2020 R.A. Stern
+# Portions Copyright 2020 Turbonomic, Inc
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# libraries
+
+from collections import defaultdict, namedtuple
+from collections.abc import Mapping
 import copy
 import datetime
+from enum import Enum
+from functools import wraps
 import json
 import math
 import time
+import traceback
 import warnings
 
-from enum import Enum
-from functools import wraps
 from urllib.parse import urlencode
+import umsg
+from umsg.mixins import LoggingMixin
 
-import vmtconnect
+import vmtconnect as vc
 
 
+
+umsg.init()
 _VERSION_REQ = ['5.9.0+']
 _VERSION_EXC = []
 
@@ -48,7 +70,7 @@ class PlanRunning(PlanError):
 
 # unable to run a plan
 class PlanRunFailure(PlanError):
-    """Raised when a plan fails to start."""
+    """Raised when a plan fails to run properly."""
     pass
 
 
@@ -61,6 +83,16 @@ class PlanDeprovisionError(PlanError):
 # plan timeout exceeded
 class PlanExecutionExceeded(PlanError):
     """Raised when a plan exceeds the timeout period specified."""
+    pass
+
+
+# settings errors
+class PlanSettingsError(Exception):
+    pass
+
+
+# value mapping error
+class InvalidValueMapError(PlanSettingsError):
     pass
 
 
@@ -88,10 +120,15 @@ class AutomationSetting(Enum):
 
 class CloudLicense(Enum):
     """Cloud OS licensing."""
+    #:
     LINUX = 'linuxByol'
+    #:
     RHEL = 'rhelByol'
+    #:
     SLES = 'slesByol'
+    #:
     SUSE = 'slesByol'
+    #:
     WINDOWS = 'windowsByol'
 
 
@@ -111,10 +148,15 @@ class CloudOS(Enum):
 
 class CloudTargetOS(Enum):
     """Cloud Target OS definitions."""
+    #:
     LINUX = 'linuxTargetOs'
+    #:
     RHEL = 'rhelTargetOs'
+    #:
     SLES = 'slesTargetOs'
+    #:
     SUSE = 'slesTargetOs'
+    #:
     WINDOWS = 'windowsTargetOs'
 
 
@@ -146,28 +188,20 @@ class EntityAction(Enum):
 
 class MarketState(Enum):
     """Market states."""
-
     #: Indicates the plan scope is being copied.
     COPYING = 'copy'
-
     #: Indicates the market was created.
     CREATED = 'created'
-
     #: Indicates the market plan is being deleted.
     DELETING = 'del'
-
     #: Indicates market plan is setup and ready to be run.
     READY_TO_START = 'ready'
-
     #: Indicates the market plan is running.
     RUNNING = 'run'
-
     #: Indicates the market plan stopped.
     STOPPED = 'stop'
-
     #: Indicates the market plan succeeded.
     SUCCEEDED = 'success'
-
     #: Indicates the market plan was stop manually by a user.
     USER_STOPPED = 'user_stop'
 
@@ -184,6 +218,8 @@ class PlanType(Enum):
     CUSTOM = 'CUSTOM'
     #: Host Decommissioning
     DECOMMISSION_HOST = 'DECOMMISSION_HOST'
+    #: On-Prem Optimization
+    OPTIMIZE_ONPREM = 'OPTIMIZE_ONPREM'
     #: Future Workload Change
     PROJECTION = 'PROJECTION'
     #: Host Hardware Reconfiguration
@@ -204,8 +240,20 @@ class ServerResponse(Enum):
     ERROR = 'error'
 
 
-# 5.9.x +
-_dto_map_scenario_settings = {
+# Map DSL
+# $ substitute (regular variable)
+# @ map variable value to new value
+# [] group by operator
+
+# basic structure
+# <setting name>: <definition>
+# Dictionary values (sets) will be overwritten if the same key is repeated
+#   - depth is relevant
+# List values will be appended (nested lists in dicts require explicit grouping)
+# 6.x & 7.x maps should be applied additively, 590 is an outlier
+
+# 5.9.x+ - to be removed when classic deprecated
+_dto_map_scenario_settings_590 = {
     'name': {'displayName': '$value'},
     'type': {'type': '$value'},
 
@@ -233,14 +281,13 @@ _dto_map_scenario_settings = {
     EntityAction.REPLACE: {'changes': [{'type': 'REPLACED', 'projectionDays': '$projection', 'targets': [{'uuid': '$target'}, {'uuid': '$new_target'}]}]},
 }
 
-_scenario_settings_collations = {
+_scenario_settings_collations_590 = {
     'maxutil': {'type': 'list_value', 'groups': [{'label': 'ids', 'fields': ['uuid']}], 'opt': {'field_value': 'keeplast'}},
     'curutil': {'type': 'list_value', 'groups': [{'label': 'ids', 'fields': ['uuid']}], 'opt': {'field_value': 'keeplast'}},
     'peakbaseline': {'type': 'list_value', 'groups': [{'label': 'ids', 'fields': ['uuid', 'value']}], 'opt': {'field_value': 'keeplast'}},
 }
 
-
-# 6.1.x +
+# 6.1.x+
 _dto_map_scenario_settings_610 = {
     'name': {'displayName': '$value'},
     'type': {'type': '$value'},
@@ -272,7 +319,14 @@ _dto_map_scenario_settings_610 = {
     'relievepressure': {'topologyChanges': {'relievePressureList': [{'projectionDay': '$projection', 'sources': [{'uuid': '$source'}], 'destinations': [{'uuid': '$destination'}],}]}},
 }
 
-_scenario_settings_collations_610 = {}
+# 7.21.x+
+_dto_map_scenario_settings_721 = {
+    AutomationSetting.PROVISION_PM: {'configChanges': {'automationSettingList': [{'uuid': 'provision', 'value': '@value:ENABLED;DISABLED', 'entityType': 'PhysicalMachine'}]}},
+    AutomationSetting.SUSPEND_PM: {'configChanges': {'automationSettingList': [{'uuid': 'suspend', 'value': '@value:ENABLED;DISABLED', 'entityType': 'PhysicalMachine'}]}},
+    AutomationSetting.PROVISION_DS: {'configChanges': {'automationSettingList': [{'uuid': 'provision', 'value': '@value:ENABLED;DISABLED', 'entityType': 'Storage'}]}},
+    AutomationSetting.SUSPEND_DS: {'configChanges': {'automationSettingList': [{'uuid': 'suspend', 'value': '@value:ENABLED;DISABLED', 'entityType': 'Storage'}]}},
+    AutomationSetting.RESIZE: {'configChanges': {'automationSettingList': [{'uuid': 'resize', 'value': '@value:ENABLED;DISABLED', 'entityType': 'VirtualMachine'}]}},
+}
 
 
 
@@ -285,10 +339,10 @@ def deprecated(*fargs):
     def _deprecated(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            text = '{} is deprecated'.format(name or func.__name__)
+            text = f'{name or func.__name__} is deprecated'
 
             if msg:
-                text += ', use {} instead.'.format(msg)
+                text += f', use {msg} instead.'
 
             warnings.warn(text, DeprecationWarning)
 
@@ -308,26 +362,32 @@ def deprecated(*fargs):
 # ----------------------------------------------------
 #  API Wrapper Classes
 # ----------------------------------------------------
-class Plan:
+PlanHook = namedtuple('PlanHook', ['name', 'args'])
+
+
+class Plan(LoggingMixin):
     """Plan instance.
 
     Args:
         connection (:class:`~vmtconnect.Connection`): :class:`~vmtconnect.Connection` or :class:`~vmtconnect.Session`.
-        spec (:class:`PlanSpec`, optional): Settings to apply to the market, if running a plan.
+        spec (:class:`PlanSpec`, optional): Settings to apply to the market, if
+            running a plan.
         market (str, optional): Base market UUID to apply the settings to.
+        name (str, optional): Plan display name.
 
     Attributes:
         duration (int): Plan duration in seconds, or ``None`` if unavailable.
         initialized (bool): ``True`` if the market is initialized and usable.
         market_id (str): Market UUID, read-only attribute.
         market_name (str): Market name, read-only attribute.
+        result (:class:`~vmtplanner.MarketState`): Market run result state.
         scenario_id (str): Scenario UUID, read-only attribute.
         scenario_name (str): Scenario name, read-only attribute.
         script_duration (int): Plan script duration in seconds.
         server_duration (int): Plan server side duration in seconds.
         state (:class:`MarketState`): Current state of the market.
-        start (:class:`~datetime.datetime`): :class:`~datetime.datetime` object representing the
-            start time, or ``None`` if no plan has been run.
+        start (:class:`~datetime.datetime`): :class:`~datetime.datetime` object
+            representing the start time, or ``None`` if no plan has been run.
         unplaced_entities (bool): ``True`` if there are unplaced entities.
     """
     # system level markets to block certain actions
@@ -335,13 +395,14 @@ class Plan:
 
     __datetime_format = "%Y-%m-%dT%H:%M:%S%z"
 
-    def __init__(self, connection, spec=None, market='Market'):
-        self.__vmt = connection
+    def __init__(self, connection, spec=None, market='Market', name=None):
+        super().__init__()
+        self._vmt = connection
         self.__init = False
         self.__scenario_id = None
         self.__scenario_name = spec.name if spec is not None else None
         self.__market_id = None
-        self.__market_name = self.__gen_market_name()
+        self.__market_name = name if name else self.__gen_market_name()
         self.__plan = spec
         self.__plan_start = None
         self.__plan_end = None
@@ -349,19 +410,25 @@ class Plan:
         self.__plan_server_start = None
         self.__plan_server_end = None
         self.__plan_server_duration = None
+        self.__hook_preprocessor = None
+        self.__hook_postprocessor = None
+        self.result = None
         self.unplaced = None
         self.base_market = market
 
-        ver = self.__vmt.version
-        vspec = vmtconnect.VersionSpec(_VERSION_REQ, exclude=_VERSION_EXC)
-        vspec.check(self.__vmt.version)
+        # enforce module specific version exclusions
+        vspec = vc.VersionSpec(_VERSION_REQ, exclude=_VERSION_EXC)
+        vspec.check(self._vmt.version)
 
-        if spec.version is None:
-            spec.version = ver
+        # assign the spec version to build
+        if self.__plan.version is None:
+            self.__plan.version = self._vmt.version
 
         # instance version monkey patching magic, default is pre 5.9.1
-        if vmtconnect.VersionSpec.cmp_ver(ver.base_version, '5.9.1') >= 0:
+        if vc.VersionSpec.cmp_ver(self.__plan.version.base_version, '5.9.1') >= 0:
             self.__init_scenario_request = self.__init_scenario_request_591
+
+        self.log('Plan initialized', level='debug')
 
     @property
     def initialized(self):
@@ -413,14 +480,17 @@ class Plan:
     def unplaced_entities(self):
         return self.unplaced
 
+    @property
+    def results(self):
+        # for backwards compatibility
+        return self.result
+
     def __gen_market_name(self):
-        return 'CUSTOM_{}_{}'.format(
-            self.__vmt.get_users('me')[0]['username'],
-            str(int(time.time()))
-        )
+        user = self._vmt.get_users('me')[0]['username']
+        return f'CUSTOM_{user}_{str(int(time.time()))}'
 
     def __sync_server_data(self):
-        market = self.__vmt.get_markets(uuid=self.__market_id)
+        market = self._vmt.get_markets(uuid=self.__market_id)[0]
 
         try:
             self.__market_id = market['uuid']
@@ -464,14 +534,14 @@ class Plan:
                      datetime.timedelta(minutes=self.__plan.timeout)):
                 try:
                     self.stop()
-                except vmtconnect.HTTP502Error:
+                except vc.HTTP502Error:
                     pass
-                except vmtconnect.HTTP500Error:
+                except vc.HTTP500Error:
                     raise PlanError('Server error stopping plan')
-                except vmtconnect.HTTPError:
+                except vc.HTTPError:
                     raise PlanError('Plan stop command error')
 
-                raise PlanExecutionExceeded()
+                raise PlanExecutionExceeded(f'Plan execution time exceeded maximum allowed, market state: {self.get_state()}')
             else:
                 if self.__plan.poll_freq > 0:
                     wait = self.__plan.poll_freq
@@ -482,12 +552,13 @@ class Plan:
                 time.sleep(wait)
 
                 if self.is_state(MarketState.CREATED):
-                    # catches a failed start after the first wait
-                    raise PlanRunFailure('Plan failed to run')
+                    # catches a failed start after the first wait,
+                    # indicates a stuck plan
+                    raise PlanRunFailure(f'Plan failed to properly initialize. Check catalina.out for more details. Market ID: [{self.__market_id}], Scenario ID: [{self.__scenario_id}]')
 
     def __delete(self, scenario=True):
-        m = self.__vmt.del_market(self.__market_id)
-        s = True if scenario else self.__vmt.del_scenario(self.__scenario_id)
+        m = self._vmt.del_market(self.__market_id)
+        s = True if scenario else self._vmt.del_scenario(self.__scenario_id)
 
         if m and s:
             return True
@@ -496,16 +567,29 @@ class Plan:
 
     def __init_scenario_request(self, dto):                                    # pylint: disable=E0202
         # pre 5.9.1 compatibility (upto & including 5.9.0)
-        return self.__vmt.request('scenarios/' + self.__plan.name,
+        return self._vmt.request('scenarios/' + self.__plan.name,
                                   method='POST', dto=dto)[0]
 
     def __init_scenario_request_591(self, dto):
         # 5.9.1 and later compatibility
-        return self.__vmt.request('scenarios', method='POST', dto=dto)[0]
+        return self._vmt.request('scenarios', method='POST', dto=dto)[0]
 
     def __init_scenario(self):
-        # create the scenario for the plan
-        response = self.__init_scenario_request(self.__plan.json)
+        if vc.VersionSpec.cmp_ver(self.__plan.version.base_version, '7.21.0') >= 0 and \
+           vc.VersionSpec.cmp_ver(self.__plan.version.base_version, '7.21.5') < 0:
+            # special case for OM-57067
+            # we must augement scope input to work around the bug
+            dto = json.loads(self.__plan.json)
+
+            for i, _ in enumerate(dto['scope']):
+                ent = self._vmt.search(uuid=dto['scope'][i]['uuid'])[0]
+                dto['scope'][i]['displayName'] = ent['displayName']
+                dto['scope'][i]['className'] = ent['className']
+
+            response = self.__init_scenario_request(json.dumps(dto))
+        else:
+            # create the scenario for the plan
+            response = self.__init_scenario_request(self.__plan.json)
 
         self.__scenario_id = response['uuid']
         self.__scenario_name = response['displayName']
@@ -520,7 +604,7 @@ class Plan:
         if self.__plan.params:
             param.update(self.__plan.params)
 
-        response = self.__vmt.request(path, method='POST', query=urlencode(param)[0])[0]
+        response = self._vmt.request(path, method='POST', query=param)[0]
 
         self.__market_id = response['uuid']
         self.__market_name = response['displayName']
@@ -549,7 +633,7 @@ class Plan:
         Returns:
             list: A list of statistics by period.
         """
-        return self.__vmt.get_market_stats(self.__market_id)
+        return self._vmt.get_market_stats(self.__market_id)
 
     def is_system(self):
         """Checks if the market is a protected system market.
@@ -596,7 +680,7 @@ class Plan:
             :class:`MarketState`: Current market state.
         """
         try:
-            market = self.__vmt.get_markets(uuid=self.__market_id)
+            market = self._vmt.get_markets(uuid=self.__market_id)
             self.__init = True
 
             return MarketState[market[0]['state']]
@@ -604,32 +688,50 @@ class Plan:
         except KeyError:
             return None
 
+    def hook_pre(self, name, *args, **kwargs):
+        self.__hook_preprocessor = PlanHook(name, args)
+
+    def hook_post(self, name, *args, **kwargs):
+        self.__hook_postprocessor = PlanHook(name, args)
+
     def run(self):
         """Runs the market with currently applied scenario and settings.
 
         Raises:
-            PlanExecutionExceeded
-            PlanError: Retry limit reached.
+            PlanError if retry limit is reached.
         """
-        run = 1
-        error = None
+        if self.__hook_preprocessor:
+            self.__hook_preprocessor.name(*self.__hook_preprocessor.args)
+
+        run = 0
+        ret = None
+        trace = None
 
         while run < self.__plan.max_retry:
             try:
-                return self.__run()
-            except (vmtconnect.HTTP500Error, PlanError) as e:
-                error = e
+                self.result = self.__run()
+                break
+            except (vc.HTTP500Error, PlanError):
+                trace = traceback.format_exc()
                 run += 1
                 pass
 
-        raise PlanError(f'Retry limit reached. Last error:\n{error}')
+        if not self.result:
+            raise PlanError(f'Retry limit reached. Last error:\n{trace}')
+
+        if self.__hook_postprocessor:
+            return self.__hook_postprocessor.name(*self.__hook_postprocessor.args)
+
+        return self.result
 
     def run_async(self):
+        # TODO: make async threaded so it is called with hooks and settings
         """Runs the market plan in asynchronous mode.
 
         When run asynchronously the plan will be started and the state returned
         immediately. All settings pertaining to polling, timeout, and retry
-        will be ignored. The :class:`~Plan.duration` will not be recorded.
+        will be ignored. The :class:`~Plan.duration` will not be recorded, and
+        plan hooks are not called.
         """
         return self.__run(async=True)
 
@@ -644,15 +746,15 @@ class Plan:
             PlanError: Error stopping plan
         """
         try:
-            self.__vmt.request('markets', uuid=self.__market_id, method='PUT',
+            self._vmt.request('markets', uuid=self.__market_id, method='PUT',
                                query='operation=stop')
             self.__wait_for_stop()
             self.__plan_duration = (datetime.datetime.now() - self.__plan_start).total_seconds()
 
-        except vmtconnect.HTTP500Error:
+        except vc.HTTP500Error:
             raise
         except Exception as e:
-            raise PlanError('Error stopping plan: {}'.format(e))
+            raise PlanError(f'Error stopping plan: {e}')
 
         return True
 
@@ -706,7 +808,7 @@ class PlanSpec:
         will be used when the scenario is evaluated by the :class:`Plan` class.
         If you need to generate a scenario DTO without a :class:`Plan` class,
         you will need to supply the `version` prior to calling :meth:`.to_json`
-        or accessing the ``json`` property.
+        or accessing the `json` property.
     """
     def __init__(self, name=None, type=PlanType.CUSTOM, scope=None, version=None):
         # private
@@ -715,7 +817,7 @@ class PlanSpec:
 
         # public
         self.version = version
-        self.name = name if name is not None else self.__gen_scenario_name()
+        self.name = name if name else self.__gen_scenario_name()
         self.type = type
         self.ignore_constraints = False
 
@@ -797,7 +899,7 @@ class PlanSpec:
 
         Args:
             id (str): Target entity UUID.
-            count (int, optional): Number of copies to add. (default: `1`)
+            count (int, optional): Number of copies to add. (default: ``1``)
             periods (list, optional): List of periods to add copies. (default: `[0]`)
 
         See Also:
@@ -832,8 +934,8 @@ class PlanSpec:
 
         Args:
             id (str): Target entity UUID.
-            count (int, optional): Number of copies to add. (default: `1`)
-            periods (list, optional): List of periods to add copies. (default: `[0]`)
+            count (int, optional): Number of copies to add. (default: ``1``)
+            periods (list, optional): List of periods to add copies. (default: ``[0]``)
 
         See Also:
             See :ref:`plan_periods`.
@@ -887,9 +989,10 @@ class PlanSpec:
         Args:
             action (:class:`EntityAction`): Change to effect on the entity.
             targets (list): List of entity or group UUIDs.
-            projection (list): List of days from today at which to make change. (default: `[0]`)
-            count (int): Number of copies to add. (default: `1`)
-            new_target (str): Template UUID to replace ``target`` with. Destination
+            projection (list): List of days from today at which to make change.
+                (default: ``[0]``)
+            count (int): Number of copies to add. (default: ``1``)
+            new_target (str): Template UUID to replace `target` with. Destination
               group or host UUID for migrations.
 
         See Also:
@@ -933,12 +1036,14 @@ class PlanSpec:
             targets (list): List of entity or group UUIDs.
             type (str, conditional): Commodity type to modify. (ignored in 6.1.0+)
             value (int): Utilization value as a positive integer 0 to 100.
-            projection (int, optional): Singular period in which to set the setting. (default: `0`)
+            projection (int, optional): Singular period in which to set the setting.
+                (default: ``0``)
 
         Notes:
             This method provides backwards compatibility with previous versions of
             Turbonomic which require deprecated parameters. The `type` parameter
-            is required by versions of Turbonomic prior to 6.1.0, and ignored otherewise.
+            is required by versions of Turbonomic prior to 6.1.0, and ignored
+            otherewise.
         """
         if isinstance(targets, str):
             targets = [targets]
@@ -952,7 +1057,8 @@ class PlanSpec:
         Args:
             targets (list): List of entity or group UUIDs.
             value (int): Utilization value as a positive integer 0 to 100.
-            projection (int, optional): Singular period in which to set the setting.
+            projection (int, optional): Singular period in which to set the
+                setting.
         """
         if isinstance(targets, str):
             targets = [targets]
@@ -967,8 +1073,10 @@ class PlanSpec:
           {'source': :class:`CloudOS`, 'target': :class:`CloudOS`, 'unlicensed': :obj:`bool`}
 
         Args:
-            match_source (bool, optional): If ``True``, the source OS will be matched.
-            unlicensed (bool, optional): If ``True``, destination targets will be selected without licensed OSes.
+            match_source (bool, optional): If ``True``, the source OS will be
+                matched.
+            unlicensed (bool, optional): If ``True``, destination targets will
+                be selected without licensed OSes.
             source (:class:`CloudOS`): Source OS to map from.
             target (:class:`CloudOS`): Target OS to map to.
             custom (list, optional): List of :obj:`dict` custom OS settings.
@@ -1009,7 +1117,7 @@ class PlanSpec:
 
         Args:
             id (str): Target entity UUID.
-            periods (list, optional): List of periods to add copies. (default: `[0]`)
+            periods (list, optional): List of periods to add copies. (default: ``[0]``)
 
         See Also:
             See :ref:`plan_periods`.
@@ -1058,7 +1166,7 @@ class PlanSpec:
         Args:
             id (str): Target entity or group UUID to migrate.
             destination_id (str): Destination entity or group UUID.
-            period (int, optional): Period in which to migrate. (default: `0`)
+            period (int, optional): Period in which to migrate. (default: ``0``)
 
         See Also:
             See :ref:`plan_periods`.
@@ -1107,8 +1215,8 @@ class PlanSpec:
         Args:
             id (str): UUID of the entity to replace.
             replacement_id (str): Template UUID to use as a replacement.
-            count (int, optional): Number of copies to add. (default: `1`)
-            periods (list, optional): List of periods to add copies. (default: `[0]`)
+            count (int, optional): Number of copies to add. (default: ``1``)
+            periods (list, optional): List of periods to add copies. (default: ``[0]``)
 
         See Also:
             See :ref:`plan_periods`.
@@ -1123,8 +1231,8 @@ class PlanSpec:
 
         Scope should not be set to market for this plan type. Unlike other entity
         methods, :meth:`.relieve_pressure` is primairly purposed for the
-        `ALLEVIATE_PRESSURE` plan type. It should only be used in
-        `ALLEVIATE_PRESSURE` or `CUSTOM` plans.
+        ``ALLEVIATE_PRESSURE`` plan type. It should only be used in
+        ``ALLEVIATE_PRESSURE`` or ``CUSTOM`` plans.
 
         Args:
             sources (list): list of one or more cluster UUIDs to migrate.
@@ -1216,29 +1324,48 @@ class PlanSpec:
         """Returns the version specific DTO for the scenario.
 
         Args:
-            version (object): :class:`Version` object.
+            version (object, optional): :class:`Version` object.
             **kwargs: Additional JSON processing arguments.
+
+        Raises:
+            PlanError if no version definition is supplied.
         """
+        def updatemap(d, s):
+            for i in s:
+                d[i] = s[i]
+
         version = version if version else self.version
 
-        dto = {}
-        fix_add = False
+        if not version:
+            raise PlanError('Unable to map settings to version type of None')
 
-        if vmtconnect.VersionSpec.cmp_ver(version.base_version, '6.1.0') >= 0:
+        dto = {}
+        fix59 = False
+
+        # TODO: more elegant solution
+        if vc.VersionSpec.cmp_ver(version.base_version, '6.1.0') >= 0:
             map = _dto_map_scenario_settings_610
+
+            # patch for XL
+            if vc.VersionSpec.cmp_ver(version.base_version, '7.21') >= 0:
+                updatemap(map, _dto_map_scenario_settings_721)
+
             settings = self.get_settings()
+        # 5.9 support to be removed when classic is deprecated (if ever?)
+        elif vc.VersionSpec.cmp_ver(version.base_version, '5.9.0') >= 0:
+            fix59 = True
+            collation = copy.deepcopy(_scenario_settings_collations_590)
+            map = _dto_map_scenario_settings_590
+            settings = collate_settings(self.get_settings(), collation)
         else:
-            fix_add = True
-            col = copy.deepcopy(_scenario_settings_collations)
-            map = _dto_map_scenario_settings
-            settings = collate_settings(self.get_settings(), col)
+            raise PlanSettingsError(f'No settings map for version: {version.base_version}')
 
         for i in settings:
             key = list(i)[0]
             dto = map_settings(map[key], i[key], dto)
 
         # fix 5.9 ADDED / ADD_REPEAT
-        if fix_add:
+        if fix59:
             try:
                 for i in dto['changes']:
                     if i['type'] == 'ADDED' and len(i['projectionDays']) > 1:
@@ -1258,7 +1385,6 @@ def epoch_to_ts(value):
 
     Args:
         value (int): epoch time string given in either seconds or milliseconds.
-
     """
     try:
         return datetime.datetime.utcfromtimestamp(value).strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -1319,6 +1445,46 @@ def set_key_value(data, key, value):
         data[key] = value
 
 
+def map_value(value, mapdef):
+    """Value resolution map.
+
+    Args:
+        mapdef (str): Mapping definition
+        value: Value to be mapped
+
+    Notes:
+        The map is expected as sets of equality pairs (old=new), or a single set
+        of boolean values separated by a semicolons (;). All values except
+        boolean values will be treated as strings. For example:
+            boolean set: ENABLED;DISABLED
+            list of pairs: on=ENABLED;off=DISABLED;closed=DISABLED
+
+    Returns:
+        Mapped value.
+
+    Raises:
+        InvalidValueMapError: If the value map is malformed
+    """
+    try:
+        if '=' in mapdef:
+            for x in mapdef.split(';'):
+                src, dest = x.split('=')
+
+                if src == value:
+                    return dest
+        else:
+            t, f = mapdef.split(';')
+
+            if value:
+                return t
+
+            return f
+    except Exception:
+        raise InvalidValueMapError('Value not resolvable for the given value map')
+
+    return value
+
+
 def resolve_value(var, values):
     """Resolves variables in settings map.
 
@@ -1327,11 +1493,23 @@ def resolve_value(var, values):
         values (dict): Dictionary of settings values.
 
     Returns:
-        Resolved value.
+        Resolved value, if there's an error it returns the unresolved variable.
     """
+    def _sub(v):
+        return values[v]
+
+    def _map(v):
+        _var, _map = v.split(':')
+        return map_value(values[_var], _map)
+
     if isinstance(var, str):
-        if var[0] == '$':
-            return values[var[1:]]
+        try:
+            if var[0] == '$':
+                return _sub(var[1:])
+            if var[0] == '@':
+                return _map(var[1:])
+        except Exception:
+            return var
 
     if isinstance(var, list):
         for i, v in enumerate(var):
@@ -1350,6 +1528,9 @@ def map_settings(map, values, setting=None):
         values (dict): Values to resolve.
         setting (dict, optional): Existing settings to update.
 
+    Returns:
+        Modified `setting` dictionary.
+
     Notes:
         Dictionary values will be overwritten if the same key is called again,
         while list values will be extended.
@@ -1359,7 +1540,7 @@ def map_settings(map, values, setting=None):
 
     for k, v in map.items():
         # nested syntax
-        if isinstance(v, collections.Mapping):
+        if isinstance(v, Mapping):
             setting[k] = map_settings(v, values, setting.get(k, {}))
 
         # list of values
@@ -1423,7 +1604,7 @@ def collate_settings(s, c):
                     if j < i:
                         continue
 
-                    _grp = collections.defaultdict(lambda: {})
+                    _grp = defaultdict(lambda: {})
                     # parse fields
                     for k, v in val2[key].items():
                         # group by

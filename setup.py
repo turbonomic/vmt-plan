@@ -15,8 +15,8 @@ with open(os.path.join(here, 'README.rst'), 'r', 'utf-8') as fp:
     readme = fp.read()
 
 requires = [
-    'vmtconnect>=2.2.1',
-    'requests>=2.21.0'
+    'vmtconnect>=3.2.3',
+    'umsg>=1.0.2'
 ]
 
 setup(
@@ -30,7 +30,7 @@ setup(
     packages=find_packages(),
     package_data={'': ['LICENSE', 'NOTICE']},
     include_package_data=True,
-    python_requires=">=3.6",
+    python_requires=">=3.5",
     install_requires=requires,
     license=about['__license__'],
     zip_safe=False,

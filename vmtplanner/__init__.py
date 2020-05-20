@@ -1,4 +1,4 @@
-# Copyright 2017-2019 R.A. Stern
+# Copyright 2017-2020 R.A. Stern
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,9 @@
 # libraries
 
 from .vmtplanner import *
-from .__about__ import *
+import vmtplanner.processors
+from .__about__ import (__author__, __copyright__, __description__,
+                        __license__, __title__, __version__)
 
 __all__ = [
     '__author__',
@@ -28,7 +30,7 @@ __all__ = [
     'CloudLicense',
     'CloudOS',
     'CloudTargetOS',
-    'EntityAction'
+    'EntityAction',
     'InvalidMarketError',
     'MarketError',
     'MarketState',
@@ -42,4 +44,3 @@ __all__ = [
     'PlanSpec',
     'ServerResponse',
 ]
-
