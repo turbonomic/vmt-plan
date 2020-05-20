@@ -1,4 +1,4 @@
-.. _vmt-connect: https://github.com/rastern/vmt-connect
+.. _vmt-connect: https://github.com/turbonomic/vmt-connect
 
 vmt-plan: Turbonomic API plan engine
 =======================================
@@ -13,7 +13,7 @@ Prior to version 2.0, vmt-plan was distributed as a stand-alone single file Pyth
 
 .. code:: bash
 
-   pip install vmtplan-2.0.0-py3-none-any.whl
+   pip install vmtplan-2.1.0-py3-none-any.whl
 
 
 Usage
@@ -50,7 +50,7 @@ Basic Plan
 Documentation
 -------------
 
-Detailed documentation is available online at https://rastern.github.io/vmt-plan.
+Detailed documentation is available online at https://turbonomic.github.io/vmt-plan.
 
 
 How to Contribute
