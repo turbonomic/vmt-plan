@@ -23,9 +23,11 @@ import decimal
 from enum import Enum, auto
 from itertools import chain, product
 import json
-from pprint import PrettyPrinter, pprint
+from pprint import pprint
 from statistics import mean
 import time
+
+from umsg.mixins import LoggingMixin
 
 try:
     import iso8601
@@ -60,7 +62,9 @@ class HeadroomMode(Enum):
 
 class HeadroomEncoder(json.JSONEncoder):
     def default(self, obj):
-        if isinstance(obj, (decimal.Decimal, Group, Template)):
+        if isinstance(obj, decimal.Decimal):
+            return float(obj)
+        if isinstance(obj, (Group, Template)):
             return str(obj)
         if isinstance(obj, set):
             return list(obj)
@@ -251,6 +255,309 @@ class Template:
         self.storage_provisioned = resources['diskSize']
 
 
+class Cluster(LoggingMixin):
+    entity_parts = ['uuid', 'displayName', 'state']
+    commodities = ['CPU', 'Mem', 'StorageAmount']
+    member_types = ['PhysicalMachine', 'Storage']
+    type_commodity = {
+        'PhysicalMachine': ['CPU', 'Mem'],
+        'Storage': ['StorageAmount']
+    }
+    template_commodity = {
+        'CPU': 'cpu',
+        'Mem': 'mem',
+        'StorageAmount': 'storage_amount'
+    }
+    group_template = {
+        'templates': None,
+        'members': {}
+    }
+
+    def __init__(self, connection, uuid, name, members=None, realtime_members=None,
+                 mode=HeadroomMode.SEPARATE, growth_start=None):
+        super().__init__()
+
+        self._vmt = connection
+        self.uuid = uuid
+        self.name = name
+        self.members = members if members else set()
+        self.realtime_members = realtime_members if realtime_members else set()
+        self.groups = {x: {0: copy.deepcopy(Cluster.group_template)} for x in Cluster.member_types}
+        self.growth = 0
+        self.headroom = defaultdict(lambda: None)
+        self.headroom_mode = mode
+
+        self.log(f'Initializing [{self.uuid}]:[{self.name}]')
+        try:
+            memberlist = []
+            response = self._vmt.get_groups(self.uuid)[0]
+
+            try:
+                memberlist = response['memberUuidList']
+            except KeyError:
+                # Classic compatibility
+                memberlist = [x['uuid'] for x in self._vmt.get_group_members(self.uuid)]
+
+            self.realtime_members = set(copy.deepcopy(memberlist))
+        except Exception as e:
+            self.log(f'Exception while processing cluster [{self.uuid}]:[{self.name}]: {e}', level='debug')
+            return None
+
+    @staticmethod
+    def exhaustdays(g, c):
+        if g > 0:
+            return int(D(c) / D(g))
+        else:
+            return -1
+
+    @staticmethod
+    def group_commodity_headroom(members, commodity, templates, mode=HeadroomMode.AVERAGE):
+        headroom = {
+            'Available': 0,
+            'Capacity': 0
+        }
+
+        # map the template commodity
+        tc = Cluster.template_commodity[commodity]
+
+        if mode == HeadroomMode.AVERAGE:
+            tcount = 1
+            required = mean([D(getattr(t, tc)) for t in templates])
+        elif mode == HeadroomMode.SUM:
+            tcount = len(templates)
+            required = sum([D(getattr(t, tc)) for t in templates])
+        else:
+            raise ValueError(f'Unknown mode [{mode}]')
+
+        for m in members.keys():
+            if 'statistics' not in members[m]:
+                #self.log(f'Skipping entity [{members[m]["displayName"]}], no statistics', level='debug')
+                continue
+
+            mcap = D(members[m]['statistics'][commodity]['capacity'])
+            mused = D(members[m]['statistics'][commodity]['value'])
+            mavail = mcap - mused
+            headroom['Available'] += 0 if required <= 0 else tcount * int(mavail / required)
+            headroom['Capacity'] += 0 if required <= 0 else tcount * int(mcap / required)
+
+        if headroom['Capacity'] == 0:
+            headroom['Available'] = headroom['Capacity'] = -1
+
+        return headroom
+
+    def _apply_templates(self, type, group, name, templates):
+        m = HeadroomMode
+        mode = m.AVERAGE if self.headroom_mode == m.SEPARATE else self.headroom_mode
+        self.headroom[type][name] = {}
+
+        for o in Cluster.type_commodity[type]:
+            self.headroom[type][name][o] = self.group_commodity_headroom(
+                    self.groups[type][group]['members'], o, templates, mode)
+
+            self.headroom[type][name][o]['DaysToExhaustion'] = \
+                self.exhaustdays(self.growth,
+                                 self.headroom[type][name][o]['Available'])
+
+            self.headroom[type][name][o]['TemplateCount'] = len(templates)
+            self.headroom[type][name][o]['GrowthPerDay'] = self.growth
+
+    def add_member(self, entity, type, realtimeid=None):
+        try:
+            self.groups[type][0]['members'][entity['uuid']] = entity
+            self.members.add(entity['uuid'])
+
+            if realtimeid:
+                self.realtime_members.add(realtimeid)
+        except KeyError as e:
+            pass
+
+    def apply_templates(self):
+        self.log(f'Calculating [{self.uuid}]:[{self.name}] headroom')
+
+        for type in self.groups:
+            self.headroom[type] = {}
+            comms = Cluster.type_commodity[type]
+
+            # compute type groups
+            for group in self.groups[type]:
+                if not self.groups[type][group]['members']:
+                    self.log(f'Skipping [{type}] group [{group}], no group members.', level='debug')
+                    continue
+
+                if self.groups[type][group]['templates'] is None:
+                    self.log(f'Skipping [{type}] group [{group}], no template assigned.', level='debug')
+                    continue
+
+                # TODO: potentially instantiate member filtering here
+                # members = self.groups[type][group]['members']
+
+                # calculate commodity headroom based on mode
+                if self.headroom_mode == HeadroomMode.SEPARATE:
+                    for i in self.groups[type][group]['templates']:
+                        self._apply_templates(type, group, i.name, [i])
+                else:
+                    if self.headroom_mode == HeadroomMode.SUM:
+                        name = '__SUM__'
+                    elif self.headroom_mode == HeadroomMode.AVG:
+                        name = '__AVG__'
+
+                    self._apply_templates(type,
+                                          group,
+                                          name,
+                                          self.groups[type][group]['templates'])
+            # end group loop ---
+        # end type loop ---
+
+    def get_default_template(self, cache=None):
+        if not cache:
+            cache = self._vmt.get_templates(fetch_all=True)
+
+        if self._vmt.is_xl():
+            names = [f'AVG:{self.name} for last 10 days']
+        else:
+            # this is likely a bug, VM templates should not
+            # be prefixed PMs_, but we see them this way
+            names = [
+                f'AVG:PMs_{self.name} for last 10 days',
+                f'AVG:VMs_{self.name} for last 10 days'
+            ]
+
+        # gets the sys generated cluster AVG template
+        for i in cache:
+            if i['displayName'] in names \
+            and i['className'] == 'VirtualMachineProfile':
+                return i['displayName']
+
+        return False
+
+    def get_growth(self, from_ts):
+        self.log(f'Calculating cluster growth')
+        stats = ['numVMs']
+
+        try:
+            response = self._vmt.get_entity_stats(scope=[self.uuid],
+                                                  start_date=from_ts,
+                                                  end_date=from_ts,
+                                                  stats=stats,
+                                                  fetch_all=True)[0]
+            then = response['stats'][0]['statistics'][0]['value']
+            start = read_isodate(response['stats'][0]['date'])
+        except (IndexError, KeyError):
+            then = 0
+            start = datetime.datetime.fromtimestamp(from_ts/1000, datetime.timezone.utc)
+
+        try:
+            response = self._vmt.get_entity_stats(scope=[self.uuid],
+                                                  stats=stats,
+                                                  fetch_all=True)[0]
+            now = response['stats'][0]['statistics'][0]['value']
+            end = read_isodate(response['stats'][0]['date'])
+        except (IndexError, KeyError):
+            now = 0
+            end = datetime.datetime.today(datetime.timezone.utc)
+
+        # (cur val - prev val) / days delta
+        growth = D(now - then) / D((end - start).days)
+
+        self.growth = growth if growth > 0 else D(0)
+        self.log(f'Cluster [{self.uuid}]:[{self.name}] growth: {self.growth}', level='debug')
+
+    def get_stats(self, market):
+        dto = {
+            'scopes': list(self.members),
+            'period': {
+                'startDate': self._vmt.get_markets(uuid=market)[0]['runDate'],
+                'statistics': kw_to_list_dict('name', Cluster.commodities)
+            }
+        }
+
+        return self._vmt.get_market_entities_stats(market, filter=json.dumps(dto), fetch_all=True)
+
+    def update_stats(self, market):
+        self.log(f'Updating statistics', level='debug')
+
+        if not self.members:
+            self.log(f'Cluster [{self.uuid}]:[{self.name}] has empty member list, skipping', level='warn')
+            return
+
+        for s in self.get_stats(market):
+            if s['className'] not in Cluster.member_types:
+                continue
+
+            if s['uuid'] in self.groups[s['className']][0]['members']:
+                newstats = {}
+
+                for stat in s['stats'][0]['statistics']:
+                    newstats[stat['name']] = {
+                        'capacity': stat['capacity']['total'],
+                        'name': stat['name'],
+                        'units': stat['units'],
+                        'value': stat['value']
+                    }
+
+                self.groups[s['className']][0]['members'][s['uuid']]['statistics'] = newstats
+
+    def update_groups(self, groups, templates, cache=None):
+        self.log(f'Updating groups', level='debug')
+        remove = []
+
+        # for e in self.members:
+        #     for g in groups:
+        for e, g in product(self.members, groups):
+            # Classic compatibility - resolve copied entity references
+                try:
+                    ref_id = self.groups[g.type][0]['members'][e].get('realtimeUuid', e)
+                except KeyError:
+                    # not a member of this group type
+                    continue
+
+                if ref_id in g.members:
+                    # if e is a member, re-group it
+                    if g.name not in self.groups[g.type]:
+                        self.groups[g.type][g.name] = copy.deepcopy(Cluster.group_template)
+
+                    self.groups[g.type][g.name]['members'][e] = self.groups[g.type][0]['members'][e]
+                    remove.append((e, g.type))
+
+        # remove regrouped members from inverse group
+        for e, t in remove:
+            if e in self.groups[t][0]['members']:
+                del self.groups[t][0]['members'][e]
+
+        for type in self.groups:
+            for name in self.groups[type]:
+                count = len(self.groups[type][name]['members'])
+                self.log(f'[{type}]:[{name}]:{count}', level='debug')
+                self.update_group_templates(type, name, templates, cache)
+
+    def update_group_templates(self, type, name, templates, cache=None):
+        # defualt ungrouped cluster entitites
+        if name == 0:
+            # ungrouped cluster entities match on cluster target
+            tpl = [x for x in templates if self.name in x.targets]
+
+            if not tpl:
+                try:
+                    tpl_name = self.get_default_template(cache)
+                    x = Template(tpl_name, targets=[self.name])
+                    x.get_resources(self._vmt)
+
+                    self.log(f'Using default cluster template [{tpl_name}]', level='debug')
+                    tpl = set([x])
+                except ValueError:
+                    self.log(f'Unable to locate default system average template.', level='debug')
+        else:
+            # user grouped entities
+            tpl = [x for x in templates
+                   if name in x.targets and
+                   (not x.clusters or self.name in x.clusters)]
+
+        if not tpl:
+            self.log(f'No template not provided for [{name}] in [{self.uuid}]:[{self.name}]', level='warn')
+        else:
+            self.groups[type][name]['templates'] = tpl
+
+
 class ClusterHeadroom(BaseBalancePlan):
     """Cluster headroom plan
 
@@ -283,423 +590,157 @@ class ClusterHeadroom(BaseBalancePlan):
         super().__init__(connection, spec, market, name=f'Custom Headroom Plan {str(int(time.time()))}')
         self.hook_post(self._post_cluster_headroom)
 
-        self.clusters = defaultdict(lambda: None)
-        self.growth_lookback = growth_lookback
-        self.types = ['PhysicalMachine', 'Storage']
-        self.entity_parts = ['uuid', 'displayName', 'state']
-        self.commodities = ['CPU', 'Mem', 'StorageAmount']
-        self.type_commodity = {
-            'PhysicalMachine': ['CPU', 'Mem'],
-            'Storage': ['StorageAmount']
-        }
-        self.template_commodity = {
-            'CPU': 'cpu',
-            'Mem': 'mem',
-            'StorageAmount': 'storage_amount'
-        }
+        self.__e_cache = None # entity cache, shared across clusters
+        self.__t_cache = None # template cache, shared across clusters
+        self.mode = mode
+        self.clusters = []
         self.groups = groups
         self.templates = templates
-        self.mode = mode
 
-        # cluster group struct template
-        self.group_template = {
-            'templates': None,
-            'members': {}
-        }
+        self.growth_ts = int(time.mktime((datetime.datetime.now() + datetime.timedelta(days=-1*growth_lookback)).timetuple()) * 1000)
 
         self.log('ClusterHeadroom initialized', level='debug')
 
-    def _commodity_headroom(self, members, commodity, templates, mode=HeadroomMode.AVERAGE):
-        headroom = {
-            'Available': 0,
-            'Capacity': 0
-            }
+    def _init_groups(self):
+        self.log('Fetching group data', level='debug')
 
-        # map the template commodity
-        tc = self.template_commodity[commodity]
+        for x in self.groups:
+            x.get_members(self._vmt)
 
-        if mode == HeadroomMode.AVERAGE:
-            tcount = 1
-            required = mean([D(getattr(t, tc)) for t in templates])
-        elif mode == HeadroomMode.SUM:
-            tcount = len(templates)
-            required = sum([D(getattr(t, tc)) for t in templates])
-        else:
-            raise ValueError(f'Unknown mode [{mode}]')
+    def _init_templates(self):
+        self.log('Fetching template data', level='debug')
 
-        for m in members.keys():
-            if 'statistics' not in members[m]:
-                umsg.log(f'Skipping entity [{members[m]["displayName"]}], no statistics', level='debug')
-                continue
+        for x in self.templates:
+            try:
+                x.get_resources(self._vmt)
+            except TypeError:
+                self.log(f'Error retrieving template information for [{x.name or x.uuid}]', level='warn')
 
-            mcap = D(members[m]['statistics'][commodity]['capacity'])
-            mused = D(members[m]['statistics'][commodity]['value'])
-            mavail = mcap - mused
-            headroom['Available'] += 0 if required <= 0 else tcount * int(mavail / required)
-            headroom['Capacity'] += 0 if required <= 0 else tcount * int(mcap / required)
-
-        return headroom
-
-    def _add_cluster_member(self, cluster, entity, group, realtimeId=None):
+    def _get_plan_scope(self):
         try:
-            self.clusters[cluster]['groups'][group][0]['members'][entity['uuid']] = entity
-            self.clusters[cluster]['members'].add(entity['uuid'])
-
-            if realtimeId:
-                self.clusters[cluster]['realtimeMembers'].add(realtimeId)
-        except KeyError:
-            pass
-
-    @staticmethod
-    def _filter_members(members, filters):
-        pass
-
-    def _get_stats(self, entities, commodities):
-        dto = {
-            'scopes': entities,
-            'period': {
-                'startDate': self._vmt.get_markets(uuid=self.market_id)[0]['runDate'],
-                'statistics': kw_to_list_dict('name', commodities)
-            }
-        }
-
-        #return
-        x = self._vmt.get_market_entities_stats(self.market_id, filter=json.dumps(dto), fetch_all=True)
-        #print(x)
-        return x
-
-    def _init_clusters(self):
-        try:
-            scenario_scope = self._vmt.get_markets(uuid=self.market_id)[0]['scenario']['scope']
+            return self._vmt.get_markets(uuid=self.market_id)[0]['scenario']['scope']
         except KeyError:
             # Classic compatibility
-            scenario_scope = self._vmt.get_scenarios(uuid=self.scenario_id)[0]['scope']
+            return self._vmt.get_scenarios(uuid=self.scenario_id)[0]['scope']
 
-        for c in [x for x in scenario_scope if x['className'] == 'Cluster']:
-            try:
-                memberlist = []
-                clstr = self._vmt.get_groups(c['uuid'])[0]
+    def _update_members(self, cluster):
+        if self._vmt.is_xl():
+            self._update_members_xl(cluster)
+        else:
+            self._update_members_classic(cluster)
 
-                try:
-                    memberlist = clstr['memberUuidList']
-                except KeyError:
-                    # Classic compatibility
-                    memberlist = [x['uuid'] for x in self._vmt.get_group_members(c['uuid'])]
-            except Exception:
-                clstr = None
+    def _update_members_xl(self, cluster):
+        if not self.__e_cache:
+            self.__e_cache = {}
+            response = self._vmt.get_supplychains(self.market_id,
+                                                  types=Cluster.member_types,
+                                                  detail='entity',
+                                                  pager=True)
+            self.__e_cache = condense_supplychain(response.all)
 
-            if not clstr or not memberlist:
-                self.log(f'Skipping empty cluster [{c["uuid"]}]:[{c["displayName"]}]', level='debug')
+        keys = list(self.__e_cache.keys())
+
+        for e in keys:
+            if e not in self.__e_cache:
+                # removed storages
                 continue
 
-            self.log(f'Initializing [{c["uuid"]}]:[{c["displayName"]}]')
-            self.clusters[c['uuid']] = {
-                'name': c['displayName'],
-                'members': set(),
-                'realtimeMembers': set(copy.deepcopy(memberlist)),
-                'groups': {
-                    'PhysicalMachine': {0: copy.deepcopy(self.group_template)},
-                    'Storage': {0: copy.deepcopy(self.group_template)},
-                },
-                'growth': 0,
-                'headroom': {}
-            }
+            if e in cluster.realtime_members:
+                ent = {x: copy.deepcopy(self.__e_cache[e][x]) for x in Cluster.entity_parts}
 
-    def _update_cluster_members(self):
-        if self._vmt.is_xl():
-            self._update_cluster_members_xl()
-        else:
-            self._update_cluster_members_classic()
+                if self.__e_cache[e]['className'] == 'PhysicalMachine':
+                    cluster.add_member(ent, self.__e_cache[e]['className'])
 
-    def _update_cluster_members_xl(self):
-        cache = {}
-        response = self._vmt.get_supplychains(self.market_id,
-                                              types=self.types,
-                                              detail='entity',
-                                              pager=True)
+                    # pull in storages if available
+                    for s in self.__e_cache[e]['providers']:
+                        if s['className'] != 'Storage' or s['uuid'] not in self.__e_cache:
+                            continue
 
-        while not response.complete:
-            cache = {**cache, **condense_supplychain(response.next)}
-            keys = list(cache.keys())
+                        ent = {x: copy.deepcopy(self.__e_cache[s['uuid']][x]) for x in Cluster.entity_parts}
+                        cluster.add_member(ent, self.__e_cache[s['uuid']]['className'])
+                        del self.__e_cache[s['uuid']]
 
-            for e in keys:
-                if e not in cache:
-                    # storages
-                    continue
+                del self.__e_cache[e]
 
-                for c in self.clusters:
-                    if e in self.clusters[c]['members']:
-                        ent = {x: cache[e][x] for x in self.entity_parts}
-
-                        if cache[e]['className'] == 'PhysicalMachine':
-                            self._add_cluster_member(c, ent, 'PhysicalMachine')
-
-                            # pull in storages if available
-                            for s in cache[e]['providers']:
-                                if s['className'] != 'Storage' or s['uuid'] not in cache:
-                                    continue
-                                self._add_cluster_member(c, s['uuid'], 'Storage')
-                                del cache[s['uuid']]
-
-                        del cache[e]
-
-
-    def _update_cluster_members_classic(self):
+    def _update_members_classic(self, cluster):
         # Classic doesn't provide the consumer/provider details in the supplychain
         # so we must link hosts and storages to the cluster by cross-referencing
         # their real-time counterparts against the cluster supplychain
         #
         # market host => realtime host => cluster
         # market storage => realtime storage => cluster
-        def addent(c, entity):
-            real_id = entity['realtimeMarketReference']['uuid']
-            ent = {x: entity[x] for x in self.entity_parts}
-            ent['realtimeUuid'] = real_id
-            self._add_cluster_member(c, ent, entity['className'], real_id)
-
         def processchain(type):
-            response = self._vmt.get_supplychains(self.market_id,
-                                                  types=[type],
-                                                  detail='entity',
-                                                  pager=True)
-            while not response.complete:
-                entities = condense_supplychain(response.next)
-
-                for c in self.clusters:
-                    try:
-                        res = self._vmt.get_supplychains(c,
-                                                         types=[type],
-                                                         detail='entity',
-                                                         pager=True)
-                        cmember = condense_supplychain(res.all)
-                    except Exception:
-                        self.log(f'Cluster [{c}]:[{self.clusters[c]["name"]}] has no members of type {type}', level='warn')
-                        continue
-
-                    keys = list(entities.keys())
-
-                    for k in keys:
-                        if entities[k]['realtimeMarketReference']['uuid'] \
-                        in cmember:
-                            addent(c, entities[k])
-                            del entities[k]
-
-        for t in self.types:
-            processchain(t)
-
-    def _update_cluster_stats(self, id):
-        # update cluster statistics
-        for s in self._get_stats(list(self.clusters[id]['members']), self.commodities):
-            if s['className'] not in self.types:
-                continue
-
-            if s['uuid'] in self.clusters[id]['groups'][s['className']][0]['members']:
-                newstats = {}
-                for stat in s['stats'][0]['statistics']:
-                    newstats[stat['name']] = {
-                        'capacity': stat['capacity']['total'],
-                        'name': stat['name'],
-                        'units': stat['units'],
-                        'value': stat['value']
-                    }
-
-                self.clusters[id]['groups'][s['className']][0]['members'][s['uuid']]['statistics'] = newstats
-
-    def _update_cluster_subgroups(self, id):
-        # split cluster members by groups
-        for e in self.clusters[id]['members']:
-            remove = []
-
-            for g in self.groups:
-                # Classic compatibility - resolve copied entity references
-                try:
-                    ref_id = self.clusters[id]['groups'][g.type][0]['members'][e].get('realtimeUuid', e)
-                except KeyError:
-                    # not a member of this group type
-                    continue
-
-                if ref_id in g.members:
-                    # if e is a member, re-group it
-                    if g.name not in self.clusters[id]['groups'][g.type]:
-                        self.clusters[id]['groups'][g.type][g.name] = copy.deepcopy(self.group_template)
-
-                    self.clusters[id]['groups'][g.type][g.name]['members'][e] = self.clusters[id]['groups'][g.type][0]['members'][e]
-                    remove.append((e, g.type))
-
-            # remove regrouped members from inverse group
-            for e, t in remove:
-                if e in self.clusters[id]['groups'][t][0]['members']:
-                    del self.clusters[id]['groups'][t][0]['members'][e]
-
-    def _update_cluster_vm_growth(self):
-        # calculate vm growth for each cluster
-        scope = [c for c in self.clusters.keys()]
-        timestamp = int(time.mktime((datetime.datetime.now() + datetime.timedelta(days=-1*self.growth_lookback)).timetuple()) * 1000)
-        stats = ['numVMs']
-
-        then = self._vmt.get_entity_stats(scope=scope, start_date=timestamp, end_date=timestamp, stats=stats, fetch_all=True)
-        now = self._vmt.get_entity_stats(scope=scope, stats=stats, fetch_all=True)
-
-        for n in now:
-            curdate = read_isodate(n['stats'][0]['date'])
-            cur = n['stats'][0]['statistics'][0]['value']
-            self.clusters[n['uuid']]['growth'] = cur
-
-            for t in then:
-                try:
-                    if t['uuid'] == n['uuid']:
-                        olddate = read_isodate(t['stats'][0]['date'])
-                        growth = (cur - t['stats'][0]['statistics'][0]['value']) / (curdate - olddate).days
-                        self.clusters[n['uuid']]['growth'] = growth if growth > 0 else 0
-                        break
-                except KeyError:
-                    pass
-
-            self.log(f'Cluster [{n["uuid"]}]:[{self.clusters[n["uuid"]]["name"]}] growth: {self.clusters[n["uuid"]]["growth"]}', level='debug')
-
-    def _prepare_templates(self):
-        # initializes templates and calculates commodity values
-        cache = self._vmt.get_templates(fetch_all=True)
-
-        def find_default(name):
-            # gets the sys generated cluster AVG template
-            for i in cache:
-                if i['displayName'] == name:
-                    return True
-
-            return False
-
-        # init
-        for x in self.templates:
-            x.get_resources(self._vmt)
-
-        # assign
-        for c in self.clusters:
-            for t in self.clusters[c]['groups']:
-                for g in self.clusters[c]['groups'][t]:
-                    if g == 0:
-                        # defualt ungrouped cluster entitites
-                        if not self.clusters[c]['groups'][t][g]['members']:
-                            continue
-
-                        templates = [x for x in self.templates if self.clusters[c]['name'] in x.targets]
-
-                        if not templates:
-                            name = f'AVG:{self.clusters[c]["name"]} for last 10 days'
-
-                            if find_default(name):
-                                x = Template(name, [self.clusters[c]['name']])
-                                x.get_resources(self._vmt)
-
-                                # by adding it to the template list, it can be reused (e.g. for PM & Storage)
-                                self.log(f'Adding default cluster template [{name}]', level='debug')
-                                self.templates.append(x)
-                                templates = (x)
-                            else:
-                                continue
-
-                        self.clusters[c]['groups'][t][g]['templates'] = templates
-                    elif g != 0:
-                        # user grouped entities
-                        templates = [x for x in self.templates
-                                     if g in x.targets and
-                                     (not x.clusters
-                                      or self.clusters[c]['name'] in x.clusters)]
-
-                        self.clusters[c]['groups'][t][g]['templates'] = templates
-
-                    if not self.clusters[c]['groups'][t][g]['templates']:
-                        self.log(f'No template not provided for [{g}] in [{c}]:[{self.clusters[c]["name"]}]', level='warn')
-
-    def _apply_templates(self):
-        def exhaustdays(g, c):
-            if g > 0:
-                return int(D(c) / D(g))
+            try:
+                res = self._vmt.get_supplychains(cluster.uuid,
+                                                 types=[type],
+                                                 detail='entity',
+                                                 pager=True)
+                cmember = condense_supplychain(res.all)
+            except Exception:
+                self.log(f'Cluster [{cluster.uuid}]:[{cluster.name}] has no members of type {type}', level='warn')
             else:
-                return -1
+                keys = list(self.__e_cache[type].keys())
 
-        for c in self.clusters:
-            cluster_headroom = {}
-            growth = D(0) if D(self.clusters[c]['growth']) < 0 else D(self.clusters[c]['growth'])
-            self.log(f'Calculating [{c}]:[{self.clusters[c]["name"]}] headroom')
+                for k in keys:
+                    if self.__e_cache[type][k]['realtimeMarketReference']['uuid'] \
+                    in cmember:
+                        rid = self.__e_cache[type][k]['realtimeMarketReference']['uuid']
+                        ent = {x: self.__e_cache[type][k][x] for x in cluster.entity_parts}
+                        ent['realtimeUuid'] = rid
+                        cluster.add_member(ent, self.__e_cache[type][k]['className'], rid)
+                        del self.__e_cache[type][k]
+        # end def ---
 
-            for t in self.clusters[c]['groups']:
-                cluster_headroom[t] = {}
-                comms = self.type_commodity[t]
+        if not self.__e_cache:
+            self.__e_cache = defaultdict(lambda: None)
 
-                # compute type groups
-                for key, group in self.clusters[c]['groups'][t].items():
-                    if group['templates'] is None:
-                        self.log(f'Skipping [{t}] group [{key}], no template assigned.', level='debug')
-                        continue
+        for type in Cluster.member_types:
+            if not self.__e_cache[type]:
+                self.__e_cache[type] = {}
+                response = self._vmt.get_supplychains(self.market_id,
+                                                      types=[type],
+                                                      detail='entity',
+                                                      pager=True)
+                self.__e_cache[type] = condense_supplychain(response.all)
 
-                    members = group['members']
-                    # TODO : add filtering
-                    #members = filter_members()
-
-                    # calculate commodity headroom based on mode
-                    if self.mode == HeadroomMode.SEPARATE:
-                        for i in group['templates']:
-                            cluster_headroom[t][i.name] = {}
-                            for o in comms:
-                                cluster_headroom[t][i.name][o] = self._commodity_headroom(members, o, [i])
-                                cluster_headroom[t][i.name][o]['DaysToExhaustion'] = exhaustdays(growth, cluster_headroom[t][i.name][o]['Available'])
-                                cluster_headroom[t][i.name][o]['TemplateCount'] = 1
-                    else:
-                        for o in comms:
-                            cluster_headroom[t][o] = self._commodity_headroom(members, o, group['templates'], self.mode)
-                            cluster_headroom[t][o]['DaysToExhaustion'] = exhaustdays(growth, cluster_headroom[t][o]['Available'])
-                            cluster_headroom[t][o]['TemplateCount'] = len(group['templates'])
-                # end group loop ---
-            # end type loop ---
-            self.clusters[c]['headroom'] = cluster_headroom
+            processchain(type)
 
     def _post_cluster_headroom(self):
         # main processor
         if self.result != MarketState.SUCCEEDED:
             raise PlanRunFailure(f'Invalid target plan market state: {self.results}')
 
-        self.log('Fetching group data', level='debug')
-        for x in self.groups:
-            x.get_members(self._vmt)
+        self._init_groups()
+        self._init_templates()
 
-        self.log('Initializing clusters')
-        self._init_clusters()
-        self._update_cluster_members()
+        self.__t_cache = self._vmt.get_templates(fetch_all=True)
 
-        for c in self.clusters:
-            self.log(f'Updating statistics for [{c}]:[{self.clusters[c]["name"]}]', level='debug')
-            self._update_cluster_stats(c)
+        self.log('Processing clusters')
+        for c in [x for x in self._get_plan_scope() if x['className'] == 'Cluster']:
+            obj = Cluster(self._vmt, c['uuid'], c['displayName'], mode=self.mode)
 
-            self.log(f'Updating groups for [{c}]:[{self.clusters[c]["name"]}]', level='debug')
-            self._update_cluster_subgroups(c)
+            if obj:
+                self.clusters.append(obj)
+            else:
+                self.log(f'Skipping empty cluster [{c["uuid"]}]:[{c["displayName"]}]', level='debug')
+                continue
 
-            # debug
-            for t in self.clusters[c]['groups']:
-                for g in self.clusters[c]['groups'][t]:
-                    count = len(self.clusters[c]['groups'][t][g]['members'])
-                    self.log(f'[{t}]:[{g}]:{count}', level='debug')
+            # add members based on market supplychain
+            self._update_members(obj)
+            obj.update_stats(self.market_id)
+            obj.update_groups(self.groups, self.templates, self.__t_cache)
+            obj.get_growth(self.growth_ts)
+            obj.apply_templates()
 
-        self.log(f'Calculating cluster growth over {self.growth_lookback} days')
-        self._update_cluster_vm_growth()
-
-        self.log(f'Preparing templates')
-        self._prepare_templates()
-
-        # pp = PrettyPrinter(depth=3, width=80)
-        # pp.pprint(self.clusters)
-        # return
-
-        self.log(f'Calculating headroom')
-        self._apply_templates()
-
+        self.__e_cache = None
+        self.__t_cache = None
         return self.clusters
 
     def headroom(self):
         headroom = {}
 
         for c in self.clusters:
-            headroom[c] = self.clusters[c]['headroom']
+            headroom[c.name] = c.headroom
 
         return headroom
 
@@ -712,21 +753,3 @@ def condense_supplychain(chain, types=None):
         return {k2: v2 for k, v in chain[0]['seMap'].items() for k2, v2 in v['instances'].items()}
 
     return {k2: v2 for k, v in chain[0]['seMap'].items() if k in types for k2, v2 in v['instances'].items()}
-
-
-def calc_strict_dist(members, commodity, required, vmcount):
-    headroom_available = 0
-    headroom_capacity = 0
-
-    for m in members:
-        if 'statistics' not in members[m]:
-            umsg.log(f'Skipping entity [{members[m]["displayName"]}], no statistics', level='debug')
-            continue
-
-        cap = D(members[m]['statistics'][commodity]['capacity'])
-        used = D(members[m]['statistics'][commodity]['value'])
-        avail = cap - used
-        headroom_available += 0 if required <= 0 else vmcount * int(avail / required)
-        headroom_capacity += 0 if required <= 0 else vmcount * int(cap / required)
-
-    return headroom_available, headroom_capacity
