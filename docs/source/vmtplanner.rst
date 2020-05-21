@@ -4,8 +4,8 @@ vmtplanner
 
 .. module:: vmtplanner
 
-The base module of *vmt-plan* package provides a plan engine class called :class:`Plan`,
-which executes a Turbonomic plan as defined by the settings in a :class:`PlanSpec`.
+The base module of *vmt-plan* package provides a plan engine class called :py:class:`Plan`,
+which executes a Turbonomic plan as defined by the settings in a :py:class:`PlanSpec`.
 
 
 Enumerations
