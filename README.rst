@@ -13,7 +13,7 @@ Prior to version 2.0, vmt-plan was distributed as a stand-alone single file Pyth
 
 .. code:: bash
 
-   pip install vmtplan-2.1.0-py3-none-any.whl
+   pip install vmtplan-2.2.0-py3-none-any.whl
 
 
 Usage

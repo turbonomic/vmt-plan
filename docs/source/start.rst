@@ -34,7 +34,7 @@ installed via pip. The package is not available on PyPi_ at this time.
 
 .. code:: bash
 
-   pip install vmtplan-2.1.0-py3-none-any.whl
+   pip install vmtplan-2.2.0-py3-none-any.whl
 
 
 Requirements
