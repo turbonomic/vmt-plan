@@ -13,16 +13,16 @@
 # limitations under the License.
 # libraries
 
-from ..vmtplanner import Plan, PlanSpec, PlanType, AutomationSetting
+import vmtplanner
 
 
 
-class BaseBalancePlan(Plan):
+class BaseBalancePlan(vmtplanner.Plan):
     """Base Balance plan.
 
     Args:
-        connection (:class:`~vmtconnect.Connection`): :class:`~vmtconnect.Connection` or :class:`~vmtconnect.Session`.
-        spec (:class:`PlanSpec`, optional): Settings override to apply to the
+        connection (:py:class:`~vmtconnect.Connection`): :py:class:`~vmtconnect.Connection` or :py:class:`~vmtconnect.Session`.
+        spec (:py:class:`PlanSpec`, optional): Settings override to apply to the
             market, if running a plan.
         market (str, optional): Base market UUID to apply the settings to.
             (default: ``Market``)
@@ -45,18 +45,18 @@ class BaseBalancePlan(Plan):
     def __std_spec(self, scope):
         # default "balance" plan for headroom calcs
         settings = [
-            AutomationSetting.PROVISION_DS,
-            AutomationSetting.SUSPEND_DS,
-            AutomationSetting.PROVISION_PM,
-            AutomationSetting.SUSPEND_PM,
-            AutomationSetting.RESIZE,
+            vmtplanner.AutomationSetting.PROVISION_DS,
+            vmtplanner.AutomationSetting.SUSPEND_DS,
+            vmtplanner.AutomationSetting.PROVISION_PM,
+            vmtplanner.AutomationSetting.SUSPEND_PM,
+            vmtplanner.AutomationSetting.RESIZE,
         ]
 
         if scope is None:
             res = self._vmt.search(types=['Cluster'], scopes=[self.base_market])
             scope = [x['uuid'] for x in res]
 
-        spec = PlanSpec(type=PlanType.OPTIMIZE_ONPREM, scope=scope)
+        spec = vmtplanner.PlanSpec(type=vmtplanner.PlanType.OPTIMIZE_ONPREM, scope=scope)
 
         for x in settings:
             spec.change_automation_setting(x, False)

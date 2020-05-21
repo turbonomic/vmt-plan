@@ -18,4 +18,4 @@ running plans using Turbonomic `API 2.0`_.
    start
    userguide
    plan_configuration
-   vmtplanner
+   developer
