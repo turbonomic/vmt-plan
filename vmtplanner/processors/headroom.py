@@ -13,9 +13,6 @@
 # limitations under the License.
 # libraries
 
-from ..vmtplanner import MarketState, PlanRunFailure, kw_to_list_dict
-from ..plans import BaseBalancePlan
-
 from collections import defaultdict
 import copy
 import datetime
@@ -27,7 +24,10 @@ from pprint import pprint
 from statistics import mean
 import time
 
-from umsg.mixins import LoggingMixin
+import umsg.mixins
+
+import vmtplanner
+import vmtplanner.plans
 
 try:
     import iso8601
@@ -61,7 +61,16 @@ class HeadroomMode(Enum):
 
 
 class HeadroomEncoder(json.JSONEncoder):
+    """Headroom results encoder for JSON output
+
+    Example:
+        .. code-block:: python
+
+           with open(OUTFILE, 'w') as fp:
+               json.dump(plan.headroom(), fp, indent=2, cls=HeadroomEncoder)
+    """
     def default(self, obj):
+        "" # squash sphinx pulling in native docstring
         if isinstance(obj, decimal.Decimal):
             return float(obj)
         if isinstance(obj, (Group, Template)):
@@ -75,6 +84,12 @@ class HeadroomEncoder(json.JSONEncoder):
 
 class Group:
     """Headroom group
+
+    Groups provide partitioning within a cluster, and are not required if no
+    subdivision of the cluster is necessary, as each cluster has a default group
+    for all ungrouped members.. Groups need not be created per cluster either,
+    as all entities will be partitioned on cluster boundaries before being assigned
+    to their respective groups. Groups cannot be used to create super clusters.
 
     Args:
         name (str): Group name. One of **name** or **uuid** is required.
@@ -133,10 +148,17 @@ class Group:
 class Template:
     """Headroom template
 
+    Templates may be linked to both groups and clusters, and will apply to all
+    members at the level applied respecitvely. Because groups can span
+    across clusters, you may want to assign specific templates to specific
+    cluster group combinations. You can specify a cluster or clusters
+    to lock a template to, which will cause the template to only be applied to
+    group members of the listed clusters.
+
     Args:
         name (str): Template name. One of **name** or **uuid** is required.
         uuid (str): Template UUID.
-        targets (list): List of group names to apply the template to.
+        targets (list): List of groups and/or clusters to apply the template to.
         clusters (list, optional): List of clusters to limit the template to.
 
     Attributes:
@@ -158,10 +180,6 @@ class Template:
     Notes:
         One of **name** or **uuid** is required to lookup the template, if both
         are provided **uuid** will override.
-
-        If you use multi-cluster groups and want to use per-cluster templates you
-        may indicate which clusters to lock the template to with the optional
-        **clusters** list.
     """
     __slots__ = [
         'uuid',
@@ -255,7 +273,29 @@ class Template:
         self.storage_provisioned = resources['diskSize']
 
 
-class Cluster(LoggingMixin):
+class Cluster(umsg.mixins.LoggingMixin):
+    """Headroom cluster
+
+    Individual cluster objects, used by a :py:class:`ClusterHeadroom` plan.
+
+    Args:
+        connection (:py:class:`~vmtconnect.Connection`): :class:`~vmtconnect.Connection` or :class:`~vmtconnect.Session`.
+        uuid (int): Cluster UUID.
+        name (str): Cluster display name.
+        members (list, optional): List of cluster member UUIDs.
+        realtime_members (list, optional): List of realtime market member UUIDs.
+        mode (:py:class:`HeadroomMode`, optional): Headroom calculation mode.
+            (default: :py:class:`HeadroomMode.SEPARATE`)
+
+    Attributes:
+        name (str): Cluser display name.
+        groups (dict): Dictionary of cluster groups for headroom analysis.
+        growth (float): Cluster growth.
+        members (list): List of cluster member UUIDs.
+        mode (:py:class:`HeadroomMode`): Headroom calculation mode.
+        realtime_members (list): List of realtime market member UUIDs.
+        uuid (str): Cluster UUID.
+    """
     entity_parts = ['uuid', 'displayName', 'state']
     commodities = ['CPU', 'Mem', 'StorageAmount']
     member_types = ['PhysicalMachine', 'Storage']
@@ -274,7 +314,7 @@ class Cluster(LoggingMixin):
     }
 
     def __init__(self, connection, uuid, name, members=None, realtime_members=None,
-                 mode=HeadroomMode.SEPARATE, growth_start=None):
+                 mode=HeadroomMode.SEPARATE):
         super().__init__()
 
         self._vmt = connection
@@ -467,7 +507,7 @@ class Cluster(LoggingMixin):
             'scopes': list(self.members),
             'period': {
                 'startDate': self._vmt.get_markets(uuid=market)[0]['runDate'],
-                'statistics': kw_to_list_dict('name', Cluster.commodities)
+                'statistics': vmtplanner.kw_to_list_dict('name', Cluster.commodities)
             }
         }
 
@@ -558,8 +598,12 @@ class Cluster(LoggingMixin):
             self.groups[type][name]['templates'] = tpl
 
 
-class ClusterHeadroom(BaseBalancePlan):
+class ClusterHeadroom(vmtplanner.plans.BaseBalancePlan):
     """Cluster headroom plan
+
+    In basic form, this provides cluster headroom parity with Turbonomics
+    native 10 Day average templates. When combined with groups and templates,
+    :py:class:`ClusterHeadroom` provides highly customizable headroom analysis.
 
     Args:
         connection (:py:class:`~vmtconnect.Connection`): :class:`~vmtconnect.Connection` or :class:`~vmtconnect.Session`.
@@ -707,8 +751,8 @@ class ClusterHeadroom(BaseBalancePlan):
 
     def _post_cluster_headroom(self):
         # main processor
-        if self.result != MarketState.SUCCEEDED:
-            raise PlanRunFailure(f'Invalid target plan market state: {self.results}')
+        if self.result != vmtplanner.MarketState.SUCCEEDED:
+            raise vmtplanner.PlanRunFailure(f'Invalid target plan market state: {self.results}')
 
         self._init_groups()
         self._init_templates()

@@ -19,7 +19,10 @@
 import os
 import sys
 import sphinx_rtd_theme
+sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('../../vmtplanner'))
+sys.path.insert(0, os.path.abspath('../../vmtplanner/plans'))
+sys.path.insert(0, os.path.abspath('../../vmtplanner/processors'))
 
 
 # -- General configuration ------------------------------------------------
@@ -214,7 +217,7 @@ texinfo_documents = [
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     'python': ('https://docs.python.org/', None),
-    'vmt-connect': ('https://rastern.github.io/vmt-connect/', None),
-    'vmtconnect': ('https://rastern.github.io/vmt-connect/', None),
-    'requests': ('http://docs.python-requests.org/en/latest/', None)
+    'vmt-connect': ('https://turbonomic.github.io/vmt-connect/', None),
+    'vmtconnect': ('https://turbonomic.github.io/vmt-connect/', None),
+    'requests': ('https://requests.readthedocs.io/en/master/', None)
   }
