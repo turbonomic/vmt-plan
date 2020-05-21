@@ -1,0 +1,685 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>headroom &mdash; vmt-plan 2.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="processors" href="../processors.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> vmt-plan
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../userguide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plan_configuration.html">Plan Configurations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../developer.html">Developer Interfaces</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../vmtplanner.html">vmtplanner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plans.html">plans</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../processors.html">processors</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">headroom</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#enumerations">Enumerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">vmt-plan</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../developer.html">Developer Interfaces</a> &raquo;</li>
+        
+          <li><a href="../processors.html">processors</a> &raquo;</li>
+        
+      <li>headroom</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/processors/headroom.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-vmtplanner.processors.headroom">
+<span id="headroom"></span><h1>headroom<a class="headerlink" href="#module-vmtplanner.processors.headroom" title="Permalink to this headline">¶</a></h1>
+<p>The headroom processor provides cluster headroom post-processing analytic
+parity for Turbonomic’s native headroom calculations, while enabling extended
+headroom customization through custom template mappings.</p>
+<div class="section" id="enumerations">
+<h2>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vmtplanner.processors.headroom.HeadroomMode">
+<em class="property">class </em><code class="descclassname">vmtplanner.processors.headroom.</code><code class="descname">HeadroomMode</code><a class="headerlink" href="#vmtplanner.processors.headroom.HeadroomMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Headroom Calculation Modes</p>
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.HeadroomMode.AVERAGE">
+<code class="descname">AVERAGE</code><em class="property"> = 2</em><a class="headerlink" href="#vmtplanner.processors.headroom.HeadroomMode.AVERAGE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split evenly amongst all templates in a group, i.e. average all templates</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.HeadroomMode.SEPARATE">
+<code class="descname">SEPARATE</code><em class="property"> = 1</em><a class="headerlink" href="#vmtplanner.processors.headroom.HeadroomMode.SEPARATE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Per-template headroom</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.HeadroomMode.SUM">
+<code class="descname">SUM</code><em class="property"> = 3</em><a class="headerlink" href="#vmtplanner.processors.headroom.HeadroomMode.SUM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combined templates in a group, i.e. summed</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vmtplanner.processors.headroom.HeadroomEncoder">
+<em class="property">class </em><code class="descclassname">vmtplanner.processors.headroom.</code><code class="descname">HeadroomEncoder</code><span class="sig-paren">(</span><em>*</em>, <em>skipkeys=False</em>, <em>ensure_ascii=True</em>, <em>check_circular=True</em>, <em>allow_nan=True</em>, <em>sort_keys=False</em>, <em>indent=None</em>, <em>separators=None</em>, <em>default=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vmtplanner.processors.headroom.HeadroomEncoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Headroom results encoder for JSON output</p>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">OUTFILE</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">plan</span><span class="o">.</span><span class="n">headroom</span><span class="p">(),</span> <span class="n">fp</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">HeadroomEncoder</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="vmtplanner.processors.headroom.Group">
+<em class="property">class </em><code class="descclassname">vmtplanner.processors.headroom.</code><code class="descname">Group</code><span class="sig-paren">(</span><em>name=None</em>, <em>uuid=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vmtplanner.processors.headroom.Group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Headroom group</p>
+<p>Groups provide partitioning within a cluster, and are not required if no
+subdivision of the cluster is necessary, as each cluster has a default group
+for all ungrouped members.. Groups need not be created per cluster either,
+as all entities will be partitioned on cluster boundaries before being assigned
+to their respective groups. Groups cannot be used to create super clusters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Group name. One of <strong>name</strong> or <strong>uuid</strong> is required.</p></li>
+<li><p><strong>uuid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Group UUID.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Group.name">
+<code class="descname">name</code><a class="headerlink" href="#vmtplanner.processors.headroom.Group.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Group display name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Group.uuid">
+<code class="descname">uuid</code><a class="headerlink" href="#vmtplanner.processors.headroom.Group.uuid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Group UUID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Group.type">
+<code class="descname">type</code><a class="headerlink" href="#vmtplanner.processors.headroom.Group.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trubonomic “groupType” of the group:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Group.members">
+<code class="descname">members</code><a class="headerlink" href="#vmtplanner.processors.headroom.Group.members" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of group real-time market members.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><strong>ValueError</strong></a> – If both name and uuid are None.</p>
+</dd>
+</dl>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>One of <strong>name</strong> or <strong>uuid</strong> is required to lookup the group, if both are
+provided <strong>uuid</strong> will override.</p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="vmtplanner.processors.headroom.Template">
+<em class="property">class </em><code class="descclassname">vmtplanner.processors.headroom.</code><code class="descname">Template</code><span class="sig-paren">(</span><em>name=None</em>, <em>uuid=None</em>, <em>targets=None</em>, <em>clusters=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vmtplanner.processors.headroom.Template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Headroom template</p>
+<p>Templates may be linked to both groups and clusters, and will apply to all
+members at the level applied respecitvely. Because groups can span
+across clusters, you may want to assign specific templates to specific
+cluster group combinations. You can specify a cluster or clusters
+to lock a template to, which will cause the template to only be applied to
+group members of the listed clusters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Template name. One of <strong>name</strong> or <strong>uuid</strong> is required.</p></li>
+<li><p><strong>uuid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Template UUID.</p></li>
+<li><p><strong>targets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of groups and/or clusters to apply the template to.</p></li>
+<li><p><strong>clusters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, </em><em>optional</em>) – List of clusters to limit the template to.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Template.name">
+<code class="descname">name</code><a class="headerlink" href="#vmtplanner.processors.headroom.Template.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Template display name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Template.uuid">
+<code class="descname">uuid</code><a class="headerlink" href="#vmtplanner.processors.headroom.Template.uuid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Template UUID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Template.targets">
+<code class="descname">targets</code><a class="headerlink" href="#vmtplanner.processors.headroom.Template.targets" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of group names or UUIDs to apply the template to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Template.clusters">
+<code class="descname">clusters</code><a class="headerlink" href="#vmtplanner.processors.headroom.Template.clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of clusters to limit the template to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Template.cpu">
+<code class="descname">cpu</code><a class="headerlink" href="#vmtplanner.processors.headroom.Template.cpu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Template CPU value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Decimal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Template.cpu_provisioned">
+<code class="descname">cpu_provisioned</code><a class="headerlink" href="#vmtplanner.processors.headroom.Template.cpu_provisioned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Template CPU provisioned value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Decimal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Template.mem">
+<code class="descname">mem</code><a class="headerlink" href="#vmtplanner.processors.headroom.Template.mem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Template memory value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Decimal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Template.mem_provisioned">
+<code class="descname">mem_provisioned</code><a class="headerlink" href="#vmtplanner.processors.headroom.Template.mem_provisioned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Template memory provisioned value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Decimal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Template.storage_amount">
+<code class="descname">storage_amount</code><a class="headerlink" href="#vmtplanner.processors.headroom.Template.storage_amount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Template storage value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Decimal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Template.storage_provisioned">
+<code class="descname">storage_provisioned</code><a class="headerlink" href="#vmtplanner.processors.headroom.Template.storage_provisioned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Template storage provisioned value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Decimal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.8)"><strong>TypeError</strong></a> – If the retrieved template is not a VirtualMachine template.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><strong>ValueError</strong></a> – If both name and uuid are None; or no targets provided.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>One of <strong>name</strong> or <strong>uuid</strong> is required to lookup the template, if both
+are provided <strong>uuid</strong> will override.</p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="vmtplanner.processors.headroom.Cluster">
+<em class="property">class </em><code class="descclassname">vmtplanner.processors.headroom.</code><code class="descname">Cluster</code><span class="sig-paren">(</span><em>connection</em>, <em>uuid</em>, <em>name</em>, <em>members=None</em>, <em>realtime_members=None</em>, <em>mode=&lt;HeadroomMode.SEPARATE: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#vmtplanner.processors.headroom.Cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Headroom cluster</p>
+<p>Individual cluster objects, used by a <a class="reference internal" href="#vmtplanner.processors.headroom.ClusterHeadroom" title="vmtplanner.processors.headroom.ClusterHeadroom"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClusterHeadroom</span></code></a> plan.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection</strong> (<a class="reference external" href="https://turbonomic.github.io/vmt-connect/vmtconnect.html#vmtconnect.Connection" title="(in vmt-connect v3.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – <a class="reference external" href="https://turbonomic.github.io/vmt-connect/vmtconnect.html#vmtconnect.Connection" title="(in vmt-connect v3.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> or <a class="reference external" href="https://turbonomic.github.io/vmt-connect/vmtconnect.html#vmtconnect.Session" title="(in vmt-connect v3.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>.</p></li>
+<li><p><strong>uuid</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Cluster UUID.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Cluster display name.</p></li>
+<li><p><strong>members</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, </em><em>optional</em>) – List of cluster member UUIDs.</p></li>
+<li><p><strong>realtime_members</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, </em><em>optional</em>) – List of realtime market member UUIDs.</p></li>
+<li><p><strong>mode</strong> (<a class="reference internal" href="#vmtplanner.processors.headroom.HeadroomMode" title="vmtplanner.processors.headroom.HeadroomMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeadroomMode</span></code></a>, optional) – Headroom calculation mode.
+(default: <a class="reference internal" href="#vmtplanner.processors.headroom.HeadroomMode.SEPARATE" title="vmtplanner.processors.headroom.HeadroomMode.SEPARATE"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeadroomMode.SEPARATE</span></code></a>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Cluster.name">
+<code class="descname">name</code><a class="headerlink" href="#vmtplanner.processors.headroom.Cluster.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cluser display name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Cluster.groups">
+<code class="descname">groups</code><a class="headerlink" href="#vmtplanner.processors.headroom.Cluster.groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary of cluster groups for headroom analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Cluster.growth">
+<code class="descname">growth</code><a class="headerlink" href="#vmtplanner.processors.headroom.Cluster.growth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cluster growth.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Cluster.members">
+<code class="descname">members</code><a class="headerlink" href="#vmtplanner.processors.headroom.Cluster.members" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of cluster member UUIDs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Cluster.mode">
+<code class="descname">mode</code><a class="headerlink" href="#vmtplanner.processors.headroom.Cluster.mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Headroom calculation mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#vmtplanner.processors.headroom.HeadroomMode" title="vmtplanner.processors.headroom.HeadroomMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeadroomMode</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Cluster.realtime_members">
+<code class="descname">realtime_members</code><a class="headerlink" href="#vmtplanner.processors.headroom.Cluster.realtime_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of realtime market member UUIDs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.Cluster.uuid">
+<code class="descname">uuid</code><a class="headerlink" href="#vmtplanner.processors.headroom.Cluster.uuid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cluster UUID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="vmtplanner.processors.headroom.ClusterHeadroom">
+<em class="property">class </em><code class="descclassname">vmtplanner.processors.headroom.</code><code class="descname">ClusterHeadroom</code><span class="sig-paren">(</span><em>connection</em>, <em>spec=None</em>, <em>market='Market'</em>, <em>scope=None</em>, <em>groups=None</em>, <em>templates=None</em>, <em>growth_lookback=7</em>, <em>mode=&lt;HeadroomMode.SEPARATE: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#vmtplanner.processors.headroom.ClusterHeadroom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cluster headroom plan</p>
+<p>In basic form, this provides cluster headroom parity with Turbonomics
+native 10 Day average templates. When combined with groups and templates,
+<a class="reference internal" href="#vmtplanner.processors.headroom.ClusterHeadroom" title="vmtplanner.processors.headroom.ClusterHeadroom"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClusterHeadroom</span></code></a> provides highly customizable headroom analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection</strong> (<a class="reference external" href="https://turbonomic.github.io/vmt-connect/vmtconnect.html#vmtconnect.Connection" title="(in vmt-connect v3.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – <a class="reference external" href="https://turbonomic.github.io/vmt-connect/vmtconnect.html#vmtconnect.Connection" title="(in vmt-connect v3.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> or <a class="reference external" href="https://turbonomic.github.io/vmt-connect/vmtconnect.html#vmtconnect.Session" title="(in vmt-connect v3.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>.</p></li>
+<li><p><strong>spec</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PlanSpec</span></code>, optional) – Settings override to apply to the
+market. Default behavior is to run a balance plan first.</p></li>
+<li><p><strong>market</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Base market UUID to apply the settings to.
+(default: <code class="docutils literal notranslate"><span class="pre">Market</span></code>)</p></li>
+<li><p><strong>scope</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, </em><em>optional</em>) – Scope of the plan market. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then a
+list of all clusters in the given market will be used.</p></li>
+<li><p><strong>groups</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of <a class="reference internal" href="#vmtplanner.processors.headroom.Group" title="vmtplanner.processors.headroom.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">Group</span></code></a> objects.</p></li>
+<li><p><strong>templates</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of :py:class`Template` objects.</p></li>
+<li><p><strong>growth_lookback</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Number of days to use for growth calcuation.</p></li>
+<li><p><strong>mode</strong> (<a class="reference internal" href="#vmtplanner.processors.headroom.HeadroomMode" title="vmtplanner.processors.headroom.HeadroomMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeadroomMode</span></code></a>, optional) – Headroom calculation mode.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.ClusterHeadroom.commodities">
+<code class="descname">commodities</code><a class="headerlink" href="#vmtplanner.processors.headroom.ClusterHeadroom.commodities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Commodities to calculate for headroom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.ClusterHeadroom.clusters">
+<code class="descname">clusters</code><a class="headerlink" href="#vmtplanner.processors.headroom.ClusterHeadroom.clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of clusters in the plan.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.ClusterHeadroom.groups">
+<code class="descname">groups</code><a class="headerlink" href="#vmtplanner.processors.headroom.ClusterHeadroom.groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of <a class="reference internal" href="#vmtplanner.processors.headroom.Group" title="vmtplanner.processors.headroom.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">Group</span></code></a> objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.ClusterHeadroom.growth_lookback">
+<code class="descname">growth_lookback</code><a class="headerlink" href="#vmtplanner.processors.headroom.ClusterHeadroom.growth_lookback" title="Permalink to this definition">¶</a></dt>
+<dd><p>VM growth period in days.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.ClusterHeadroom.mode">
+<code class="descname">mode</code><a class="headerlink" href="#vmtplanner.processors.headroom.ClusterHeadroom.mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Headroom calculation mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#vmtplanner.processors.headroom.HeadroomMode" title="vmtplanner.processors.headroom.HeadroomMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeadroomMode</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.ClusterHeadroom.templates">
+<code class="descname">templates</code><a class="headerlink" href="#vmtplanner.processors.headroom.ClusterHeadroom.templates" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of :py:class`Template` objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmtplanner.processors.headroom.ClusterHeadroom.tempalte_commodity">
+<code class="descname">tempalte_commodity</code><a class="headerlink" href="#vmtplanner.processors.headroom.ClusterHeadroom.tempalte_commodity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary map of commodities to template
+attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../processors.html" class="btn btn-neutral float-left" title="processors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017-2020
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

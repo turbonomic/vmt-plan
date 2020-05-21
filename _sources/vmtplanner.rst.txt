@@ -1,12 +1,11 @@
-===================================
-vmtplanner --- Developer Interfaces
-===================================
+==========
+vmtplanner
+==========
 
 .. module:: vmtplanner
 
-*vmt-plan* provides a single module called ``vmtplanner``. This module provides
-a plan engine class called :class:`Plan`, which executes a plan as defined by
-the settings in a :class:`PlanSpec`.
+The base module of *vmt-plan* package provides a plan engine class called :py:class:`Plan`,
+which executes a Turbonomic plan as defined by the settings in a :py:class:`PlanSpec`.
 
 
 Enumerations

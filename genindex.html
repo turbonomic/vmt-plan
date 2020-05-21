@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; vmt-plan 2.0.4 documentation</title>
+  <title>Index &mdash; vmt-plan 2.2.0 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                2.0.4
+                2.2.0
               </div>
             
           
@@ -87,7 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="start.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="userguide.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plan_configuration.html">Plan Configurations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vmtplanner.html">vmtplanner — Developer Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Interfaces</a></li>
 </ul>
 
             
@@ -155,11 +155,13 @@
 
 <div class="genindex-jumpbox">
  <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -199,6 +201,16 @@
 </li>
       <li><a href="vmtplanner.html#vmtplanner.AutomationSetting">AutomationSetting (class in vmtplanner)</a>
 </li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.HeadroomMode.AVERAGE">AVERAGE (vmtplanner.processors.headroom.HeadroomMode attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="plans.html#vmtplanner.plans.BaseBalancePlan">BaseBalancePlan (class in vmtplanner.plans)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -219,17 +231,33 @@
 </li>
       <li><a href="vmtplanner.html#vmtplanner.CloudLicense">CloudLicense (class in vmtplanner)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.CloudOS">CloudOS (class in vmtplanner)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.CloudTargetOS">CloudTargetOS (class in vmtplanner)</a>
 </li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Cluster">Cluster (class in vmtplanner.processors.headroom)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.ConstraintCommodity.CLUSTER">CLUSTER (vmtplanner.ConstraintCommodity attribute)</a>
+</li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.ClusterHeadroom">ClusterHeadroom (class in vmtplanner.processors.headroom)</a>
+</li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.ClusterHeadroom.clusters">clusters (vmtplanner.processors.headroom.ClusterHeadroom attribute)</a>
+
+      <ul>
+        <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Template.clusters">(vmtplanner.processors.headroom.Template attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.ClusterHeadroom.commodities">commodities (vmtplanner.processors.headroom.ClusterHeadroom attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.ConstraintCommodity">ConstraintCommodity (class in vmtplanner)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.MarketState.COPYING">COPYING (vmtplanner.MarketState attribute)</a>
+</li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Template.cpu">cpu (vmtplanner.processors.headroom.Template attribute)</a>
+</li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Template.cpu_provisioned">cpu_provisioned (vmtplanner.processors.headroom.Template attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.MarketState.CREATED">CREATED (vmtplanner.MarketState attribute)</a>
 </li>
@@ -283,9 +311,33 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.Plan.get_state">get_state() (vmtplanner.Plan method)</a>
 </li>
+      <li><a href="vmtplanner.html#vmtplanner.Plan.get_stats">get_stats() (vmtplanner.Plan method)</a>
+</li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Group">Group (class in vmtplanner.processors.headroom)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="vmtplanner.html#vmtplanner.Plan.get_stats">get_stats() (vmtplanner.Plan method)</a>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Cluster.groups">groups (vmtplanner.processors.headroom.Cluster attribute)</a>
+
+      <ul>
+        <li><a href="processors/headroom.html#vmtplanner.processors.headroom.ClusterHeadroom.groups">(vmtplanner.processors.headroom.ClusterHeadroom attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Cluster.growth">growth (vmtplanner.processors.headroom.Cluster attribute)</a>
+</li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.ClusterHeadroom.growth_lookback">growth_lookback (vmtplanner.processors.headroom.ClusterHeadroom attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.HeadroomEncoder">HeadroomEncoder (class in vmtplanner.processors.headroom)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.HeadroomMode">HeadroomMode (class in vmtplanner.processors.headroom)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -339,21 +391,47 @@
 </li>
       <li><a href="vmtplanner.html#vmtplanner.MarketError">MarketError</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.MarketState">MarketState (class in vmtplanner)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.max_retry">max_retry (vmtplanner.PlanSpec attribute)</a>
 </li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Template.mem">mem (vmtplanner.processors.headroom.Template attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Template.mem_provisioned">mem_provisioned (vmtplanner.processors.headroom.Template attribute)</a>
+</li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Cluster.members">members (vmtplanner.processors.headroom.Cluster attribute)</a>
+
+      <ul>
+        <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Group.members">(vmtplanner.processors.headroom.Group attribute)</a>
+</li>
+      </ul></li>
       <li><a href="vmtplanner.html#vmtplanner.EntityAction.MIGRATE">MIGRATE (vmtplanner.EntityAction attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.migrate_entity">migrate_entity() (vmtplanner.PlanSpec method)</a>
 </li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Cluster.mode">mode (vmtplanner.processors.headroom.Cluster attribute)</a>
+
+      <ul>
+        <li><a href="processors/headroom.html#vmtplanner.processors.headroom.ClusterHeadroom.mode">(vmtplanner.processors.headroom.ClusterHeadroom attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Cluster.name">name (vmtplanner.processors.headroom.Cluster attribute)</a>
+
+      <ul>
+        <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Group.name">(vmtplanner.processors.headroom.Group attribute)</a>
+</li>
+        <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Template.name">(vmtplanner.processors.headroom.Template attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.ConstraintCommodity.NETWORK">NETWORK (vmtplanner.ConstraintCommodity attribute)</a>
 </li>
@@ -405,6 +483,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.MarketState.READY_TO_START">READY_TO_START (vmtplanner.MarketState attribute)</a>
 </li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Cluster.realtime_members">realtime_members (vmtplanner.processors.headroom.Cluster attribute)</a>
+</li>
       <li><a href="vmtplanner.html#vmtplanner.PlanType.RECONFIGURE_HARDWARE">RECONFIGURE_HARDWARE (vmtplanner.PlanType attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.relieve_pressure">relieve_pressure() (vmtplanner.PlanSpec method)</a>
@@ -421,7 +501,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.AutomationSetting.RESIZE">RESIZE (vmtplanner.AutomationSetting attribute)</a>
 </li>
-      <li><a href="vmtplanner.html#vmtplanner.Plan.results">results (vmtplanner.Plan attribute)</a>
+      <li><a href="vmtplanner.html#vmtplanner.Plan.result">result (vmtplanner.Plan attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.CloudLicense.RHEL">RHEL (vmtplanner.CloudLicense attribute)</a>
 
@@ -448,6 +528,8 @@
       <li><a href="vmtplanner.html#vmtplanner.Plan.scenario_name">scenario_name (vmtplanner.Plan attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.Plan.script_duration">script_duration (vmtplanner.Plan attribute)</a>
+</li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.HeadroomMode.SEPARATE">SEPARATE (vmtplanner.processors.headroom.HeadroomMode attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.Plan.server_duration">server_duration (vmtplanner.Plan attribute)</a>
 </li>
@@ -487,11 +569,17 @@
 </li>
       <li><a href="vmtplanner.html#vmtplanner.MarketState.STOPPED">STOPPED (vmtplanner.MarketState attribute)</a>
 </li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Template.storage_amount">storage_amount (vmtplanner.processors.headroom.Template attribute)</a>
+</li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Template.storage_provisioned">storage_provisioned (vmtplanner.processors.headroom.Template attribute)</a>
+</li>
       <li><a href="vmtplanner.html#vmtplanner.ConstraintCommodity.STORAGECLUSTER">STORAGECLUSTER (vmtplanner.ConstraintCommodity attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.MarketState.SUCCEEDED">SUCCEEDED (vmtplanner.MarketState attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.ServerResponse.SUCCESS">SUCCESS (vmtplanner.ServerResponse attribute)</a>
+</li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.HeadroomMode.SUM">SUM (vmtplanner.processors.headroom.HeadroomMode attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.CloudLicense.SUSE">SUSE (vmtplanner.CloudLicense attribute)</a>
 
@@ -513,13 +601,23 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.AutomationSetting.TARGET_BAND">TARGET_BAND (vmtplanner.AutomationSetting attribute)</a>
 </li>
-      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.timeout">timeout (vmtplanner.PlanSpec attribute)</a>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Template.targets">targets (vmtplanner.processors.headroom.Template attribute)</a>
+</li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.ClusterHeadroom.tempalte_commodity">tempalte_commodity (vmtplanner.processors.headroom.ClusterHeadroom attribute)</a>
+</li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Template">Template (class in vmtplanner.processors.headroom)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.ClusterHeadroom.templates">templates (vmtplanner.processors.headroom.ClusterHeadroom attribute)</a>
+</li>
+      <li><a href="vmtplanner.html#vmtplanner.PlanSpec.timeout">timeout (vmtplanner.PlanSpec attribute)</a>
+</li>
       <li><a href="vmtplanner.html#vmtplanner.PlanSpec.to_json">to_json() (vmtplanner.PlanSpec method)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.ServerResponse.TRUE">TRUE (vmtplanner.ServerResponse attribute)</a>
+</li>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Group.type">type (vmtplanner.processors.headroom.Group attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -529,12 +627,20 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.Plan.unplaced_entities">unplaced_entities (vmtplanner.Plan attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#vmtplanner.MarketState.USER_STOPPED">USER_STOPPED (vmtplanner.MarketState attribute)</a>
 </li>
       <li><a href="vmtplanner.html#vmtplanner.AutomationSetting.UTIL_TARGET">UTIL_TARGET (vmtplanner.AutomationSetting attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Cluster.uuid">uuid (vmtplanner.processors.headroom.Cluster attribute)</a>
+
+      <ul>
+        <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Group.uuid">(vmtplanner.processors.headroom.Group attribute)</a>
+</li>
+        <li><a href="processors/headroom.html#vmtplanner.processors.headroom.Template.uuid">(vmtplanner.processors.headroom.Template attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -542,6 +648,12 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vmtplanner.html#module-vmtplanner">vmtplanner (module)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="plans.html#module-vmtplanner.plans">vmtplanner.plans (module)</a>
+</li>
+      <li><a href="processors/headroom.html#module-vmtplanner.processors.headroom">vmtplanner.processors.headroom (module)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -576,7 +688,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017-2019
+        &copy; Copyright 2017-2020
 
     </p>
   </div>

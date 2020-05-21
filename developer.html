@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>vmt-plan Documentation Contents &mdash; vmt-plan 2.2.0 documentation</title>
+  <title>Developer Interfaces &mdash; vmt-plan 2.2.0 documentation</title>
   
 
   
@@ -35,7 +35,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Getting Started" href="start.html" /> 
+    <link rel="next" title="vmtplanner" href="vmtplanner.html" />
+    <link rel="prev" title="Plan Configurations" href="plan_configuration.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -49,7 +50,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> vmt-plan
+            <a href="index.html" class="icon icon-home"> vmt-plan
           
 
           
@@ -83,11 +84,16 @@
               
             
             
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="start.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="userguide.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plan_configuration.html">Plan Configurations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Interfaces</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developer Interfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vmtplanner.html">vmtplanner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plans.html">plans</a></li>
+<li class="toctree-l2"><a class="reference internal" href="processors.html">processors</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -102,7 +108,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">vmt-plan</a>
+          <a href="index.html">vmt-plan</a>
         
       </nav>
 
@@ -131,15 +137,15 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>vmt-plan Documentation Contents</li>
+      <li>Developer Interfaces</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/developer.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -152,43 +158,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="vmt-plan-documentation-contents">
-<h1>vmt-plan Documentation Contents<a class="headerlink" href="#vmt-plan-documentation-contents" title="Permalink to this headline">¶</a></h1>
-<p><em>vmt-plan</em> provides a set of wrapper classes and utility methods used to handle
-running plans using Turbonomic <a class="reference external" href="https://cdn.turbonomic.com/wp-content/uploads/docs/VMT_REST2_API_PRINT.pdf">API 2.0</a>.</p>
+  <div class="section" id="developer-interfaces">
+<h1>Developer Interfaces<a class="headerlink" href="#developer-interfaces" title="Permalink to this headline">¶</a></h1>
+<p><em>vmt-plan</em> provides several modules for performing estate planning and analysis
+within Turbonomic. The base module provides the plan engine <a class="reference internal" href="vmtplanner.html#vmtplanner.Plan" title="vmtplanner.Plan"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plan</span></code></a>, driven
+by a <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanSpec" title="vmtplanner.PlanSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlanSpec</span></code></a>. The plans module provides pre-packaged plans for
+specific use-cases, and the processors sub-package provides pre and post
+processing analysis capabilities for advanced scenarios.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="start.html">Getting Started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="start.html#about">About</a></li>
-<li class="toctree-l2"><a class="reference internal" href="start.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="start.html#github-source">GitHub Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="start.html#contributors">Contributors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="start.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vmtplanner.html">vmtplanner</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vmtplanner.html#enumerations">Enumerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vmtplanner.html#classes">Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vmtplanner.html#exceptions">Exceptions</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="userguide.html">User Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="userguide.html#creating-plans">Creating Plans</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userguide.html#scenario-parameters">Scenario Parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userguide.html#market-parameters">Market Parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userguide.html#plan-periods">Plan Periods</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userguide.html#deprecated-interfaces">Deprecated Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plans.html">plans</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plans.html#classes">Classes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="plan_configuration.html">Plan Configurations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#add-workload">Add Workload</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#decommission-hosts">Decommission Hosts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#hardware-refresh">Hardware Refresh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#migrate-to-public-cloud">Migrate to Public Cloud</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#optimize-cloud">Optimize Cloud</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#on-prem-workload-migration">On-Prem Workload Migration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#alleviate-pressure">Alleviate Pressure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plan_configuration.html#custom">Custom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="processors.html">processors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="processors/headroom.html">headroom</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="processors/headroom.html#enumerations">Enumerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="processors/headroom.html#classes">Classes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Interfaces</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="vmtplanner.html">vmtplanner</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plans.html">plans</a></li>
-<li class="toctree-l2"><a class="reference internal" href="processors.html">processors</a></li>
 </ul>
 </li>
 </ul>
@@ -203,8 +197,10 @@ running plans using Turbonomic <a class="reference external" href="https://cdn.t
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="start.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="vmtplanner.html" class="btn btn-neutral float-right" title="vmtplanner" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
+      
+        <a href="plan_configuration.html" class="btn btn-neutral float-left" title="Plan Configurations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

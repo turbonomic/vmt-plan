@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>vmtplanner — Developer Interfaces &mdash; vmt-plan 2.0.4 documentation</title>
+  <title>vmtplanner &mdash; vmt-plan 2.2.0 documentation</title>
   
 
   
@@ -35,7 +35,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Plan Configurations" href="plan_configuration.html" /> 
+    <link rel="next" title="plans" href="plans.html" />
+    <link rel="prev" title="Developer Interfaces" href="developer.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -59,7 +60,7 @@
             
             
               <div class="version">
-                2.0.4
+                2.2.0
               </div>
             
           
@@ -87,10 +88,15 @@
 <li class="toctree-l1"><a class="reference internal" href="start.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="userguide.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plan_configuration.html">Plan Configurations</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">vmtplanner — Developer Interfaces</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#enumerations">Enumerations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="developer.html">Developer Interfaces</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">vmtplanner</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enumerations">Enumerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#classes">Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plans.html">plans</a></li>
+<li class="toctree-l2"><a class="reference internal" href="processors.html">processors</a></li>
 </ul>
 </li>
 </ul>
@@ -138,7 +144,9 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>vmtplanner — Developer Interfaces</li>
+          <li><a href="developer.html">Developer Interfaces</a> &raquo;</li>
+        
+      <li>vmtplanner</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -158,10 +166,9 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-vmtplanner">
-<span id="vmtplanner-developer-interfaces"></span><h1>vmtplanner — Developer Interfaces<a class="headerlink" href="#module-vmtplanner" title="Permalink to this headline">¶</a></h1>
-<p><em>vmt-plan</em> provides a single module called <code class="docutils literal notranslate"><span class="pre">vmtplanner</span></code>. This module provides
-a plan engine class called <a class="reference internal" href="#vmtplanner.Plan" title="vmtplanner.Plan"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plan</span></code></a>, which executes a plan as defined by
-the settings in a <a class="reference internal" href="#vmtplanner.PlanSpec" title="vmtplanner.PlanSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlanSpec</span></code></a>.</p>
+<span id="vmtplanner"></span><h1>vmtplanner<a class="headerlink" href="#module-vmtplanner" title="Permalink to this headline">¶</a></h1>
+<p>The base module of <em>vmt-plan</em> package provides a plan engine class called <a class="reference internal" href="#vmtplanner.Plan" title="vmtplanner.Plan"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plan</span></code></a>,
+which executes a Turbonomic plan as defined by the settings in a <a class="reference internal" href="#vmtplanner.PlanSpec" title="vmtplanner.PlanSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlanSpec</span></code></a>.</p>
 <div class="section" id="enumerations">
 <h2>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -507,15 +514,16 @@ the settings in a <a class="reference internal" href="#vmtplanner.PlanSpec" titl
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="vmtplanner.Plan">
-<em class="property">class </em><code class="descclassname">vmtplanner.</code><code class="descname">Plan</code><span class="sig-paren">(</span><em>connection</em>, <em>spec=None</em>, <em>market='Market'</em><span class="sig-paren">)</span><a class="headerlink" href="#vmtplanner.Plan" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">vmtplanner.</code><code class="descname">Plan</code><span class="sig-paren">(</span><em>connection</em>, <em>spec=None</em>, <em>market='Market'</em>, <em>name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vmtplanner.Plan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plan instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>connection</strong> (<a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.Connection" title="(in vmt-connect v3.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – <a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.Connection" title="(in vmt-connect v3.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> or <a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.Session" title="(in vmt-connect v3.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>.</p></li>
+<li><p><strong>connection</strong> (<a class="reference external" href="https://turbonomic.github.io/vmt-connect/vmtconnect.html#vmtconnect.Connection" title="(in vmt-connect v3.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – <a class="reference external" href="https://turbonomic.github.io/vmt-connect/vmtconnect.html#vmtconnect.Connection" title="(in vmt-connect v3.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> or <a class="reference external" href="https://turbonomic.github.io/vmt-connect/vmtconnect.html#vmtconnect.Session" title="(in vmt-connect v3.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>.</p></li>
 <li><p><strong>spec</strong> (<a class="reference internal" href="#vmtplanner.PlanSpec" title="vmtplanner.PlanSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlanSpec</span></code></a>, optional) – Settings to apply to the market, if
 running a plan.</p></li>
 <li><p><strong>market</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Base market UUID to apply the settings to.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Plan display name.</p></li>
 </ul>
 </dd>
 </dl>
@@ -564,12 +572,12 @@ running a plan.</p></li>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="vmtplanner.Plan.results">
-<code class="descname">results</code><a class="headerlink" href="#vmtplanner.Plan.results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Market API response.</p>
+<dt id="vmtplanner.Plan.result">
+<code class="descname">result</code><a class="headerlink" href="#vmtplanner.Plan.result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Market run result state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>obj</p>
+<dd class="field-odd"><p><a class="reference internal" href="#vmtplanner.MarketState" title="vmtplanner.MarketState"><code class="xref py py-class docutils literal notranslate"><span class="pre">MarketState</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -793,7 +801,7 @@ plan hooks are not called.</p>
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://rastern.github.io/vmt-connect/vmtconnect.html#vmtconnect.HTTP500Error" title="(in vmt-connect v3.2.0)"><strong>vmtconnect.HTTP500Error</strong></a> – </p></li>
+<li><p><a class="reference external" href="https://turbonomic.github.io/vmt-connect/vmtconnect.html#vmtconnect.HTTP500Error" title="(in vmt-connect v3.2.2)"><strong>vmtconnect.HTTP500Error</strong></a> – </p></li>
 <li><p><a class="reference internal" href="#vmtplanner.PlanError" title="vmtplanner.PlanError"><strong>PlanError</strong></a> – Error stopping plan</p></li>
 </ul>
 </dd>
@@ -1318,7 +1326,7 @@ compatibility.</p>
 <dl class="exception">
 <dt id="vmtplanner.PlanRunFailure">
 <em class="property">exception </em><code class="descclassname">vmtplanner.</code><code class="descname">PlanRunFailure</code><a class="headerlink" href="#vmtplanner.PlanRunFailure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raised when a plan fails to start.</p>
+<dd><p>Raised when a plan fails to run properly.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -1344,8 +1352,10 @@ compatibility.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="plans.html" class="btn btn-neutral float-right" title="plans" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="plan_configuration.html" class="btn btn-neutral float-left" title="Plan Configurations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="developer.html" class="btn btn-neutral float-left" title="Developer Interfaces" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1354,7 +1364,7 @@ compatibility.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017-2019
+        &copy; Copyright 2017-2020
 
     </p>
   </div>
