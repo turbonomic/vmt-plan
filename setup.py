@@ -1,17 +1,17 @@
 #!/usr/bin/python3
 
 import os
-
-from codecs import open
 from setuptools import setup, find_packages
+
+
 
 here = os.path.abspath(os.path.dirname(__file__))
 
 about = {}
-with open(os.path.join(here, 'vmtplanner', '__about__.py'), 'r', 'utf-8') as fp:
+with open(os.path.join(here, 'vmtplanner', '__about__.py'), 'r') as fp:
     exec(fp.read(), about)
 
-with open(os.path.join(here, 'README.rst'), 'r', 'utf-8') as fp:
+with open(os.path.join(here, 'README.md'), 'r') as fp:
     readme = fp.read()
 
 requires = [
@@ -27,6 +27,14 @@ setup(
     long_description_content_type='text/markdown',
     author=about['__author__'],
     author_email=about['__author_email__'],
+    url='https://github.com/turbonomic/vmt-plan',
+    classifiers=[
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Apache Software License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 3',
+        'Topic :: Software Development',
+    ],
     packages=find_packages(),
     package_data={'': ['LICENSE', 'NOTICE']},
     include_package_data=True,

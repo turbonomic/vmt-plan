@@ -37,7 +37,6 @@ from .__about__ import (__author__, __copyright__, __description__,
 
 __all__ = [
     '__author__',
-    #'__build__',
     '__copyright__',
     '__description__',
     '__license__',
