@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Plan Configurations &mdash; vmt-plan 2.2.0 documentation</title>
+  <title>Plan Configurations &mdash; vmt-plan 2.2.1 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                2.2.0
+                2.2.1
               </div>
             
           
@@ -222,7 +222,7 @@ UI to ensure it is valid.</p>
 <p>In the examples below, all assume you have established a connection and stored
 it in an object called <code class="docutils literal notranslate"><span class="pre">vmt</span></code>, as well as imported <code class="docutils literal notranslate"><span class="pre">vmtplanner</span></code> under the
 name <code class="docutils literal notranslate"><span class="pre">vp</span></code> as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">vmtplanner</span> <span class="kn">as</span> <span class="nn">vp</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">vmtplanner</span> <span class="k">as</span> <span class="nn">vp</span>
 </pre></div>
 </div>
 <div class="section" id="add-workload">
@@ -291,7 +291,7 @@ environment, without altering hardware, you can run a Decommission Hosts plan.</
                        <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;4238a9ea-0c49-31dd-7a7e-87fdab53c974&#39;</span><span class="p">])</span>
 
 <span class="c1"># disable host provisioning</span>
-<span class="n">scenario</span><span class="o">.</span><span class="n">change_automation_setting</span><span class="p">(</span><span class="n">vp</span><span class="o">.</span><span class="n">AutomationSetting</span><span class="o">.</span><span class="n">PROVISION_PM</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_automation_setting</span><span class="p">(</span><span class="n">vp</span><span class="o">.</span><span class="n">AutomationSetting</span><span class="o">.</span><span class="n">PROVISION_PM</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -458,8 +458,8 @@ most narrow scope possible for Cloud Migration plans.</p>
                        <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;_pD8jcFxuEemz8-rKgfgVNQ&#39;</span><span class="p">])</span>
 
 <span class="c1"># set source RHEL and SUSE OSes to generic Linux at destination</span>
-<span class="n">cloud_os_profile</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">CloudOS</span><span class="o">.</span><span class="n">RHEL</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">CloudOS</span><span class="o">.</span><span class="n">Linux</span><span class="p">,</span> <span class="n">unlicensed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">cloud_os_profile</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">CloudOS</span><span class="o">.</span><span class="n">SUSE</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">CloudOS</span><span class="o">.</span><span class="n">Linux</span><span class="p">,</span> <span class="n">unlicensed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">cloud_os_profile</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">CloudOS</span><span class="o">.</span><span class="n">RHEL</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">CloudOS</span><span class="o">.</span><span class="n">Linux</span><span class="p">,</span> <span class="n">unlicensed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">cloud_os_profile</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">CloudOS</span><span class="o">.</span><span class="n">SUSE</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">vp</span><span class="o">.</span><span class="n">CloudOS</span><span class="o">.</span><span class="n">Linux</span><span class="p">,</span> <span class="n">unlicensed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -496,7 +496,7 @@ reserved instances.</p>
 <span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;Optimize Cloud&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">OPTIMIZE_CLOUD</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
 
 <span class="c1"># set resizing on, so we can optimize</span>
-<span class="n">scenario</span><span class="o">.</span><span class="n">change_automation_setting</span><span class="p">(</span><span class="n">vp</span><span class="o">.</span><span class="n">AutomationSetting</span><span class="o">.</span><span class="n">RESIZE</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_automation_setting</span><span class="p">(</span><span class="n">vp</span><span class="o">.</span><span class="n">AutomationSetting</span><span class="o">.</span><span class="n">RESIZE</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># TODO: RI settings are not yet implemented, and would need to be set</span>
 </pre></div>
@@ -600,7 +600,7 @@ perspective, this type does not utilize a plan wizard, whereas other types do.</
 <span class="n">scenario</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanSpec</span><span class="p">(</span><span class="s1">&#39;Migrate to Cloud&#39;</span><span class="p">,</span> <span class="n">vp</span><span class="o">.</span><span class="n">PlanType</span><span class="o">.</span><span class="n">CUSTOM</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
 
 <span class="c1"># simple rebalance plan</span>
-<span class="n">scenario</span><span class="o">.</span><span class="n">change_automation_setting</span><span class="p">(</span><span class="n">vp</span><span class="o">.</span><span class="n">AutomationSetting</span><span class="o">.</span><span class="n">RESIZE</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">change_automation_setting</span><span class="p">(</span><span class="n">vp</span><span class="o">.</span><span class="n">AutomationSetting</span><span class="o">.</span><span class="n">RESIZE</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># optionally could ignore constrains completely, for the most optimal</span>
 <span class="n">scenario</span><span class="o">.</span><span class="n">remove_constraints</span><span class="p">()</span>
