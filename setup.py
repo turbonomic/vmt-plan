@@ -11,7 +11,7 @@ about = {}
 with open(os.path.join(here, 'vmtplanner', '__about__.py'), 'r') as fp:
     exec(fp.read(), about)
 
-with open(os.path.join(here, 'README.rst'), 'r') as fp:
+with open(os.path.join(here, 'README.md'), 'r') as fp:
     readme = fp.read()
 
 requires = [
