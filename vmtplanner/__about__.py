@@ -16,8 +16,8 @@
 
 __title__ = 'vmtplan'
 __description__ = 'Turbonomic Plan Engine'
-__version__ = '2.2.0'
+__version__ = '2.2.1'
 __author__ = 'R.A. Stern'
-__author_email__ = 'rastern@gmail.com'
+__author_email__ = 'richard.stern@turbonomic.com'
 __license__ = 'Apache 2.0'
 __copyright__ = 'Copyright 2017-2020 R.A. Stern'
