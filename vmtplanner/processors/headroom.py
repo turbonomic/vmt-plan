@@ -289,6 +289,7 @@ class Cluster(umsg.mixins.LoggingMixin):
 
     Attributes:
         name (str): Cluser display name.
+        datacenter (str): Datacenter the cluster belongs to.
         groups (dict): Dictionary of cluster groups for headroom analysis.
         growth (float): Cluster growth.
         members (list): List of cluster member UUIDs.
@@ -320,6 +321,7 @@ class Cluster(umsg.mixins.LoggingMixin):
         self._vmt = connection
         self.uuid = uuid
         self.name = name
+        self.datacenter = ''
         self.members = members if members else set()
         self.realtime_members = realtime_members if realtime_members else set()
         self.groups = {x: {0: copy.deepcopy(Cluster.group_template)} for x in Cluster.member_types}
@@ -453,13 +455,18 @@ class Cluster(umsg.mixins.LoggingMixin):
             cache = self._vmt.get_templates(fetch_all=True)
 
         if self._vmt.is_xl():
-            names = [f'AVG:{self.name} for last 10 days']
+            # OM-58566 changed the naming in XL to fix a collision issue,
+            # so we must check for both styles
+            names = [
+                f"{self.datacenter}::AVG:{self.name} for last 10 days",
+                f"AVG:{self.name} for last 10 days"
+            ]
         else:
             # this is likely a bug, VM templates should not
             # be prefixed PMs_, but we see them this way
             names = [
-                f'AVG:PMs_{self.name} for last 10 days',
-                f'AVG:VMs_{self.name} for last 10 days'
+                f"AVG:PMs_{self.name} for last 10 days",
+                f"AVG:VMs_{self.name} for last 10 days"
             ]
 
         # gets the sys generated cluster AVG template
