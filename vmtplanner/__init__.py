@@ -991,7 +991,7 @@ class PlanSpec:
             self.__setting_update(setting, {'uuid': setting.value, 'value': value, 'type': type, 'desc': desc})
 
         else:
-            self.__setting_add(setting, {'uuid': setting.value, 'value': value})
+            self.__setting_update(setting, {'uuid': setting.value, 'value': value})
 
     def change_entity(self, action, targets, projection=[0], count=None, new_target=None):
         """Change entities in the environment.
