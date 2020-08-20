@@ -146,6 +146,20 @@ class AutomationSetting(Enum):
     TARGET_BAND = 'targetBand' # narrowness
 
 
+class AutomationValue(Enum):
+    """Automation Settings Values."""
+    #:
+    DISABLED = 'disabled'
+    #:
+    RECOMMEND = 'recommend'
+    #:
+    EXTERNAL = 'external'
+    #:
+    MANUAL = 'manual'
+    #:
+    AUTOMATIC = 'automatic'
+
+
 class CloudLicense(Enum):
     """Cloud OS licensing."""
     #:
@@ -347,13 +361,22 @@ _dto_map_scenario_settings_610 = {
     'relievepressure': {'topologyChanges': {'relievePressureList': [{'projectionDay': '$projection', 'sources': [{'uuid': '$source'}], 'destinations': [{'uuid': '$destination'}],}]}},
 }
 
-# 7.21.x+
-_dto_map_scenario_settings_721 = {
+# 7.19.x+
+_dto_map_scenario_settings_719 = {
     AutomationSetting.PROVISION_PM: {'configChanges': {'automationSettingList': [{'uuid': 'provision', 'value': '@value:ENABLED;DISABLED', 'entityType': 'PhysicalMachine'}]}},
     AutomationSetting.SUSPEND_PM: {'configChanges': {'automationSettingList': [{'uuid': 'suspend', 'value': '@value:ENABLED;DISABLED', 'entityType': 'PhysicalMachine'}]}},
     AutomationSetting.PROVISION_DS: {'configChanges': {'automationSettingList': [{'uuid': 'provision', 'value': '@value:ENABLED;DISABLED', 'entityType': 'Storage'}]}},
     AutomationSetting.SUSPEND_DS: {'configChanges': {'automationSettingList': [{'uuid': 'suspend', 'value': '@value:ENABLED;DISABLED', 'entityType': 'Storage'}]}},
     AutomationSetting.RESIZE: {'configChanges': {'automationSettingList': [{'uuid': 'resize', 'value': '@value:ENABLED;DISABLED', 'entityType': 'VirtualMachine'}]}},
+}
+
+# 7.20.x+ OM-61967
+_dto_map_scenario_settings_720 = {
+    AutomationSetting.PROVISION_PM: {'configChanges': {'automationSettingList': [{'uuid': 'provision', 'value': '@value:disabled=DISABLED;recommend=RECOMMEND;external=EXTERNAL_APPROVAL;manual=MANUAL;automatic=AUTOMATIC', 'entityType': 'PhysicalMachine'}]}},
+    AutomationSetting.SUSPEND_PM: {'configChanges': {'automationSettingList': [{'uuid': 'suspend', 'value': '@value:disabled=DISABLED;recommend=RECOMMEND;external=EXTERNAL_APPROVAL;manual=MANUAL;automatic=AUTOMATIC', 'entityType': 'PhysicalMachine'}]}},
+    AutomationSetting.PROVISION_DS: {'configChanges': {'automationSettingList': [{'uuid': 'provision', 'value': '@value:disabled=DISABLED;recommend=RECOMMEND;external=EXTERNAL_APPROVAL;manual=MANUAL;automatic=AUTOMATIC', 'entityType': 'Storage'}]}},
+    AutomationSetting.SUSPEND_DS: {'configChanges': {'automationSettingList': [{'uuid': 'suspend', 'value': '@value:disabled=DISABLED;recommend=RECOMMEND;external=EXTERNAL_APPROVAL;manual=MANUAL;automatic=AUTOMATIC', 'entityType': 'Storage'}]}},
+    AutomationSetting.RESIZE: {'configChanges': {'automationSettingList': [{'uuid': 'resize', 'value': '@value:disabled=DISABLED;recommend=RECOMMEND;external=EXTERNAL_APPROVAL;manual=MANUAL;automatic=AUTOMATIC', 'entityType': 'VirtualMachine'}]}},
 }
 
 
@@ -821,7 +844,7 @@ class PlanSpec:
         name (str, optional): Name of the plan scenario.
         type (:class:`PlanType`, optional): Type of plan to be run. (default: :class:`PlanType.CUSTOM`)
         scope (list, optional): Scope of the plan market.
-        version (:class:`vmt-connect.Version`, optional): PlanSpec version.
+        version (:class:`vmtconnect.Version`, optional): PlanSpec version.
 
     Attributes:
         abort_timeout (int): Abort timeout in minutes.
@@ -832,7 +855,7 @@ class PlanSpec:
 
     Notes:
         The `changes` and `entities` parameters were removed in v2.0.0.
-        If `version` is not supplied, the :class:`~vmt-connect.Connection` version
+        If `version` is not supplied, the :class:`~vmtconnect.Connection` version
         will be used when the scenario is evaluated by the :class:`Plan` class.
         If you need to generate a scenario DTO without a :class:`Plan` class,
         you will need to supply the `version` prior to calling :meth:`.to_json`
@@ -980,6 +1003,12 @@ class PlanSpec:
             setting (:class:`AutomationSetting`): Setting to modify.
             value : For most settings, the value will be a :obj:`bool`. For desired
               state changes, the value will be an :obj:`int`.
+
+        Notes:
+            7.19 - Automation settings are either on or off, thus a value of
+                ``True`` or ``False`` is acceptable.
+            7.20 - Automation settings now follow, approximately, the action mode
+                model, and the value must be one of :py:class:`AutomationValue`.
         """
         if setting in (AutomationSetting.UTIL_TARGET, AutomationSetting.TARGET_BAND):
             label = 'center' if setting == AutomationSetting.UTIL_TARGET else 'diameter'
@@ -1374,9 +1403,11 @@ class PlanSpec:
         if vc.VersionSpec.cmp_ver(version.base_version, '6.1.0') >= 0:
             map = _dto_map_scenario_settings_610
 
-            # patch for XL
-            if vc.VersionSpec.cmp_ver(version.base_version, '7.21') >= 0:
-                updatemap(map, _dto_map_scenario_settings_721)
+            # patches for XL versions
+            if vc.VersionSpec.cmp_ver(version.base_version, '7.20') >= 0:
+                updatemap(map, _dto_map_scenario_settings_720)
+            elif vc.VersionSpec.cmp_ver(version.base_version, '7.19') >= 0:
+                updatemap(map, _dto_map_scenario_settings_719)
 
             settings = self.get_settings()
         # 5.9 support to be removed when classic is deprecated (if ever?)
