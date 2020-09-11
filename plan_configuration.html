@@ -1,38 +1,39 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Plan Configurations &mdash; vmt-plan 2.2.1 documentation</title>
+  <title>Plan Configurations &mdash; vmt-plan 2.3.0 documentation</title>
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Developer Interfaces" href="developer.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> vmt-plan
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> vmt-plan
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                2.2.1
+                2.3.0
               </div>
             
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -147,6 +149,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -185,7 +188,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Plan Configurations</li>
     
@@ -241,7 +244,7 @@ which will be copied, a group of entities, or a template.</p>
 <h3>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>Plan Type: <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType.ADD_WORKLOAD" title="vmtplanner.PlanType.ADD_WORKLOAD"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.ADD_WORKLOAD</span></code></a></p></li>
+<li><p>Plan Type: <code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.ADD_WORKLOAD</span></code></p></li>
 <li><p>Addition of one or more new workloads</p></li>
 </ul>
 </div></blockquote>
@@ -274,7 +277,7 @@ environment, without altering hardware, you can run a Decommission Hosts plan.</
 <h3>Requirements<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>Plan Type: <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType.DECOMMISSION_HOST" title="vmtplanner.PlanType.DECOMMISSION_HOST"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.DECOMMISSION_HOST</span></code></a></p></li>
+<li><p>Plan Type: <code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.DECOMMISSION_HOST</span></code></p></li>
 <li><p>Removal of one or more host entities</p></li>
 <li><p>Disabling host provisioning</p></li>
 </ul>
@@ -312,7 +315,7 @@ anticipation of replacing host or storage hardware with newer models.</p>
 <h3>Requirements<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>Plan Type: <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType.RECONFIGURE_HARDWARE" title="vmtplanner.PlanType.RECONFIGURE_HARDWARE"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.RECONFIGURE_HARDWARE</span></code></a></p></li>
+<li><p>Plan Type: <code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.RECONFIGURE_HARDWARE</span></code></p></li>
 <li><p>One or more entity replacements</p></li>
 </ul>
 </div></blockquote>
@@ -360,7 +363,7 @@ in the fourth example.</p>
 <h3>Requirements<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>Plan Type: <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType.CLOUD_MIGRATION" title="vmtplanner.PlanType.CLOUD_MIGRATION"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.CLOUD_MIGRATION</span></code></a></p></li>
+<li><p>Plan Type: <code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.CLOUD_MIGRATION</span></code></p></li>
 <li><p>One or more entity migrations</p></li>
 <li><p>Remove all workloads in all cloud zones</p></li>
 </ul>
@@ -520,7 +523,7 @@ Workload plan without distinction.</p>
 <h3>Requirements<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>Plan Type: <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType.WORKLOAD_MIGRATION" title="vmtplanner.PlanType.WORKLOAD_MIGRATION"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.WORKLOAD_MIGRATION</span></code></a></p></li>
+<li><p>Plan Type: <code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.WORKLOAD_MIGRATION</span></code></p></li>
 <li><p>Addition of workloads from source</p></li>
 <li><p>Scope set to destination cluster</p></li>
 </ul>
@@ -555,7 +558,7 @@ cluster into the “Cold” cluster.</p>
 <h3>Requirements<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>Plan Type: <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType.ALLEVIATE_PRESSURE" title="vmtplanner.PlanType.ALLEVIATE_PRESSURE"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.ALLEVIATE_PRESSURE</span></code></a></p></li>
+<li><p>Plan Type: <code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.ALLEVIATE_PRESSURE</span></code></p></li>
 <li><p>Scope set to hot and cold clusters</p></li>
 <li><p>Relieve pressure setting</p></li>
 </ul>
@@ -589,7 +592,7 @@ perspective, this type does not utilize a plan wizard, whereas other types do.</
 <h3>Requirements<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>Plan Type: <a class="reference internal" href="vmtplanner.html#vmtplanner.PlanType.CUSTOM" title="vmtplanner.PlanType.CUSTOM"><code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.CUSTOM</span></code></a></p></li>
+<li><p>Plan Type: <code class="xref py py-class docutils literal notranslate"><span class="pre">vmtplanner.PlanType.CUSTOM</span></code></p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -630,11 +633,19 @@ perspective, this type does not utilize a plan wizard, whereas other types do.</
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017-2020
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -645,7 +656,6 @@ perspective, this type does not utilize a plan wizard, whereas other types do.</
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
