@@ -548,8 +548,6 @@ class Cluster(umsg.mixins.LoggingMixin):
         self.log(f'Updating groups', level='debug')
         remove = []
 
-        # for e in self.members:
-        #     for g in groups:
         for e, g in product(self.members, groups):
             # Classic compatibility - resolve copied entity references
                 try:

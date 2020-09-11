@@ -27,14 +27,9 @@ and running plans within Turbonomic.
 Installation
 ============
 
-Prior to version 2.0, *vmt-plan* was distributed as a stand-alone single file
-Python module, which could be placed into the same folder as the calling script.
-As of version 2.0, *vmt-plan* is now distributed as a Python wheel package to be
-installed via pip. The package is not available on PyPi_ at this time.
-
 .. code:: bash
 
-   pip install vmtplan-2.2.0-py3-none-any.whl
+   pip install vmtplan
 
 
 Requirements
@@ -45,16 +40,17 @@ Python, and install the vmt-connect_ module.
 
 * Python:
 
-  - CPython_ >= 3.5
+  - CPython_ >= 3.6
 
-* vmt-connect_ >= 3.2.3
+* vmt-connect_ >= 3.4.1
 * umsg_ >= 1.0.2
 
 
 Importing
 ---------
 
-In the most basic case, you need to import the package.
+In the most basic case, you need to import the package. Note the package import
+name "vmtplanner" differs from the Pypi package name "vmtplan".
 
 .. code:: python
 
@@ -80,13 +76,11 @@ __ releases_
 Contributors
 ============
 
-Author:
+Creator and Principal Author:
   * R.A. Stern
 
-Bug Fixes:
+Contributors:
   * Austin Portal
-
-Additional QA:
   * Chris Sawtelle
   * Ray Mileo
   * Ryan Geyer
