@@ -5,19 +5,20 @@ from setuptools import setup, find_packages
 
 
 
-here = os.path.abspath(os.path.dirname(__file__))
-
 about = {}
+here = os.path.abspath(os.path.dirname(__file__))
+requires = [
+    'vmtconnect>=3.4.1,<4',
+    'umsg>=1.0.2'
+]
+
+
 with open(os.path.join(here, 'vmtplanner', '__about__.py'), 'r') as fp:
     exec(fp.read(), about)
 
 with open(os.path.join(here, 'README.md'), 'r') as fp:
     readme = fp.read()
 
-requires = [
-    'vmtconnect>=3.2.3',
-    'umsg>=1.0.2'
-]
 
 setup(
     name=about['__title__'],
@@ -38,7 +39,7 @@ setup(
     packages=find_packages(),
     package_data={'': ['LICENSE', 'NOTICE']},
     include_package_data=True,
-    python_requires=">=3.5",
+    python_requires=">=3.6",
     install_requires=requires,
     license=about['__license__'],
     zip_safe=False,

@@ -95,6 +95,17 @@ we need to deal with the clusters and let Turbonomic sort out the environment.
    stage1 = vp.Plan(vmt, cluster_merge)
    stage1.run()
 
+.. Note::
+   Automation settings differ across releases of the product.
+
+   In Classic the values are expected to be JSON boolean ``true`` or ``false``.
+   In XL prior to v7.20 the values expected are the string literals ``DISABLED``
+   and ``ENABLED``. In both cases you may use the Python boolean ``True`` or
+   ``False``, which *vmt-plan* will translate for you.
+
+   Starting in XL v7.20 the Automation settings values changed, and you must
+   supply one of the enumerated values from :py:class:`~vmtplanner.AutomationValue`.
+
 After the plan finishes, we can utilize the first stage market as the input to
 the next stage, into which we will add our new workload.
 
@@ -116,7 +127,7 @@ the next stage, into which we will add our new workload.
 
 In this case we did not need to re-scope the second plan because the results
 market from stage1 already contains only the clusters we want, and we want
-everything in the results market. You'll note when creating the :class:`~vmtplanner.Plan`
+everything in the results market. You'll note when creating the :py:class:`~vmtplanner.Plan`
 we specify we are using a market other than the default one by passing in the
 market uuid from `stage1`.
 

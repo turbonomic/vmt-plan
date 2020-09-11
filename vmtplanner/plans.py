@@ -13,11 +13,11 @@
 # limitations under the License.
 # libraries
 
-import vmtplanner
+from vmtplanner import AutomationSetting, Plan, PlanSpec, PlanType
 
 
 
-class BaseBalancePlan(vmtplanner.Plan):
+class BaseBalancePlan(Plan):
     """Base Balance plan.
 
     Args:
@@ -45,18 +45,18 @@ class BaseBalancePlan(vmtplanner.Plan):
     def __std_spec(self, scope):
         # default "balance" plan for headroom calcs
         settings = [
-            vmtplanner.AutomationSetting.PROVISION_DS,
-            vmtplanner.AutomationSetting.SUSPEND_DS,
-            vmtplanner.AutomationSetting.PROVISION_PM,
-            vmtplanner.AutomationSetting.SUSPEND_PM,
-            vmtplanner.AutomationSetting.RESIZE,
+            AutomationSetting.PROVISION_DS,
+            AutomationSetting.SUSPEND_DS,
+            AutomationSetting.PROVISION_PM,
+            AutomationSetting.SUSPEND_PM,
+            AutomationSetting.RESIZE,
         ]
 
         if scope is None:
             res = self._vmt.search(types=['Cluster'], scopes=[self.base_market])
             scope = [x['uuid'] for x in res]
 
-        spec = vmtplanner.PlanSpec(type=vmtplanner.PlanType.OPTIMIZE_ONPREM, scope=scope)
+        spec = PlanSpec(type=PlanType.OPTIMIZE_ONPREM, scope=scope)
 
         for x in settings:
             spec.change_automation_setting(x, False)

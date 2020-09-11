@@ -27,7 +27,6 @@ import warnings
 
 import umsg
 import umsg.mixins
-
 import vmtconnect as vc
 
 from .__about__ import (__author__, __copyright__, __description__,
@@ -43,6 +42,7 @@ __all__ = [
     '__title__',
     '__version__',
     'AutomationSetting',
+    'AutomationValue',
     'CloudLicense',
     'CloudOS',
     'CloudTargetOS',
@@ -144,6 +144,20 @@ class AutomationSetting(Enum):
     UTIL_TARGET = 'utilTarget' # efficiency
     #: Desired state - width / narrowness (i.e. diameter)
     TARGET_BAND = 'targetBand' # narrowness
+
+
+class AutomationValue(Enum):
+    """Automation Settings Values."""
+    #:
+    DISABLED = 'disabled'
+    #:
+    RECOMMEND = 'recommend'
+    #:
+    EXTERNAL = 'external'
+    #:
+    MANUAL = 'manual'
+    #:
+    AUTOMATIC = 'automatic'
 
 
 class CloudLicense(Enum):
@@ -347,13 +361,22 @@ _dto_map_scenario_settings_610 = {
     'relievepressure': {'topologyChanges': {'relievePressureList': [{'projectionDay': '$projection', 'sources': [{'uuid': '$source'}], 'destinations': [{'uuid': '$destination'}],}]}},
 }
 
-# 7.21.x+
-_dto_map_scenario_settings_721 = {
+# 7.19.x+
+_dto_map_scenario_settings_719 = {
     AutomationSetting.PROVISION_PM: {'configChanges': {'automationSettingList': [{'uuid': 'provision', 'value': '@value:ENABLED;DISABLED', 'entityType': 'PhysicalMachine'}]}},
     AutomationSetting.SUSPEND_PM: {'configChanges': {'automationSettingList': [{'uuid': 'suspend', 'value': '@value:ENABLED;DISABLED', 'entityType': 'PhysicalMachine'}]}},
     AutomationSetting.PROVISION_DS: {'configChanges': {'automationSettingList': [{'uuid': 'provision', 'value': '@value:ENABLED;DISABLED', 'entityType': 'Storage'}]}},
     AutomationSetting.SUSPEND_DS: {'configChanges': {'automationSettingList': [{'uuid': 'suspend', 'value': '@value:ENABLED;DISABLED', 'entityType': 'Storage'}]}},
     AutomationSetting.RESIZE: {'configChanges': {'automationSettingList': [{'uuid': 'resize', 'value': '@value:ENABLED;DISABLED', 'entityType': 'VirtualMachine'}]}},
+}
+
+# 7.20.x+ OM-61967
+_dto_map_scenario_settings_720 = {
+    AutomationSetting.PROVISION_PM: {'configChanges': {'automationSettingList': [{'uuid': 'provision', 'value': '@value:disabled=DISABLED;recommend=RECOMMEND;external=EXTERNAL_APPROVAL;manual=MANUAL;automatic=AUTOMATIC;true=AUTOMATIC;false=DISABLED', 'entityType': 'PhysicalMachine'}]}},
+    AutomationSetting.SUSPEND_PM: {'configChanges': {'automationSettingList': [{'uuid': 'suspend', 'value': '@value:disabled=DISABLED;recommend=RECOMMEND;external=EXTERNAL_APPROVAL;manual=MANUAL;automatic=AUTOMATIC;true=AUTOMATIC;false=DISABLED', 'entityType': 'PhysicalMachine'}]}},
+    AutomationSetting.PROVISION_DS: {'configChanges': {'automationSettingList': [{'uuid': 'provision', 'value': '@value:disabled=DISABLED;recommend=RECOMMEND;external=EXTERNAL_APPROVAL;manual=MANUAL;automatic=AUTOMATIC;true=AUTOMATIC;false=DISABLED', 'entityType': 'Storage'}]}},
+    AutomationSetting.SUSPEND_DS: {'configChanges': {'automationSettingList': [{'uuid': 'suspend', 'value': '@value:disabled=DISABLED;recommend=RECOMMEND;external=EXTERNAL_APPROVAL;manual=MANUAL;automatic=AUTOMATIC;true=AUTOMATIC;false=DISABLED', 'entityType': 'Storage'}]}},
+    AutomationSetting.RESIZE: {'configChanges': {'automationSettingList': [{'uuid': 'resize', 'value': '@value:disabled=DISABLED;recommend=RECOMMEND;external=EXTERNAL_APPROVAL;manual=MANUAL;automatic=AUTOMATIC;true=AUTOMATIC;false=DISABLED', 'entityType': 'VirtualMachine'}]}},
 }
 
 
@@ -397,8 +420,8 @@ class Plan(umsg.mixins.LoggingMixin):
     """Plan instance.
 
     Args:
-        connection (:class:`~vmtconnect.Connection`): :class:`~vmtconnect.Connection` or :class:`~vmtconnect.Session`.
-        spec (:class:`PlanSpec`, optional): Settings to apply to the market, if
+        connection (:py:class:`~vmtconnect.Connection`): :py:class:`~vmtconnect.Connection` or :py:class:`~vmtconnect.Session`.
+        spec (:py:class:`PlanSpec`, optional): Settings to apply to the market, if
             running a plan.
         market (str, optional): Base market UUID to apply the settings to.
         name (str, optional): Plan display name.
@@ -408,13 +431,13 @@ class Plan(umsg.mixins.LoggingMixin):
         initialized (bool): ``True`` if the market is initialized and usable.
         market_id (str): Market UUID, read-only attribute.
         market_name (str): Market name, read-only attribute.
-        result (:class:`~vmtplanner.MarketState`): Market run result state.
+        result (:py:class:`~vmtplanner.MarketState`): Market run result state.
         scenario_id (str): Scenario UUID, read-only attribute.
         scenario_name (str): Scenario name, read-only attribute.
         script_duration (int): Plan script duration in seconds.
         server_duration (int): Plan server side duration in seconds.
-        state (:class:`MarketState`): Current state of the market.
-        start (:class:`~datetime.datetime`): :class:`~datetime.datetime` object
+        state (:py:class:`MarketState`): Current state of the market.
+        start (:py:class:`~datetime.datetime`): :py:class:`~datetime.datetime` object
             representing the start time, or ``None`` if no plan has been run.
         unplaced_entities (bool): ``True`` if there are unplaced entities.
     """
@@ -705,7 +728,7 @@ class Plan(umsg.mixins.LoggingMixin):
         """Returns the current market state.
 
         Returns:
-            :class:`MarketState`: Current market state.
+            :py:class:`MarketState`: Current market state.
         """
         try:
             market = self._vmt.get_markets(uuid=self.__market_id)
@@ -758,7 +781,7 @@ class Plan(umsg.mixins.LoggingMixin):
 
         When run asynchronously the plan will be started and the state returned
         immediately. All settings pertaining to polling, timeout, and retry
-        will be ignored. The :class:`~Plan.duration` will not be recorded, and
+        will be ignored. The :py:class:`~Plan.duration` will not be recorded, and
         plan hooks are not called.
         """
         return self.__run(async=True)
@@ -819,9 +842,9 @@ class PlanSpec:
 
     Args:
         name (str, optional): Name of the plan scenario.
-        type (:class:`PlanType`, optional): Type of plan to be run. (default: :class:`PlanType.CUSTOM`)
+        type (:py:class:`PlanType`, optional): Type of plan to be run. (default: :py:class:`PlanType.CUSTOM`)
         scope (list, optional): Scope of the plan market.
-        version (:class:`vmt-connect.Version`, optional): PlanSpec version.
+        version (:py:class:`vmtconnect.Version`, optional): PlanSpec version.
 
     Attributes:
         abort_timeout (int): Abort timeout in minutes.
@@ -830,11 +853,11 @@ class PlanSpec:
         poll_freq (int): Status polling interval in seconds, 0 = dynamic.
         timeout (int): Plan timeout in minutes, 0 = infinite.
 
-    Notes:
+    Note:
         The `changes` and `entities` parameters were removed in v2.0.0.
-        If `version` is not supplied, the :class:`~vmt-connect.Connection` version
-        will be used when the scenario is evaluated by the :class:`Plan` class.
-        If you need to generate a scenario DTO without a :class:`Plan` class,
+        If `version` is not supplied, the :py:class:`~vmtconnect.Connection` version
+        will be used when the scenario is evaluated by the :py:class:`Plan` class.
+        If you need to generate a scenario DTO without a :py:class:`Plan` class,
         you will need to supply the `version` prior to calling :meth:`.to_json`
         or accessing the `json` property.
     """
@@ -977,9 +1000,15 @@ class PlanSpec:
         """Change plan automation settings.
 
         Args:
-            setting (:class:`AutomationSetting`): Setting to modify.
+            setting (:py:class:`AutomationSetting`): Setting to modify.
             value : For most settings, the value will be a :obj:`bool`. For desired
               state changes, the value will be an :obj:`int`.
+
+        Note:
+            * Classic 6.1 - Automation settings are either on or off, thus a value of ``True`` or ``False`` is required.
+            * XL 7.19 - Automation settings are either on or off, thus a value of ``True`` or ``False`` is required.
+            * XL 7.20 - Automation settings now follow, approximately, the action mode model, and the value must be one of :py:class:`AutomationValue` .
+
         """
         if setting in (AutomationSetting.UTIL_TARGET, AutomationSetting.TARGET_BAND):
             label = 'center' if setting == AutomationSetting.UTIL_TARGET else 'diameter'
@@ -991,31 +1020,29 @@ class PlanSpec:
             self.__setting_update(setting, {'uuid': setting.value, 'value': value, 'type': type, 'desc': desc})
 
         else:
-            self.__setting_add(setting, {'uuid': setting.value, 'value': value})
+            self.__setting_update(setting, {'uuid': setting.value, 'value': value})
 
     def change_entity(self, action, targets, projection=[0], count=None, new_target=None):
-        """Change entities in the environment.
-
-        Change entities handles adding, removing, replacing, and migrating entities
-        within the plan. Each :class:`EntityAction` has different required parameters,
+        """Change entities handles adding, removing, replacing, and migrating entities
+        within the plan. Each :py:class:`EntityAction` has different required parameters,
         as defined below.
 
-            Common Parameters
-                * action - required
-                * targets - required
-                * projection - optional
+        Common Parameters
+            * action - required
+            * targets - required
+            * projection - optional
 
-            Add Entity Specific Parameters
-                * count - optional
+        Add Entity Specific Parameters
+            * count - optional
 
-            Replace Entity Specific Parameters
-                * new_target - required
+        Replace Entity Specific Parameters
+            * new_target - required
 
-            Migrate Entity Specific Parameters
-                * new_target - required
+        Migrate Entity Specific Parameters
+            * new_target - required
 
         Args:
-            action (:class:`EntityAction`): Change to effect on the entity.
+            action (:py:class:`EntityAction`): Change to effect on the entity.
             targets (list): List of entity or group UUIDs.
             projection (list): List of days from today at which to make change.
                 (default: ``[0]``)
@@ -1067,7 +1094,7 @@ class PlanSpec:
             projection (int, optional): Singular period in which to set the setting.
                 (default: ``0``)
 
-        Notes:
+        Note:
             This method provides backwards compatibility with previous versions of
             Turbonomic which require deprecated parameters. The `type` parameter
             is required by versions of Turbonomic prior to 6.1.0, and ignored
@@ -1098,15 +1125,15 @@ class PlanSpec:
         """Configures OS migration profile for Migrate to Cloud plans.
 
         Custom mapping :obj:`dict` format:
-          {'source': :class:`CloudOS`, 'target': :class:`CloudOS`, 'unlicensed': :obj:`bool`}
+          {'source': :py:class:`CloudOS`, 'target': :py:class:`CloudOS`, 'unlicensed': :obj:`bool`}
 
         Args:
             match_source (bool, optional): If ``True``, the source OS will be
                 matched.
             unlicensed (bool, optional): If ``True``, destination targets will
                 be selected without licensed OSes.
-            source (:class:`CloudOS`): Source OS to map from.
-            target (:class:`CloudOS`): Target OS to map to.
+            source (:py:class:`CloudOS`): Source OS to map from.
+            target (:py:class:`CloudOS`): Target OS to map to.
             custom (list, optional): List of :obj:`dict` custom OS settings.
 
         """
@@ -1206,11 +1233,11 @@ class PlanSpec:
 
         Args:
             targets (list, optional): List of entity or group UUIDs.
-            commodity (:class:`ConstraintCommodity`, optional): Commodity constraint to remove on a target.
+            commodity (:py:class:`ConstraintCommodity`, optional): Commodity constraint to remove on a target.
                 `targets` is required with this parameter, or it is ignored.
             projection (int, optional): Singular period in which to set the setting.
 
-        Notes:
+        Note:
             To remove all constraints from the entire market (global level),
             leave the `targets` and `commodity` fields empty.
 
@@ -1352,7 +1379,7 @@ class PlanSpec:
         """Returns the version specific DTO for the scenario.
 
         Args:
-            version (object, optional): :class:`Version` object.
+            version (object, optional): :py:class:`Version` object.
             **kwargs: Additional JSON processing arguments.
 
         Raises:
@@ -1374,9 +1401,11 @@ class PlanSpec:
         if vc.VersionSpec.cmp_ver(version.base_version, '6.1.0') >= 0:
             map = _dto_map_scenario_settings_610
 
-            # patch for XL
-            if vc.VersionSpec.cmp_ver(version.base_version, '7.21') >= 0:
-                updatemap(map, _dto_map_scenario_settings_721)
+            # patches for XL versions
+            if vc.VersionSpec.cmp_ver(version.base_version, '7.20') >= 0:
+                updatemap(map, _dto_map_scenario_settings_720)
+            elif vc.VersionSpec.cmp_ver(version.base_version, '7.19') >= 0:
+                updatemap(map, _dto_map_scenario_settings_719)
 
             settings = self.get_settings()
         # 5.9 support to be removed when classic is deprecated (if ever?)
@@ -1480,7 +1509,7 @@ def map_value(value, mapdef):
         mapdef (str): Mapping definition
         value: Value to be mapped
 
-    Notes:
+    Note:
         The map is expected as sets of equality pairs (old=new), or a single set
         of boolean values separated by a semicolons (;). All values except
         boolean values will be treated as strings. For example:
@@ -1493,6 +1522,11 @@ def map_value(value, mapdef):
     Raises:
         InvalidValueMapError: If the value map is malformed
     """
+    if isinstance(value, Enum):
+        value = value.value
+    elif '=' in mapdef and isinstance(value, bool):
+        value = 'true' if value else 'false'
+
     try:
         if '=' in mapdef:
             for x in mapdef.split(';'):
@@ -1528,6 +1562,7 @@ def resolve_value(var, values):
 
     def _map(v):
         _var, _map = v.split(':')
+
         return map_value(values[_var], _map)
 
     if isinstance(var, str):
@@ -1559,7 +1594,7 @@ def map_settings(map, values, setting=None):
     Returns:
         Modified `setting` dictionary.
 
-    Notes:
+    Note:
         Dictionary values will be overwritten if the same key is called again,
         while list values will be extended.
     """

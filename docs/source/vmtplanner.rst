@@ -2,50 +2,51 @@
 vmtplanner
 ==========
 
-.. module:: vmtplanner
-
-The base module of *vmt-plan* package provides a plan engine class called :py:class:`Plan`,
-which executes a Turbonomic plan as defined by the settings in a :py:class:`PlanSpec`.
+The base module of *vmt-plan* package provides a plan engine class called :py:class:`~vmtplanner.Plan`,
+which executes a Turbonomic plan as defined by the settings in a :py:class:`~vmtplanner.PlanSpec`.
 
 
 Enumerations
 ============
 
-.. autoclass:: AutomationSetting
+.. autoclass:: vmtplanner.AutomationSetting
    :members:
 
-.. autoclass:: CloudLicense
+.. autoclass:: vmtplanner.AutomationValue
    :members:
 
-.. autoclass:: CloudOS
+.. autoclass:: vmtplanner.CloudLicense
    :members:
 
-.. autoclass:: CloudTargetOS
+.. autoclass:: vmtplanner.CloudOS
    :members:
 
-.. autoclass:: ConstraintCommodity
+.. autoclass:: vmtplanner.CloudTargetOS
    :members:
 
-.. autoclass:: EntityAction
+.. autoclass:: vmtplanner.ConstraintCommodity
    :members:
 
-.. autoclass:: MarketState
+.. autoclass:: vmtplanner.EntityAction
    :members:
 
-.. autoclass:: PlanType
+.. autoclass:: vmtplanner.MarketState
    :members:
 
-.. autoclass:: ServerResponse
+.. autoclass:: vmtplanner.PlanType
+   :members:
+
+.. autoclass:: vmtplanner.ServerResponse
    :members:
 
 
 Classes
 =======
 
-.. autoclass:: Plan
+.. autoclass:: vmtplanner.Plan
    :members:
 
-.. autoclass:: PlanSpec
+.. autoclass:: vmtplanner.PlanSpec
    :members:
 
 
