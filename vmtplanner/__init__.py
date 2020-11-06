@@ -662,14 +662,14 @@ class Plan(umsg.mixins.LoggingMixin):
 
         return response['uuid']
 
-    def __run(self, async=False):
+    def __run(self, doasync=False):
         # main plan execution control
         self.__init_scenario()
         self.__init_market()
         self.__init = True
         self.__plan_start = datetime.datetime.now()
 
-        if async:
+        if doasync:
             return self.state
 
         self.__wait_for_plan()
@@ -784,7 +784,7 @@ class Plan(umsg.mixins.LoggingMixin):
         will be ignored. The :py:class:`~Plan.duration` will not be recorded, and
         plan hooks are not called.
         """
-        return self.__run(async=True)
+        return self.__run(doasync=True)
 
     def stop(self):
         """Stops the market.
