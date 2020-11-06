@@ -379,6 +379,12 @@ _dto_map_scenario_settings_720 = {
     AutomationSetting.RESIZE: {'configChanges': {'automationSettingList': [{'uuid': 'resize', 'value': '@value:disabled=DISABLED;recommend=RECOMMEND;external=EXTERNAL_APPROVAL;manual=MANUAL;automatic=AUTOMATIC;true=AUTOMATIC;false=DISABLED', 'entityType': 'VirtualMachine'}]}},
 }
 
+# Unknown +
+_dto_map_scenario_settings_800 = {
+    EntityAction.ADD: {'topologyChanges': {'addList': [{'count': '$count', 'projectionDays': '$projection', 'target': {'uuid': '$target'}}], 'targetEntityType': '$targetEntityType'}},
+    EntityAction.REMOVE: {'topologyChanges': {'removeList': [{'projectionDay': '$projection', 'target': {'uuid': '$target'}, 'targetEntityType': '$targetEntityType'}]}},
+    EntityAction.REPLACE: {'topologyChanges': {'replaceList': [{'projectionDay': '$projection', 'target': {'uuid': '$target'}, 'template': {'uuid': '$new_target'}, 'targetEntityType': '$targetEntityType'}]}}
+}
 
 
 ## ----------------------------------------------------
@@ -1022,7 +1028,7 @@ class PlanSpec:
         else:
             self.__setting_update(setting, {'uuid': setting.value, 'value': value})
 
-    def change_entity(self, action, targets, projection=[0], count=None, new_target=None):
+    def change_entity(self, action, targets, projection=[0], count=None, new_target=None, target_entity_type=None):
         """Change entities handles adding, removing, replacing, and migrating entities
         within the plan. Each :py:class:`EntityAction` has different required parameters,
         as defined below.
@@ -1040,6 +1046,9 @@ class PlanSpec:
 
         Migrate Entity Specific Parameters
             * new_target - required
+
+        Add, Remove, and Replace in Turbonomic v8.0.0+ Specific Parameters
+            * target_entity_type - required
 
         Args:
             action (:py:class:`EntityAction`): Change to effect on the entity.
@@ -1075,6 +1084,9 @@ class PlanSpec:
                 change['destination'] = new_target
 
             change['projection'] = projection if action == EntityAction.ADD else projection[0]
+
+            if action != EntityAction.MIGRATE:
+                change['targetEntityType'] = target_entity_type
 
             self.__setting_add(action, change)
 
@@ -1406,6 +1418,11 @@ class PlanSpec:
                 updatemap(map, _dto_map_scenario_settings_720)
             elif vc.VersionSpec.cmp_ver(version.base_version, '7.19') >= 0:
                 updatemap(map, _dto_map_scenario_settings_719)
+
+            # TODO: Determine actual version where targetEntityType was
+            # added as a requirement.
+            if vc.VersionSpec.cmp_ver(version.base_version, '8.0.0') >= 0:
+                updatemap(map, _dto_map_scenario_settings_800)
 
             settings = self.get_settings()
         # 5.9 support to be removed when classic is deprecated (if ever?)
